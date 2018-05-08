@@ -10,11 +10,23 @@ export default new Router({
       name: 'login',
       component: () =>
         import ('../view/login/login')
-    },{
+    },
+    {
       path: '/',
-      name: 'login',
-      component: () =>
-        import ('../view/login/login')
+      name: 'shouye',
+      component: () => import ('../packages/ui/container'),
+      children: [
+        {
+          path: '/',
+          name: 'shouye',
+          component: () => import('../view/shouye/index')
+        },
+        {
+          path: '/company',
+          name: 'company',
+          component: () => import('../view/dangan/company')
+        }
+      ]
     }
   ]
 })

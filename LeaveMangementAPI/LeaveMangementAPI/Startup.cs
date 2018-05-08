@@ -1,6 +1,7 @@
 ﻿using LeaveMangementAPI.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -21,6 +22,8 @@ namespace LeaveMangementAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddDbContext<KaoQinContext>(options =>
+            //   options.UseSqlServer(@"Server=DESKTOP-BD1U6I5;Database=KaoQin;Integrated Security=True;"));
             services.AddMvc();
             #region Swagger配置
 
@@ -60,6 +63,7 @@ namespace LeaveMangementAPI
                 });
                 var filePath = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "LeaveMangementAPI.xml");
                 c.IncludeXmlComments(filePath);
+                c.OperationFilter<HttpHeaderOperation>(); // 添加httpHeader参数
             });
             #endregion
         }

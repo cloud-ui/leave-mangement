@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LeaveMangementAPI.Models
+namespace LeaveMangement_Entity.Models
 {
     public partial class Worker
     {
         public int Id { get; set; }
         public string Account { get; set; }
+        public string Password { get; set; }
         public int PositionId { get; set; }
         public int DepartmentId { get; set; }
         public int CompanyId { get; set; }

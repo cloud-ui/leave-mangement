@@ -2,10 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace LeaveMangementAPI.Models
+namespace LeaveMangement_Entity.Models
 {
     public partial class KaoQinContext : DbContext
     {
+        public virtual DbSet<AdminUser> AdminUser { get; set; }
         public virtual DbSet<Apply> Apply { get; set; }
         public virtual DbSet<Authorization> Authorization { get; set; }
         public virtual DbSet<Clock> Clock { get; set; }
@@ -23,14 +24,29 @@ namespace LeaveMangementAPI.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning
-                //To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+//#warning  To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer(@"Server=DESKTOP-BD1U6I5;Database=KaoQin;Integrated Security=True;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<AdminUser>(entity =>
+            {
+                entity.Property(e => e.Account)
+                    .IsRequired()
+                    .HasMaxLength(20);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(20);
+                entity.Property(e => e.Password).IsRequired();
+            });
+
             modelBuilder.Entity<Apply>(entity =>
             {
                 entity.Property(e => e.Account)
@@ -160,6 +176,7 @@ namespace LeaveMangementAPI.Models
                 entity.Property(e => e.PaperNumber).HasMaxLength(30);
 
                 entity.Property(e => e.PhoneNumber).HasMaxLength(20);
+                entity.Property(e => e.Password).IsRequired();
             });
         }
     }
