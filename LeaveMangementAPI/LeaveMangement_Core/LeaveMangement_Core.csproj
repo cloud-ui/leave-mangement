@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LeaveMangement_Core\LeaveMangement_Core.csproj" />
     <ProjectReference Include="..\LeaveMangement_Entity\LeaveMangement_Entity.csproj" />
   </ItemGroup>
 

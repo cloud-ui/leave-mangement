@@ -99,6 +99,7 @@ namespace LeaveMangement_Entity.Models
                     .HasMaxLength(50);
 
                 entity.Property(e => e.WokerCount).HasDefaultValueSql("((0))");
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(50);
             });
 
             modelBuilder.Entity<Deparment>(entity =>

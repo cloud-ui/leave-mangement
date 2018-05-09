@@ -1,4 +1,5 @@
-﻿using LeaveMangementAPI.Authorization;
+﻿using LeaveMangement_Application.DangAn;
+using LeaveMangementAPI.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -26,27 +27,6 @@ namespace LeaveMangementAPI
             //   options.UseSqlServer(@"Server=DESKTOP-BD1U6I5;Database=KaoQin;Integrated Security=True;"));
             services.AddMvc();
             #region Swagger配置
-
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new Info
-            //    {
-            //        Version = "v1",
-
-            //        Title = "LeaveMangementAPI接口文档",
-
-            //        Description = "RESTful API for LeaveMangementAPI",
-
-            //        TermsOfService = "None",
-
-            //        Contact = new Swashbuckle.AspNetCore.Swagger.Contact { Name = "Alvin_Su", Email = "asdasdasd@outlook.com", Url = "" }
-            //    });
-            //    //Set the comments path for the swagger json and ui.
-            //    var basePath = PlatformServices.Default.Application.ApplicationBasePath;
-            //    var xmlPath = Path.Combine(basePath, "LeaveMangementAPI.xml");
-            //    c.IncludeXmlComments(xmlPath);
-            //    c.OperationFilter<HttpHeaderOperation>(); // 添加httpHeader参数
-            //});
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info
@@ -66,6 +46,8 @@ namespace LeaveMangementAPI
                 c.OperationFilter<HttpHeaderOperation>(); // 添加httpHeader参数
             });
             #endregion
+            //依赖注入
+            services.AddTransient<IDangAnAppService, DangAnAppService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
