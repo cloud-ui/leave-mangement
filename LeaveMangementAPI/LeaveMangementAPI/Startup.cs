@@ -1,4 +1,5 @@
 ﻿using LeaveMangement_Application.DangAn;
+using LeaveMangement_Application.User;
 using LeaveMangementAPI.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -48,6 +49,7 @@ namespace LeaveMangementAPI
             #endregion
             //依赖注入
             services.AddTransient<IDangAnAppService, DangAnAppService>();
+            services.AddTransient<IUserAppService, UserAppService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,11 +66,6 @@ namespace LeaveMangementAPI
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeaveMangementAPI API V1");
             });
-            //app.UseSwaggerUI(c =>
-            //{
-            //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeaveMangementAPI API V1");
-            //    c.SupportedSubmitMethods();
-            //});
 
 
             app.UseMvc();

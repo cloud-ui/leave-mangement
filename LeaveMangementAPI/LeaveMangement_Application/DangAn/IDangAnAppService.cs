@@ -10,5 +10,7 @@ namespace LeaveMangement_Application.DangAn
         List<Company> GetCompanyList();
         Company GetCompanyById(int compId);
         object AddCompany(Company company);
+        object EditCompany(Company company);
+        object DeleteCompany(int compId);
     }
 }

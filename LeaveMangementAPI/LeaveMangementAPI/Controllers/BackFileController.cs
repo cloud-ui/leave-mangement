@@ -38,5 +38,15 @@ namespace LeaveMangementAPI.Controllers
         {
             return _dangAnAppService.AddCompany(company);
         }
+        //[HttpPut]
+        //public object EditCompany(Company company)
+        //{
+        //    return _dangAnAppService.EditCompany(company);
+        //}
+        [HttpDelete]
+        public object DeleteCompany(int compId)
+        {
+            return _dangAnAppService.DeleteCompany(compId);
+        }
     }
 }

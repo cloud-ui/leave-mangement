@@ -22,5 +22,13 @@ namespace LeaveMangement_Application.DangAn
         {
             return _dangAnManager.AddCompany(company);
         }
+        public object EditCompany(Company company)
+        {
+            return _dangAnManager.EditCompany(company);
+        }
+        public object DeleteCompany(int compId)
+        {
+            return _dangAnManager.DeleteCompany(compId);
+        }
     }
 }

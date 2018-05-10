@@ -57,5 +57,52 @@ namespace LeaveMangement_Core.DangAn
             }
             return result;
         }
+        public object EditCompany(Company company)
+        {
+            Company comp = _ctx.Company.Find(company.Id);
+            var result = new object();
+            try
+            {
+                comp = company;
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "成功修改公司信息！"
+                };
+            }catch(Exception e)
+            {
+                result = new
+                {
+                    isSuccess = true,
+                    message = "修改公司信息失败！"
+                };
+            }
+            return result;
+        }
+        public object DeleteCompany(int compId)
+        {
+            Company comp = _ctx.Company.Find(compId);
+            var result = new object();
+            try
+            {
+                _ctx.Company.Remove(comp);
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "删除成功！"
+                };
+            }
+            catch(Exception e)
+            {
+                result = new
+                {
+                    isSuccess = true,
+                    message = "删除失败！"
+                };
+            }
+            return result;
+        }
     }
 }
