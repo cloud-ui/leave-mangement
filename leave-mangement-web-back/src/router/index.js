@@ -12,6 +12,11 @@ export default new Router({
         import ('../view/login/login')
     },
     {
+      path: '/addCompany',
+      name: 'addCompany',
+      component:()=>import('../view/dangan/addCompany')
+    },
+    {
       path: '/',
       name: 'shouye',
       component: () => import ('../packages/ui/container'),
