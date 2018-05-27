@@ -12,5 +12,7 @@ namespace LeaveMangement_Application.DangAn
         object AddCompany(Company company);
         object EditCompany(Company company);
         object DeleteCompany(int compId);
+        object SendMessage(string phone);
+        List<Deparment> GetDeparmentList(int compId);
     }
 }

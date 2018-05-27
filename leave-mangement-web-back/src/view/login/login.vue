@@ -37,7 +37,7 @@
 </template>
 
 <script>
-
+import {LoginApi} from './api.js'
   export default {
     name: 'Login',
     components: {},
@@ -83,20 +83,18 @@
           }
         }
       },
-      getUser() {
-        this.ruleForm = this.$store.getters.accountPwd
-      },
       submitForm() {
         this.$refs['ruleForm'].validate((valid) => {
           if (valid) {
-            // this.loading = true;
-            // this.$store.dispatch('accountLoginSubmit',
-            //   {...this.ruleForm}).then(() => {
-            //   this.loading = false;
-            //   this.$router.push('/admin')
-            // }).catch(() => {
-            //   this.loading = false
-            // })
+            this.loading = true;
+            const param = {
+              account:this.ruleForm.loginStr,
+              password:this.ruleForm.password
+            }
+            LoginApi.login(param).then(res=>{
+              this.loading = false;
+              alert("chenggong")
+            })
           } else {
             return false
           }

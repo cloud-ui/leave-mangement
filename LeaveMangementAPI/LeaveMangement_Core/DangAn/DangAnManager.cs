@@ -104,5 +104,9 @@ namespace LeaveMangement_Core.DangAn
             }
             return result;
         }
+        public List<Deparment> GetDeparmentList(int compId)
+        {
+            return _ctx.Deparment.Where(d => d.CompanyId == compId).ToList();
+        }
     }
 }

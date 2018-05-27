@@ -9,6 +9,7 @@ namespace LeaveMangement_Application.DangAn
     public class DangAnAppService : IDangAnAppService
     {
         private readonly DangAnManager _dangAnManager = new DangAnManager();
+        private readonly DangAnService _dangAnService = new DangAnService();
         public Company GetCompanyById(int compId)
         {
             return _dangAnManager.GetCompanyById(compId);
@@ -29,6 +30,14 @@ namespace LeaveMangement_Application.DangAn
         public object DeleteCompany(int compId)
         {
             return _dangAnManager.DeleteCompany(compId);
+        }
+        public object SendMessage(string phone)
+        {
+            return _dangAnService.SendAuthCodeMessage(phone);
+        }
+        public List<Deparment> GetDeparmentList(int compId)
+        {
+            return _dangAnManager.GetDeparmentList(compId);
         }
     }
 }

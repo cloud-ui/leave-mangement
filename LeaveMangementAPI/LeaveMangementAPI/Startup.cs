@@ -1,14 +1,18 @@
 ﻿using LeaveMangement_Application.DangAn;
 using LeaveMangement_Application.User;
 using LeaveMangementAPI.Authorization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Swagger;
+using System;
 using System.IO;
+using System.Text;
 
 namespace LeaveMangementAPI
 {
@@ -20,12 +24,58 @@ namespace LeaveMangementAPI
         }
 
         public IConfiguration Configuration { get; }
+        #region jwt
+        public void ConfigureJwtAuthService(IServiceCollection services)
+        {
+            var audienceConfig = Configuration.GetSection("TokenAuthentication:Audience").Value;
+            var symmetricKeyAsBase64 = Configuration.GetSection("TokenAuthentication:SecretKey").Value;
+            var keyByteArray = Encoding.ASCII.GetBytes(symmetricKeyAsBase64);
+            var signingKey = new SymmetricSecurityKey(keyByteArray);
+
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                // The signing key must match!  
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+
+                // Validate the JWT Issuer (iss) claim  
+                ValidateIssuer = true,
+                ValidIssuer = audienceConfig,
+
+                // Validate the JWT Audience (aud) claim  
+                ValidateAudience = true,
+                ValidAudience = audienceConfig,
+
+                // Validate the token expiry  
+                ValidateLifetime = true,
+
+                ClockSkew = TimeSpan.Zero
+            };
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(o =>
+            {
+                o.TokenValidationParameters = tokenValidationParameters;
+            });
+        }
+        #endregion
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddDbContext<KaoQinContext>(options =>
             //   options.UseSqlServer(@"Server=DESKTOP-BD1U6I5;Database=KaoQin;Integrated Security=True;"));
+
+            //session
+            services.AddSession();
+
+            //configure the jwt   
+            ConfigureJwtAuthService(services);
+
             services.AddMvc();
             #region Swagger配置
             services.AddSwaggerGen(c =>
@@ -47,6 +97,20 @@ namespace LeaveMangementAPI
                 c.OperationFilter<HttpHeaderOperation>(); // 添加httpHeader参数
             });
             #endregion
+            //配置跨域处理
+            services.AddCors(options =>
+            {
+                options.AddPolicy("any", builder =>
+                {
+                    builder.AllowAnyOrigin() //允许任何来源的主机访问
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();//指定处理cookie
+                });
+            });
+
+            
+
             //依赖注入
             services.AddTransient<IDangAnAppService, DangAnAppService>();
             services.AddTransient<IUserAppService, UserAppService>();
@@ -67,6 +131,11 @@ namespace LeaveMangementAPI
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "LeaveMangementAPI API V1");
             });
 
+            //session
+            app.UseSession();
+
+            //use the authentication  
+            app.UseAuthentication();
 
             app.UseMvc();
         }

@@ -14,7 +14,7 @@ export default new Router({
     {
       path: '/addCompany',
       name: 'addCompany',
-      component:()=>import('../view/dangan/addCompany')
+      component:()=>import('../view/addCompany/addCompany')
     },
     {
       path: '/',
