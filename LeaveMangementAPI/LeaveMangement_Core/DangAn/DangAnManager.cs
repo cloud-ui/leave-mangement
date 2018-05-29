@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using LeaveMangement_Core.User;
+using LeaveMangement_Entity.Dtos;
 
 namespace LeaveMangement_Core.DangAn
 {
@@ -11,6 +12,15 @@ namespace LeaveMangement_Core.DangAn
     {
         private KaoQinContext _ctx = new KaoQinContext();
         private UserManager _userManager = new UserManager();
+
+        public int GetUserCompId(string account)
+        {
+            return _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account)).CompanyId;
+        }
+        public int GetUserDepId(string account)
+        {
+            return _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account)).DepartmentId;
+        }
         public List<Company> GetCompanyList()
         {
             return _ctx.Company.ToList();
@@ -38,7 +48,7 @@ namespace LeaveMangement_Core.DangAn
                     CellphoneNumber = company.CellphoneNumber,
                     Corporation = company.Corporation,
                     Email = company.Email,
-                    CreateTime = DateTime.Now,
+                    CreateTime = company.CreateTime
                 };
                 _ctx.Company.Add(newComp);
                 _ctx.SaveChanges();
@@ -104,9 +114,43 @@ namespace LeaveMangement_Core.DangAn
             }
             return result;
         }
-        public List<Deparment> GetDeparmentList(int compId)
+        public object GetDeparmentList(DepartmentDto query)
         {
-            return _ctx.Deparment.Where(d => d.CompanyId == compId).ToList();
+            query.Query = string.IsNullOrEmpty(query.Query) ? "" : query.Query;
+            var deparments = (from dep in _ctx.Deparment
+                             where dep.CompanyId == query.CompId && dep.Name.Contains(query.Query) 
+                             select new
+                             {
+                                 depId = dep.Id,
+                                 depName = dep.Name,
+                                 depManager = _ctx.Worker.Find(dep.ManagerId).Name,
+                                 depWorkCount = dep.WorkerCount,
+                                 depCode = dep.Code
+                             }).OrderBy(dep =>dep.depId).ToList();
+            var result = new
+            {
+                totalCount = deparments.Count(),
+                data = deparments.Skip((query.CurrentPage-1) * query.CurrentPageSize ).Take(query.CurrentPageSize),
+            };
+            return result;
+        }
+        public object GetWorkList(WorkDto query)
+        {
+            query.Query = string.IsNullOrEmpty(query.Query) ? "" : query.Query;
+            int defaultNum = 0;
+            var result = new object();
+            var works = _ctx.Worker.Where(w => w.CompanyId == query.CompId && (w.Name.Contains(query.Query) 
+            || (w.Account.Contains(query.Query)))).OrderBy(w=>w.Id).ToList();
+            if (query.DepId != defaultNum)
+            {
+                works = works.Where(w => w.DepartmentId == query.DepId).ToList();
+            }            
+            result = new
+            {
+                totalCount = works.Count(),
+                data = works.Skip((query.CurrentPage - 1) * query.CurrentPageSize).Take(query.CurrentPageSize)
+            };
+            return result;
         }
     }
 }

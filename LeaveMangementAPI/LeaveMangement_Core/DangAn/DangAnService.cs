@@ -54,11 +54,12 @@ namespace LeaveMangement_Core.DangAn
             }
             return res;
         }
-        public bool SendAuthCodeEMail(string mailAddress)
+        public object SendAuthCodeEMail(string mailAddress)
         {
+            var res = new object();
             try
             {
-                string authCode = GetAuthCode();
+                string authCode = GetAuthCode();                
                 MailMessage eMail = new MailMessage();
                 eMail.To.Add(mailAddress);
                 eMail.From = new MailAddress("13628471426@163.com", "人事考勤系统", System.Text.Encoding.UTF8);
@@ -77,12 +78,20 @@ namespace LeaveMangement_Core.DangAn
                     EnableSsl = true
                 };
                 client.Send(eMail);
-                return true;
+                res = new
+                {
+                    isSuccess = true,
+                    authCode
+                };
             }
             catch
             {
-                return false;
+                res = new
+                {
+                    isSuccess = false
+                };
             }
+            return res;
         }
         public string GetAuthCode()
         {

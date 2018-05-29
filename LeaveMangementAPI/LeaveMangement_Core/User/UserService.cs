@@ -25,7 +25,7 @@ namespace LeaveMangement_Core.User
             return account;
         }
 
-        public bool SendEMail(string mailAddress, AdminUser user)
+        public bool SendEMail(string mailAddress, Worker user)
         {
             try
             {

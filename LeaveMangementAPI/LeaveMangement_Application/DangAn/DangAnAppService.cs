@@ -1,4 +1,5 @@
 ﻿using LeaveMangement_Core.DangAn;
+using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Models;
 using System;
 using System.Collections.Generic;
@@ -10,11 +11,19 @@ namespace LeaveMangement_Application.DangAn
     {
         private readonly DangAnManager _dangAnManager = new DangAnManager();
         private readonly DangAnService _dangAnService = new DangAnService();
+
+        public int GetUserCompId(string account)
+        {
+            return _dangAnManager.GetUserCompId(account);
+        }
+        public int GetUserDepId(string account)
+        {
+            return _dangAnManager.GetUserDepId(account);
+        }
         public Company GetCompanyById(int compId)
         {
             return _dangAnManager.GetCompanyById(compId);
         }
-
         public List<Company> GetCompanyList()
         {
             return _dangAnManager.GetCompanyList();
@@ -31,13 +40,17 @@ namespace LeaveMangement_Application.DangAn
         {
             return _dangAnManager.DeleteCompany(compId);
         }
-        public object SendMessage(string phone)
+        public object SendMessage(string address)
         {
-            return _dangAnService.SendAuthCodeMessage(phone);
+            return _dangAnService.SendAuthCodeEMail(address);
         }
-        public List<Deparment> GetDeparmentList(int compId)
+        public object GetDeparmentList(DepartmentDto query)
         {
-            return _dangAnManager.GetDeparmentList(compId);
+            return _dangAnManager.GetDeparmentList(query);
+        }
+        public object GetWorkList(WorkDto query)
+        {
+            return _dangAnManager.GetWorkList(query);
         }
     }
 }

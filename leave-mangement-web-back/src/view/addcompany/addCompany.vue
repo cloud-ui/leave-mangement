@@ -15,11 +15,11 @@
                   <li >
                       <div class="step-div step-bar-active"></div>
                   </li>
-                  <li class="step-bar-active">
+                  <!-- <li class="step-bar-active">
                       <div v-if="step==='SecondStep'" class="step-div step-bar-active"></div>
                       <div v-else class="step-div"></div>
-                  </li>
-                  <li class="step-bar-active">
+                  </li> -->
+                  <li>
                       <div v-if="step==='Resule'" class="step-div step-bar-active"></div>
                       <div v-else class="step-div"></div>
                   </li>

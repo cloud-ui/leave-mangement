@@ -22,22 +22,23 @@ namespace LeaveMangement_Core.User
             int[] positionIds = _ctx.Position.Where(u => u.Name.Equals("总经理") || u.Name.Equals("部门经理"))
                 .Select(p => p.Id).ToArray();
             var manager = _ctx.Worker.SingleOrDefault(u => u.Account.Equals(account) && u.Password.Equals(password)
-            && positionIds.Contains(u.PositionId));
+            && (positionIds.Contains(u.PositionId)||u.PositionId==0));
             return manager ?? null;
             //}
         }
         public bool CreateCompanyAdmin(Company company)
         {
             string account = _userService.CreateAdmAccount();
-            AdminUser user = new AdminUser()
+            Worker user = new Worker()
             {
                 Account = account,
                 Name = company.Corporation,
                 CompanyId = company.Id,
+                PositionId = 0,
+                DepartmentId = 0,
                 Password = "123456",
-                Status = "admin"
             };
-            _ctx.AdminUser.Add(user);
+            _ctx.Worker.Add(user);
             _ctx.SaveChanges();
             return _userService.SendEMail(company.Email,user);            
         }
