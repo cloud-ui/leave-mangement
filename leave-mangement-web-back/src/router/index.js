@@ -30,7 +30,17 @@ export default new Router({
           path: '/company',
           name: 'company',
           component: () => import('../view/dangan/company')
-        }
+        },
+        {
+          path: '/deparment',
+          name: 'deparment',
+          component: () => import('../view/dangan/deparment')
+        },
+        {
+          path: '/worker',
+          name: 'worker',
+          component: () => import('../view/dangan/worker')
+        },
       ]
     }
   ]

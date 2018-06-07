@@ -38,6 +38,7 @@
 
 <script>
 import {LoginApi} from './api.js'
+import {mapActions} from "vuex"
   export default {
     name: 'Login',
     components: {},
@@ -75,6 +76,9 @@ import {LoginApi} from './api.js'
     },
     /** 方法事件 */
     methods: {
+      ...mapActions([
+        'setUser'
+      ]),
       // enter按键事件
       Enter() {
         document.onkeydown = (e) => {
@@ -93,7 +97,8 @@ import {LoginApi} from './api.js'
             }
             LoginApi.login(param).then(res=>{
               this.loading = false;
-              alert("chenggong")
+              this.setUser(res.data)
+              this.$router.push({path: '/'})
             })
           } else {
             return false

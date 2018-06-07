@@ -13,8 +13,6 @@ export default {
     mutations: {
         changeStep(state, data) {
             state.step = data
-            console.log('*/*')
-            console.log(state.companyMessage)
         },
         initStep(state) {
             state.step = 'FirstStep'

@@ -5,5 +5,5 @@ const prodEnv = require('./prod.env')
 module.exports = {
   NODE_ENV: '"development"',
   ENV_CONFIG: '"dev"',
-  BASE_API: '"http://localhost:57502"'
+  BASE_API: '"http://localhost:57503"'
 }

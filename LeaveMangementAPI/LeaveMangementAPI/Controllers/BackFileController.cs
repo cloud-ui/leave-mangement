@@ -25,12 +25,10 @@ namespace LeaveMangementAPI.Controllers
         private readonly IDangAnAppService _dangAnAppService;
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
-        public HttpContext _context;
         public BackFileController(IDangAnAppService dangAnAppService,IConfiguration configuration)
         {
             _configuration = configuration;
             _dangAnAppService = dangAnAppService;
-            _context = HttpContext;
             
         }
         [HttpGet]
@@ -44,9 +42,13 @@ namespace LeaveMangementAPI.Controllers
         /// <param name="compId"></param>
         /// <returns></returns>
         [HttpGet]
-        public Company GetCompanyById()
+        [Authorize]
+        public async Task<object> GetCompanyInfo()
         {
-            return _dangAnAppService.GetCompanyById(4);
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            int compId = _dangAnAppService.GetUserCompId(account);
+            return _dangAnAppService.GetCompanyById(compId);
         }
         /// <summary>
         /// 注册新公司
@@ -86,7 +88,8 @@ namespace LeaveMangementAPI.Controllers
         [Authorize]
         public async Task<object> GetDeparmentList([FromBody]DepartmentDto query)
         {
-            string account = await _jwtUtil.GetMessageByToken(_context);
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
             query.CompId = _dangAnAppService.GetUserCompId(account);
             return _dangAnAppService.GetDeparmentList(query);
         }
@@ -100,7 +103,8 @@ namespace LeaveMangementAPI.Controllers
         [Authorize]
         public async Task<object> GetWorkListByDepId([FromBody]WorkDto query)
         {
-            string account = await _jwtUtil.GetMessageByToken(_context);
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
             query.CompId = _dangAnAppService.GetUserCompId(account);
             query.DepId = _dangAnAppService.GetUserDepId(account);
             return _dangAnAppService.GetWorkList(query);
@@ -112,8 +116,9 @@ namespace LeaveMangementAPI.Controllers
         [HttpGet]
         [Authorize]
         public async Task<object> GetWorkList([FromBody]WorkDto query)
-        { 
-            string account = await _jwtUtil.GetMessageByToken(_context);
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
             query.CompId = _dangAnAppService.GetUserCompId(account);
             return _dangAnAppService.GetWorkList(query);
         }

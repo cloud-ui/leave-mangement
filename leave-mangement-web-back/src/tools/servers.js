@@ -1,5 +1,6 @@
 import axios from 'axios'
 import qs from 'qs'
+import {store} from '../store'
 
 /**
  * 请求类
@@ -42,6 +43,7 @@ export class BaseApi {
    * @returns {Promise<any>}
    */
   connection(method = 'GET', url, body, fileList, fileKey = 'files') {
+    this.getStatusToken();
     if (typeof body !== 'object') body = {};
     method = method.toLocaleLowerCase();
     if (fileList && (fileList instanceof Array)) {
