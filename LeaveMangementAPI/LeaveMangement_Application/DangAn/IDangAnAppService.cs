@@ -18,5 +18,6 @@ namespace LeaveMangement_Application.DangAn
         object SendMessage(string address);
         object GetDeparmentList(DepartmentDto query);
         object GetWorkList(WorkDto query);
+        object AddSingleDpearment(AddSingleDeparmentDto dpearmentDto);
     }
 }

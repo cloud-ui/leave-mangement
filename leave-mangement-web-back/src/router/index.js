@@ -34,7 +34,7 @@ export default new Router({
         {
           path: '/deparment',
           name: 'deparment',
-          component: () => import('../view/dangan/deparment')
+          component: () => import('../view/dangan/deparment/index')
         },
         {
           path: '/worker',

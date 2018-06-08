@@ -80,6 +80,20 @@ namespace LeaveMangementAPI.Controllers
         {
             return _dangAnAppService.SendMessage(email);
         }
+
+        /// <summary>
+        /// 单个添加部门
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public async Task<object> AddSingleDpearment(AddSingleDeparmentDto addSingleDeparmentDto)
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            addSingleDeparmentDto.CompId = _dangAnAppService.GetUserCompId(account);
+            return _dangAnAppService.AddSingleDpearment(addSingleDeparmentDto);
+        }
         /// <summary>
         /// 获取当前登录用户所在公司的部门列表
         /// </summary>
@@ -113,7 +127,7 @@ namespace LeaveMangementAPI.Controllers
         /// 获取当前用户公司的员工列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         public async Task<object> GetWorkList([FromBody]WorkDto query)
         {

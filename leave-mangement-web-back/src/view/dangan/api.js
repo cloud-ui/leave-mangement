@@ -8,4 +8,7 @@ export class FileApi {
   static getCompany () {
     return server.connection('GET', 'api/BackFile/GetCompanyInfo')
   }
+  static getDeparmentList(data={}){
+    return server.connection('POST','api/BackFile/GetDeparmentList',data)
+  }
 }

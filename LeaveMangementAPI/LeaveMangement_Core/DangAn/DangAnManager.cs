@@ -117,16 +117,17 @@ namespace LeaveMangement_Core.DangAn
         public object GetDeparmentList(DepartmentDto query)
         {
             query.Query = string.IsNullOrEmpty(query.Query) ? "" : query.Query;
+            //连接表查询经理名称
             var deparments = (from dep in _ctx.Deparment
-                             where dep.CompanyId == query.CompId && dep.Name.Contains(query.Query) 
-                             select new
-                             {
-                                 depId = dep.Id,
-                                 depName = dep.Name,
-                                 depManager = _ctx.Worker.Find(dep.ManagerId).Name,
-                                 depWorkCount = dep.WorkerCount,
-                                 depCode = dep.Code
-                             }).OrderBy(dep =>dep.depId).ToList();
+                              join worker in _ctx.Worker on dep.ManagerId equals worker.Id
+                              where dep.CompanyId == query.CompId && dep.Name.Contains(query.Query)
+                              select new
+                              {
+                                  name = dep.Name,
+                                  code = dep.Code,
+                                  workerCount = dep.WorkerCount,
+                                  manger = worker.Name,
+                              }).ToList();
             var result = new
             {
                 totalCount = deparments.Count(),
@@ -134,21 +135,67 @@ namespace LeaveMangement_Core.DangAn
             };
             return result;
         }
-        public object GetWorkList(WorkDto query)
+        public object AddSingleDpearment(AddSingleDeparmentDto deparmentDto)
+        {
+            var dep = _ctx.Deparment.SingleOrDefault(d => d.Name.Equals(deparmentDto)&&d.CompanyId.Equals(deparmentDto.CompId));
+            var result = new object();
+            if (dep != null)
+                result = new
+                {
+                    isSuccess = false,
+                    message = "该部门已存在"
+                };
+            else
+            {
+                Deparment deparment = new Deparment()
+                {
+                    Name = deparmentDto.Name,
+                    CompanyId = deparmentDto.CompId,
+                    Code = "01",
+                    ManagerId = deparmentDto.MangerId,
+                    WorkerCount = DangAnHelper.DEFAULT_WORKER_COUNT,
+                };
+                _ctx.Deparment.Add(deparment);
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "添加部门成功"
+                };
+            }
+
+            return result;
+        }
+        public object GetWorkerList(WorkDto query)
         {
             query.Query = string.IsNullOrEmpty(query.Query) ? "" : query.Query;
             int defaultNum = 0;
             var result = new object();
-            var works = _ctx.Worker.Where(w => w.CompanyId == query.CompId && (w.Name.Contains(query.Query) 
-            || (w.Account.Contains(query.Query)))).OrderBy(w=>w.Id).ToList();
+            var workers = (from worker in _ctx.Worker
+                           join comp in _ctx.Company on worker.CompanyId equals comp.Id
+                           join dep in _ctx.Deparment on worker.DepartmentId equals dep.Id
+                           join position in _ctx.Position on worker.PositionId equals position.Id
+                           where worker.CompanyId.Equals(query.CompId) && (worker.Name.Contains(query.Query) ||
+                           (worker.Account.Contains(query.Query)))
+                           select new
+                           {
+                               name = worker.Name,
+                               account = worker.Account,
+                               company = comp.Name,
+                               deparment = dep.Name,
+                               deparmentId = worker.Id,
+                               position = position.Name,
+                               age = worker.Age,
+                               address = worker.Address,
+                               phoneNumber = worker.PaperNumber,
+                               sex = worker.Sex==0?"女":"男",
+                           }).ToList();
             if (query.DepId != defaultNum)
-            {
-                works = works.Where(w => w.DepartmentId == query.DepId).ToList();
-            }            
+                workers = workers.Where(w => w.deparmentId == query.DepId).ToList();
             result = new
             {
-                totalCount = works.Count(),
-                data = works.Skip((query.CurrentPage - 1) * query.CurrentPageSize).Take(query.CurrentPageSize)
+                totalCount = workers.Count(),
+                data = workers.Skip((query.CurrentPage - 1) * query.CurrentPageSize).Take(query.CurrentPageSize)
             };
             return result;
         }

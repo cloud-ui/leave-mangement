@@ -48,9 +48,13 @@ namespace LeaveMangement_Application.DangAn
         {
             return _dangAnManager.GetDeparmentList(query);
         }
+        public object AddSingleDpearment(AddSingleDeparmentDto deparmentDto)
+        {
+            return _dangAnManager.AddSingleDpearment(deparmentDto);
+        }
         public object GetWorkList(WorkDto query)
         {
-            return _dangAnManager.GetWorkList(query);
+            return _dangAnManager.GetWorkerList(query);
         }
     }
 }
