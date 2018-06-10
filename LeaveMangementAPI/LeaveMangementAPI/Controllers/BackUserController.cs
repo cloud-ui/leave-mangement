@@ -1,13 +1,17 @@
-﻿using LeaveMangement_Application.User;
+﻿using LeaveMangement_Application.Common;
+using LeaveMangement_Application.User;
 using LeaveMangement_Entity.Dtos;
+using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Models;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace LeaveMangementAPI.Controllers
 {
@@ -18,11 +22,14 @@ namespace LeaveMangementAPI.Controllers
     {
         private KaoQinContext _ctx = new KaoQinContext();
         private readonly IUserAppService _userAppService;
-        public IConfiguration _configuration;        
-        public BackUserController(IUserAppService userAppService,IConfiguration configuration)
+        private readonly ICommonAppService _commonAppService;
+        public IConfiguration _configuration;
+        public JWTUtil _jwtUtil = new JWTUtil();
+        public BackUserController(IUserAppService userAppService,IConfiguration configuration, ICommonAppService commonAppService)
         {
             _userAppService = userAppService;
             _configuration = configuration;
+            _commonAppService = commonAppService;
         }
         /// <summary>
         /// 后台管理登录（公司管理层员工）
@@ -70,7 +77,32 @@ namespace LeaveMangementAPI.Controllers
             _ctx.SaveChanges();
             return true;
         }
+        /// <summary>
+        /// 单个添加员工
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> AddSingleWorker([FromBody]SingleWorkerDto singleWorkerDto)
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            singleWorkerDto.CompanyId = _commonAppService.GetUserCompId(account);
+            return _userAppService.AddSingleWorker(singleWorkerDto);
+        }
+        /// <summary>
+        /// 批量添加员工
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> AddSingleWorker()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            return true;
+        }
 
-        
+
     }
 }

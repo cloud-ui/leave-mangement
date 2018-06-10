@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LeaveMangement_Entity.Dtos
+namespace LeaveMangement_Entity.Dtos.DangAn
 {
     public class WorkDto
     {

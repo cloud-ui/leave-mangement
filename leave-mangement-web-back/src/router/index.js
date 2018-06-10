@@ -39,7 +39,7 @@ export default new Router({
         {
           path: '/worker',
           name: 'worker',
-          component: () => import('../view/dangan/worker')
+          component: () => import('../view/dangan/worker/index')
         },
       ]
     }

@@ -1,9 +1,7 @@
 ﻿using LeaveMangement_Core.DangAn;
-using LeaveMangement_Entity.Dtos;
+using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace LeaveMangement_Application.DangAn
 {
@@ -11,15 +9,7 @@ namespace LeaveMangement_Application.DangAn
     {
         private readonly DangAnManager _dangAnManager = new DangAnManager();
         private readonly DangAnService _dangAnService = new DangAnService();
-
-        public int GetUserCompId(string account)
-        {
-            return _dangAnManager.GetUserCompId(account);
-        }
-        public int GetUserDepId(string account)
-        {
-            return _dangAnManager.GetUserDepId(account);
-        }
+       
         public Company GetCompanyById(int compId)
         {
             return _dangAnManager.GetCompanyById(compId);
@@ -55,6 +45,10 @@ namespace LeaveMangement_Application.DangAn
         public object GetWorkList(WorkDto query)
         {
             return _dangAnManager.GetWorkerList(query);
+        }
+        public object GetWorkerList(int compId)
+        {
+            return _dangAnManager.GetWorkerList(compId);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using LeaveMangement_Application.DangAn;
+﻿using LeaveMangement_Application.Common;
+using LeaveMangement_Application.DangAn;
 using LeaveMangement_Application.User;
 using LeaveMangementAPI.Authorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -114,6 +115,7 @@ namespace LeaveMangementAPI
             //依赖注入
             services.AddTransient<IDangAnAppService, DangAnAppService>();
             services.AddTransient<IUserAppService, UserAppService>();
+            services.AddTransient<ICommonAppService, CommonAppService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

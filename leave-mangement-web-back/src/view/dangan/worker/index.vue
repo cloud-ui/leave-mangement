@@ -1,12 +1,12 @@
 <template>
     <div class="comp">
         <div class="comp-title">
-            <p>公司部门</p>
+            <p>公司员工</p>
         </div>
         <div class="comp-body">
             <div class="comp-body-title"> 
                 <div style="display:flex;">
-                    <p>共 <span>{{totalCount}}</span> 个部门</p>
+                    <p>共 <span>{{totalCount}}</span> 名员工</p>
                     <el-button style="padding:0px 0px 0px 10px;" @click="dialogVisible = true" type="text" icon="el-icon-plus">添加部门</el-button>
                 </div>
                     <el-input style="width:200px;" placeholder="请输入内容" :change="handleChangeQuery()" v-model="query">
@@ -63,14 +63,10 @@
             :total="totalCount">
             </el-pagination>
         </div>
-        <el-dialog :visible.sync="dialogVisible" :before-close="handleClose">
-         <comp-adddep @closeForm='handleClose' @close='closeForm' ref="compForm"></comp-adddep>
-    </el-dialog>
     </div>
 </template>
 <script>
 import '../dangan.scss'
-import CompAdddep from './adddep'
 import {FileApi} from '../api.js'
 export default {
     data(){
@@ -90,7 +86,6 @@ export default {
         }
     },
     components:{
-        CompAdddep,
     },
     mounted(){
         this.loadData()

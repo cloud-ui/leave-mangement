@@ -2,9 +2,8 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
 using LeaveMangement_Core.User;
-using LeaveMangement_Entity.Dtos;
+using LeaveMangement_Entity.Dtos.DangAn;
 
 namespace LeaveMangement_Core.DangAn
 {
@@ -12,15 +11,6 @@ namespace LeaveMangement_Core.DangAn
     {
         private KaoQinContext _ctx = new KaoQinContext();
         private UserManager _userManager = new UserManager();
-
-        public int GetUserCompId(string account)
-        {
-            return _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account)).CompanyId;
-        }
-        public int GetUserDepId(string account)
-        {
-            return _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account)).DepartmentId;
-        }
         public List<Company> GetCompanyList()
         {
             return _ctx.Company.ToList();
@@ -153,7 +143,7 @@ namespace LeaveMangement_Core.DangAn
                     CompanyId = deparmentDto.CompId,
                     Code = "01",
                     ManagerId = deparmentDto.MangerId,
-                    WorkerCount = DangAnHelper.DEFAULT_WORKER_COUNT,
+                    WorkerCount = deparmentDto.WorkerCount,
                 };
                 _ctx.Deparment.Add(deparment);
                 _ctx.SaveChanges();
@@ -165,7 +155,7 @@ namespace LeaveMangement_Core.DangAn
             }
 
             return result;
-        }
+        }        
         public object GetWorkerList(WorkDto query)
         {
             query.Query = string.IsNullOrEmpty(query.Query) ? "" : query.Query;
@@ -198,6 +188,20 @@ namespace LeaveMangement_Core.DangAn
                 data = workers.Skip((query.CurrentPage - 1) * query.CurrentPageSize).Take(query.CurrentPageSize)
             };
             return result;
+        }
+        //添加部门时，选择经理的下拉列表
+        public object GetWorkerList(int compId)
+        {
+            int[] positionIds = _ctx.Position.Where(u=>u.Name.Equals("部门经理")).Select(p => p.Id).ToArray();
+            var workers = (from worker in _ctx.Worker
+                           join position in _ctx.Position on worker.PositionId equals position.Id
+                           where worker.CompanyId.Equals(compId) && !position.Name.Equals("部门经理")
+                           select new
+                           {
+                               id = worker.Id,
+                               name = worker.Name
+                           }).ToList();
+            return workers;
         }
     }
 }

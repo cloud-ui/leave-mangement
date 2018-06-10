@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using LeaveMangement_Application.Common;
 using LeaveMangement_Application.DangAn;
 using LeaveMangement_Entity.Dtos;
+using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Models;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authentication;
@@ -23,13 +25,14 @@ namespace LeaveMangementAPI.Controllers
     public class BackFileController : Controller
     {
         private readonly IDangAnAppService _dangAnAppService;
+        private readonly ICommonAppService _commonAppService;
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
-        public BackFileController(IDangAnAppService dangAnAppService,IConfiguration configuration)
+        public BackFileController(IDangAnAppService dangAnAppService,IConfiguration configuration,ICommonAppService commonAppService)
         {
             _configuration = configuration;
             _dangAnAppService = dangAnAppService;
-            
+            _commonAppService = commonAppService;
         }
         [HttpGet]
         public List<Company> GetCompanyList()
@@ -47,7 +50,7 @@ namespace LeaveMangementAPI.Controllers
         {
             var context = HttpContext;
             string account = await _jwtUtil.GetMessageByToken(context);
-            int compId = _dangAnAppService.GetUserCompId(account);
+            int compId = _commonAppService.GetUserCompId(account);
             return _dangAnAppService.GetCompanyById(compId);
         }
         /// <summary>
@@ -80,19 +83,30 @@ namespace LeaveMangementAPI.Controllers
         {
             return _dangAnAppService.SendMessage(email);
         }
-
         /// <summary>
         /// 单个添加部门
         /// </summary>
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public async Task<object> AddSingleDpearment(AddSingleDeparmentDto addSingleDeparmentDto)
+        public async Task<object> AddSingleDpearment([FromBody]AddSingleDeparmentDto addSingleDeparmentDto)
         {
             var context = HttpContext;
             string account = await _jwtUtil.GetMessageByToken(context);
-            addSingleDeparmentDto.CompId = _dangAnAppService.GetUserCompId(account);
+            addSingleDeparmentDto.CompId = _commonAppService.GetUserCompId(account);
             return _dangAnAppService.AddSingleDpearment(addSingleDeparmentDto);
+        }
+        /// <summary>
+        /// 批量添加部门
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public async Task<object> AddMulitDeparment()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            return true;
         }
         /// <summary>
         /// 获取当前登录用户所在公司的部门列表
@@ -104,10 +118,23 @@ namespace LeaveMangementAPI.Controllers
         {
             var context = HttpContext;
             string account = await _jwtUtil.GetMessageByToken(context);
-            query.CompId = _dangAnAppService.GetUserCompId(account);
+            query.CompId = _commonAppService.GetUserCompId(account);
             return _dangAnAppService.GetDeparmentList(query);
         }
 
+        /// <summary>
+        /// 添加部门获取到员工
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> GetWorkerList()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            int compId = _commonAppService.GetUserCompId(account);
+            return _dangAnAppService.GetWorkerList(compId);
+        }
         /// <summary>
         /// 获取部门的员工列表
         /// </summary>
@@ -119,8 +146,8 @@ namespace LeaveMangementAPI.Controllers
         {
             var context = HttpContext;
             string account = await _jwtUtil.GetMessageByToken(context);
-            query.CompId = _dangAnAppService.GetUserCompId(account);
-            query.DepId = _dangAnAppService.GetUserDepId(account);
+            query.CompId = _commonAppService.GetUserCompId(account);
+            query.DepId = _commonAppService.GetUserDepId(account);
             return _dangAnAppService.GetWorkList(query);
         }
         /// <summary>
@@ -133,7 +160,7 @@ namespace LeaveMangementAPI.Controllers
         {
             var context = HttpContext;
             string account = await _jwtUtil.GetMessageByToken(context);
-            query.CompId = _dangAnAppService.GetUserCompId(account);
+            query.CompId = _commonAppService.GetUserCompId(account);
             return _dangAnAppService.GetWorkList(query);
         }
     }

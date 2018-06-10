@@ -10,18 +10,13 @@
     </div>
 </template>
 <script>
+import '../dangan.scss'
 export default {
     
 }
 </script>
 <style lang="scss" scoped>
-.add-tip{
-    background-color: #ecf8ff;
-    border-left: 5px solid #50bfff;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 10px;
-}
+
 </style>
 
 

@@ -1,4 +1,5 @@
 ﻿using LeaveMangement_Core.User;
+using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Models;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,10 @@ namespace LeaveMangement_Application.User
         public Worker Login(string account, string password)
         {
             return _userManager.Login(account,password);
+        }
+        public object AddSingleWorker(SingleWorkerDto singleWorkerDto)
+        {
+            return _userManager.AddSingleWorker(singleWorkerDto);
         }
     }
 }
