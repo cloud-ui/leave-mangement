@@ -1,4 +1,4 @@
-﻿using LeaveMangement_Entity.Models;
+﻿using LeaveMangement_Entity.Model;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -38,7 +38,10 @@ namespace LeaveMangement_Core.DangAn
                     CellphoneNumber = company.CellphoneNumber,
                     Corporation = company.Corporation,
                     Email = company.Email,
-                    CreateTime = company.CreateTime
+                    CreateTime = company.CreateTime,
+                    Address = company.Address,
+                    WokerCount = company.WokerCount,
+                    DeparmentCount = company.DeparmentCount,
                 };
                 _ctx.Company.Add(newComp);
                 _ctx.SaveChanges();
@@ -165,20 +168,19 @@ namespace LeaveMangement_Core.DangAn
                            join comp in _ctx.Company on worker.CompanyId equals comp.Id
                            join dep in _ctx.Deparment on worker.DepartmentId equals dep.Id
                            join position in _ctx.Position on worker.PositionId equals position.Id
+                           join state in _ctx.State on worker.StateId equals state.Id
                            where worker.CompanyId.Equals(query.CompId) && (worker.Name.Contains(query.Query) ||
                            (worker.Account.Contains(query.Query)))
                            select new
                            {
                                name = worker.Name,
-                               account = worker.Account,
                                company = comp.Name,
                                deparment = dep.Name,
-                               deparmentId = worker.Id,
+                               deparmentId = dep.Id,
                                position = position.Name,
-                               age = worker.Age,
-                               address = worker.Address,
                                phoneNumber = worker.PaperNumber,
-                               sex = worker.Sex==0?"女":"男",
+                               entryTime = worker.EntryTime,
+                               state = state.Name,
                            }).ToList();
             if (query.DepId != defaultNum)
                 workers = workers.Where(w => w.deparmentId == query.DepId).ToList();
@@ -199,7 +201,8 @@ namespace LeaveMangement_Core.DangAn
                            select new
                            {
                                id = worker.Id,
-                               name = worker.Name
+                               name = worker.Name,
+                               position = position.Name,
                            }).ToList();
             return workers;
         }

@@ -16,5 +16,9 @@ namespace LeaveMangement_Entity.Dtos.DangAn
         public int PaperType { get; set; }
         //证件号码
         public string PaperNumber { get; set; }
+        //入职时间
+        public DateTime? EntryTime { get; set; }
+        //入职状态
+        public int State { get; set; }
     }
 }

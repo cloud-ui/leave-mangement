@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LeaveMangement_Entity.Models
+namespace LeaveMangement_Entity.Model
 {
     public partial class Apply
     {
         public int Id { get; set; }
         public int WorkerId { get; set; }
-        public int DepartmentId { get; set; }
-        public int PositionId { get; set; }
+        public int DeparmentId { get; set; }
+        public int CompanyId { get; set; }
         public int Type1 { get; set; }
         public int Type2 { get; set; }
         public string Account { get; set; }

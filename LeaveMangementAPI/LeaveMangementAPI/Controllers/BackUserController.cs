@@ -2,7 +2,7 @@
 using LeaveMangement_Application.User;
 using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.DangAn;
-using LeaveMangement_Entity.Models;
+using LeaveMangement_Entity.Model;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -81,7 +81,7 @@ namespace LeaveMangementAPI.Controllers
         /// 单个添加员工
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         public async Task<object> AddSingleWorker([FromBody]SingleWorkerDto singleWorkerDto)
         {
@@ -102,7 +102,17 @@ namespace LeaveMangementAPI.Controllers
             string account = await _jwtUtil.GetMessageByToken(context);
             return true;
         }
-
+        /// <summary>
+        /// 获取员工详细信息
+        /// </summary>
+        /// <param name="userId">员工ID</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public object GetWorkerById(int userId)
+        {
+            return _userAppService.GetWorkerById(userId);
+        }
 
     }
 }

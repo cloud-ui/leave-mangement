@@ -1,4 +1,4 @@
-﻿using LeaveMangement_Entity.Models;
+﻿using LeaveMangement_Entity.Model;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -68,6 +68,9 @@ namespace LeaveMangement_Core.User
                     Sex = singleWorkerDto.Sex,
                     PaperType = singleWorkerDto.PaperType,
                     PaperNumber = singleWorkerDto.PaperNumber,
+                    EntryTime = singleWorkerDto.EntryTime,
+                    StateId = singleWorkerDto.State,
+                    IsAuth = UserHelper.DEFAULT_IS_AUTH,
                 };
                 _ctx.Worker.Add(newWorker);
                 _ctx.SaveChanges();
@@ -78,6 +81,35 @@ namespace LeaveMangement_Core.User
                 };
             }
             return result;
+        }
+        public object GetWorkerById(int userId)
+        {
+            var user = (from worker in _ctx.Worker
+                        join comp in _ctx.Company on worker.CompanyId equals comp.Id
+                        join dep in _ctx.Deparment on worker.DepartmentId equals dep.Id
+                        join position in _ctx.Position on worker.PositionId equals position.Id
+                        join paperType in _ctx.PaperType on worker.PaperType equals paperType.Id
+                        join state in _ctx.State on worker.StateId equals state.Id
+                        where worker.Id == userId
+                        select new
+                        {
+                            name = worker.Name,
+                            account = worker.Account,
+                            company = comp.Name,
+                            deparment = dep.Name,
+                            deparmentId = worker.Id,
+                            position = position.Name,
+                            age = worker.Age,
+                            address = worker.Address,
+                            phoneNumber = worker.PaperNumber,
+                            sex = worker.Sex == 0 ? "女" : "男",
+                            entryTime = worker.EntryTime,
+                            birth = worker.Brith,
+                            paperType = paperType.Name,
+                            paperNumber = worker.PaperNumber,
+                            state = state.Name,
+                        }).ToList();
+            return user[0];
         }
     }
 }

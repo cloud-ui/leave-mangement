@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LeaveMangement_Entity.Models
+namespace LeaveMangement_Entity.Model
 {
-    public partial class Inform
+    public partial class Journal
     {
         public int Id { get; set; }
+        public int WorkId { get; set; }
         public string Content { get; set; }
         public DateTime CreateTime { get; set; }
-        public bool IsLook { get; set; }
-        public int WorkId { get; set; }
     }
 }

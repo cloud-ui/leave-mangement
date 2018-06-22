@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LeaveMangement_Entity.Models
+namespace LeaveMangement_Entity.Model
 {
     public partial class Worker
     {
@@ -20,6 +20,7 @@ namespace LeaveMangement_Entity.Models
         public DateTime? Brith { get; set; }
         public int? Age { get; set; }
         public bool IsAuth { get; set; }
-        public int State { get; set; }
+        public int StateId { get; set; }
+        public DateTime? EntryTime { get; set; }
     }
 }

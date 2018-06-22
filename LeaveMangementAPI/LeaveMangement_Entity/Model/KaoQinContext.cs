@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace LeaveMangement_Entity.Models
+namespace LeaveMangement_Entity.Model
 {
     public partial class KaoQinContext : DbContext
     {
@@ -16,16 +16,19 @@ namespace LeaveMangement_Entity.Models
         public virtual DbSet<Inform> Inform { get; set; }
         public virtual DbSet<Journal> Journal { get; set; }
         public virtual DbSet<Menu> Menu { get; set; }
+        public virtual DbSet<PaperType> PaperType { get; set; }
         public virtual DbSet<Position> Position { get; set; }
         public virtual DbSet<PositionOfAuth> PositionOfAuth { get; set; }
+        public virtual DbSet<State> State { get; set; }
         public virtual DbSet<Worker> Worker { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning  To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer(@"Server=DESKTOP-BD1U6I5;Database=KaoQin;Integrated Security=True;");
+#warning
+                //To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseSqlServer(@"Server=DESKTOP-BD1U6I5;Database=KaoQin;Trusted_Connection=True;User ID=sa;Password=jxzxc1230;");
             }
         }
 
@@ -41,10 +44,11 @@ namespace LeaveMangement_Entity.Models
                     .IsRequired()
                     .HasMaxLength(50);
 
+                entity.Property(e => e.Password).IsRequired();
+
                 entity.Property(e => e.Status)
                     .IsRequired()
                     .HasMaxLength(20);
-                entity.Property(e => e.Password).IsRequired();
             });
 
             modelBuilder.Entity<Apply>(entity =>
@@ -82,6 +86,8 @@ namespace LeaveMangement_Entity.Models
 
             modelBuilder.Entity<Company>(entity =>
             {
+                entity.Property(e => e.Address).IsRequired();
+
                 entity.Property(e => e.CellphoneNumber)
                     .IsRequired()
                     .HasMaxLength(11);
@@ -94,12 +100,15 @@ namespace LeaveMangement_Entity.Models
 
                 entity.Property(e => e.DeparmentCount).HasDefaultValueSql("((0))");
 
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(50);
 
                 entity.Property(e => e.WokerCount).HasDefaultValueSql("((0))");
-                entity.Property(e => e.Email).IsRequired().HasMaxLength(50);
             });
 
             modelBuilder.Entity<Deparment>(entity =>
@@ -153,8 +162,26 @@ namespace LeaveMangement_Entity.Models
                 entity.Property(e => e.Url).HasMaxLength(30);
             });
 
+            modelBuilder.Entity<PaperType>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(20);
+            });
+
             modelBuilder.Entity<Position>(entity =>
             {
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(20);
+            });
+
+            modelBuilder.Entity<State>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(20);
@@ -164,11 +191,13 @@ namespace LeaveMangement_Entity.Models
             {
                 entity.Property(e => e.Account)
                     .IsRequired()
-                    .HasMaxLength(11);
+                    .HasMaxLength(20);
 
                 entity.Property(e => e.Address).HasMaxLength(60);
 
-                entity.Property(e => e.Brith).HasColumnType("date");
+                entity.Property(e => e.Brith).HasColumnType("datetime");
+
+                entity.Property(e => e.EntryTime).HasColumnType("datetime");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -176,8 +205,9 @@ namespace LeaveMangement_Entity.Models
 
                 entity.Property(e => e.PaperNumber).HasMaxLength(30);
 
-                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
                 entity.Property(e => e.Password).IsRequired();
+
+                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
             });
         }
     }
