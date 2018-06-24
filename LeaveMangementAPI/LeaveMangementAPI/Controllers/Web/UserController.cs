@@ -13,19 +13,19 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
-namespace LeaveMangementAPI.Controllers
+namespace LeaveMangementAPI.Controllers.Web
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [EnableCors("any")]
-    public class BackUserController : Controller
+    public class UserController : Controller
     {
         private KaoQinContext _ctx = new KaoQinContext();
         private readonly IUserAppService _userAppService;
         private readonly ICommonAppService _commonAppService;
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
-        public BackUserController(IUserAppService userAppService,IConfiguration configuration, ICommonAppService commonAppService)
+        public UserController(IUserAppService userAppService,IConfiguration configuration, ICommonAppService commonAppService)
         {
             _userAppService = userAppService;
             _configuration = configuration;

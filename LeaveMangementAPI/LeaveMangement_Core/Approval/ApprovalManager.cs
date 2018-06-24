@@ -16,6 +16,7 @@ namespace LeaveMangement_Core.Approval
             var result = new object();
             var application = _ctx.Apply.SingleOrDefault(a => a.WorkerId == addApplicationDto.WorkerId && 
             a.StartTime <= addApplicationDto.StartTime&&a.EndTime>=addApplicationDto.EndTime);
+            int state = addApplicationDto.IsSubmit ? ApprovalHelper.DEFAULT_APPROVAL_STATE : 0;
             if (application != null)
                 result = new
                 {
@@ -55,7 +56,8 @@ namespace LeaveMangement_Core.Approval
             var list = (from apply in _ctx.Apply
                         join deparment in _ctx.Deparment on apply.DeparmentId equals deparment.Id
                         where apply.WorkerId == worker.Id&&apply.IsSubmit
-                        select new {
+                        select new { 
+                            id = apply.Id,
                             workerName = worker.Name,
                             deparment = deparment.Name,
                             type = _approvalService.GetApplicationType(apply.Type1,apply.Type2),
@@ -98,6 +100,7 @@ namespace LeaveMangement_Core.Approval
                         where apply.WorkerId == worker.Id && !apply.IsSubmit
                         select new
                         {
+                            id = apply.Id,
                             workerName = worker.Name,
                             deparment = deparment.Name,
                             type = _approvalService.GetApplicationType(apply.Type1, apply.Type2),
@@ -114,6 +117,7 @@ namespace LeaveMangement_Core.Approval
             {
                 var application = _ctx.Apply.Find(id);
                 application.IsSubmit = true;
+                application.State = 1;
                 _ctx.SaveChanges();
                 result = new
                 {

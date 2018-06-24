@@ -7,18 +7,20 @@ using LeaveMangement_Application.Common;
 using LeaveMangement_Entity.Dtos.Approval;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
-namespace LeaveMangementAPI.Controllers
+namespace LeaveMangementAPI.Controllers.Web
 {
     /// <summary>
     /// 审批
     /// </summary>
     [Produces("application/json")]
-    [Route("api/BackApproval")]
-    public class BackApprovalController : Controller
+    [Route("api/[controller]/[action]")]
+    [EnableCors("any")]
+    public class ApprovalController : Controller
     {
         /// <summary>
         /// 审批
@@ -28,7 +30,7 @@ namespace LeaveMangementAPI.Controllers
         private readonly ICommonAppService _commonAppService;
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
-        public BackApprovalController(IApprovalAppService approvalAppService,IConfiguration configuration,ICommonAppService commonAppService)
+        public ApprovalController(IApprovalAppService approvalAppService,IConfiguration configuration,ICommonAppService commonAppService)
         {
             _approvalAppService = approvalAppService;
             _commonAppService = commonAppService;
@@ -106,5 +108,16 @@ namespace LeaveMangementAPI.Controllers
 
             return _approvalAppService.EditApplication(editApplicationDto);
         }
+        /// <summary>
+        /// 获取到当前登录的管理员用户待审核的申请列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public object GetCheckingList()
+        {
+            return true;
+        }
+        
     }
 }

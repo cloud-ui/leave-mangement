@@ -13,16 +13,32 @@ namespace LeaveMangement_Core.Approval
         public string GetStateName(int? state)
         {
             List<States> allState = StateProvider._states;
-            string stateName = allState.SingleOrDefault(s => s.Id == state).Name;
-            return stateName;
+            try
+            {
+                string stateName = allState.SingleOrDefault(s => s.Id == state).Name;
+                return stateName;
+            }
+            catch
+            {
+                return "";
+            }
+            
         }
         //获取请假类别
         public string GetApplicationType(int type1, int type2)
         {
             List<Types> allTypes = TypesProvider._types;
-            string type1Name = allTypes.SingleOrDefault(t => t.Id == type1 && t.Key.Equals("Type1")).Name;
-            string type2Name = allTypes.SingleOrDefault(t => t.Id == type2 && t.Key.Equals("Type2")).Name;
-            return type1Name+"-"+type2Name;
+            try
+            {
+                string type1Name = allTypes.SingleOrDefault(t => t.Id == type1 && t.Key.Equals("Type1")).Name;
+                string type2Name = allTypes.SingleOrDefault(t => t.Id == type2 && t.Key.Equals("Type2")).Name;
+                return type1Name + "-" + type2Name;
+            }
+            catch
+            {
+                return "";
+            }
+            
         }
     }
 }

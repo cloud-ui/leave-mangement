@@ -17,18 +17,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 
-namespace LeaveMangementAPI.Controllers
+namespace LeaveMangementAPI.Controllers.Web
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
     [EnableCors("any")]
-    public class BackFileController : Controller
+    public class FileController : Controller
     {
         private readonly IDangAnAppService _dangAnAppService;
         private readonly ICommonAppService _commonAppService;
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
-        public BackFileController(IDangAnAppService dangAnAppService,IConfiguration configuration,ICommonAppService commonAppService)
+        public FileController(IDangAnAppService dangAnAppService,IConfiguration configuration,ICommonAppService commonAppService)
         {
             _configuration = configuration;
             _dangAnAppService = dangAnAppService;
