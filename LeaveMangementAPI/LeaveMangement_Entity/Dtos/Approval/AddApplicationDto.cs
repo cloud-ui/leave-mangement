@@ -9,6 +9,7 @@ namespace LeaveMangement_Entity.Dtos.Approval
         public int WorkerId { get; set; }
         public int CompId { get; set; }
         public int DeparmentId { get; set; }
+        //事前事后
         public int Type1 { get; set; }
         public int Type2 { get; set; }
         //请假理由

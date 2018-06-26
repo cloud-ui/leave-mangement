@@ -149,6 +149,7 @@ namespace LeaveMangement_Core.DangAn
                     WorkerCount = deparmentDto.WorkerCount,
                 };
                 _ctx.Deparment.Add(deparment);
+                _ctx.Company.Find(deparmentDto.CompId).DeparmentCount++;
                 _ctx.SaveChanges();
                 result = new
                 {

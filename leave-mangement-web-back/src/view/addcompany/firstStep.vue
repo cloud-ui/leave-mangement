@@ -1,25 +1,26 @@
     <template>
     <div id="first">
         <el-form :model="companyMessage" :rules="rules" ref="companyMessage" :inline-message="true" label-width="120px" class="demo-ruleForm">
-            <el-form-item label="公司名称" prop="name">
+            <el-form-item label="公司名称:" prop="name">
                 <el-input style="width:50%" v-model="companyMessage.name"></el-input>                      
             </el-form-item>
-            <el-form-item label="公司地址" prop="address">
-                <el-input style="width:50%" v-model="companyMessage.address"></el-input>
+            <el-form-item label="公司地址:" prop="address">
+                <!-- <el-input style="width:50%" v-model="companyMessage.address"></el-input> -->
+                <city-select v-model="cityInfo"></city-select>
             </el-form-item>
-            <el-form-item label="公司法人" prop="corporation">
+            <el-form-item label="公司法人:" prop="corporation">
                 <el-input style="width:30%" v-model="companyMessage.corporation"></el-input>
             </el-form-item>
-            <el-form-item label="公司成立时间" prop="createTime">
+            <el-form-item label="公司成立时间:" prop="createTime">
                 <el-date-picker v-model="companyMessage.createTime" type="date" placeholder="选择日期" style="width: 30%;"></el-date-picker>
             </el-form-item>
-            <el-form-item label="公司固定电话" prop="cellPhoneNumber">
+            <el-form-item label="公司固定电话:" prop="cellPhoneNumber">
                 <el-input style="width:50%" v-model="companyMessage.cellPhoneNumber"></el-input>
             </el-form-item>
-            <el-form-item label="邮箱" prop="email">
+            <el-form-item label="邮箱:" prop="email">
                 <el-input style="width:50%" v-model="companyMessage.email"></el-input>
             </el-form-item>
-            <el-form-item label="验证码">
+            <el-form-item label="验证码:">
                 <el-input prop="authCode" style="width:32%;"></el-input>
                 <el-button :disabled="disable" @click="getAuthCode(companyMessage.email)">{{getAuthCodeText}}</el-button>
             </el-form-item>
@@ -28,6 +29,8 @@
                 <el-button type="primary" :loading="loading">提交</el-button>
                 <el-button @click="resetForm('companyMessage')">重置</el-button>
             </el-form-item>
+            <h6>v-model的值是 <code>{{ cityInfo }}</code></h6>
+            <h6>从v-model得知,你选择了 <i>{{ cityName }}</i></h6>
         </el-form>
     </div>
     </template>
@@ -35,6 +38,7 @@
     import './add.scss';
     import {mapState, mapActions} from "vuex"
     import {AddCompanyApi} from './api.js'
+    import CitySelect from '../../packages/components/addressSelector'
     export default {
        data (){
         var checkEmail = (rule, value, callback) => {
@@ -43,6 +47,7 @@
                  }
         };     
         return{
+            cityInfo: '',
             disable:true,
             authTime:0,
             getAuthCodeText:'获取验证码',
@@ -62,9 +67,21 @@
             
         }
         },
-        computed:mapState({
-            companyMessage:state=>state.addCompany.companyMessage
-        }),
+        components: {
+            CitySelect
+        },
+        computed:{
+            companyMessage(){
+                return this.$store.state.addCompany.companyMessage
+            },
+            cityName() {
+                const names = [];
+                this.cityInfo.province && names.push(this.cityInfo.province.name + ' ')
+                this.cityInfo.city     && names.push(this.cityInfo.city.name + ' ')
+                this.cityInfo.block    && names.push(this.cityInfo.block.name + ' ')
+                return names.join('')
+            }
+        },
         methods: {
             ...mapActions([
             'nextStep',

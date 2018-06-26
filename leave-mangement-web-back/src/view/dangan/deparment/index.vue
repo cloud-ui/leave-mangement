@@ -1,16 +1,16 @@
 <template>
-    <div class="comp">
-        <div class="comp-title">
+    <div class="index">
+        <div class="index-title">
             <p>公司部门</p>
         </div>
-        <div class="comp-body">
-            <div class="comp-body-title"> 
+        <div class="index-body">
+            <div class="index-body-title"> 
                 <div style="display:flex;">
                     <p>共 <span>{{totalCount}}</span> 个部门</p>
                     <el-button style="padding:0px 0px 0px 10px;" @click="dialogVisible = true" type="text" icon="el-icon-plus">添加部门</el-button>
                 </div>
-                    <el-input style="width:200px;" placeholder="请输入内容" :change="handleChangeQuery()" v-model="query">
-                    <i slot="prefix" class="el-input__icon el-icon-search"></i></el-input>
+                <el-input style="width:30%" placeholder="请输入内容" v-model="input5" class="input-with-select">
+                <el-button slot="append" @click="handleChangeQuery()">搜索</el-button></el-input>
             </div>
             <el-table :data="tableData" border stripe 
             :highlight-current-row="true"
@@ -70,6 +70,7 @@
 </template>
 <script>
 import '../dangan.scss'
+import '../../index.scss'
 import CompAdddep from './adddep'
 import {FileApi} from '../api.js'
 export default {

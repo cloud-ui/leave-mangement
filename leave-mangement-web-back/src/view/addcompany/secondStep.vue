@@ -1,8 +1,14 @@
 <template>
   <div id="second">
-        <el-form label-width="120px" class="demo-ruleForm">
-            <el-form-item label="手机号码">
-                <el-input v-model="phone" style="width:50%;"></el-input>
+        <el-form v-model="companyMessage" label-width="140px" class="demo-ruleForm">
+            <el-form-item label="选择员工职位状态：">
+                <el-checkbox-group v-model="companyMessage.states">
+                    <el-checkbox label="在职" name="type"></el-checkbox>
+                    <el-checkbox label="外派" name="type"></el-checkbox>
+                    <el-checkbox label="实习" name="type"></el-checkbox>
+                    <el-checkbox label="兼职" name="type"></el-checkbox>
+                    <el-checkbox label="离职" name="type"></el-checkbox>
+                </el-checkbox-group>
             </el-form-item>
             <el-form-item label="验证码">
                 <el-input style="width:32%;"></el-input>
@@ -23,6 +29,9 @@ export default {
             phone:'',
         }
     },
+    computed:mapState({
+            companyMessage:state=>state.addCompany.companyMessage
+        }),
   methods:{ 
       ...mapActions([
             'backStep',

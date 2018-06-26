@@ -73,6 +73,8 @@ namespace LeaveMangement_Core.User
                     IsAuth = UserHelper.DEFAULT_IS_AUTH,
                 };
                 _ctx.Worker.Add(newWorker);
+                _ctx.Company.Find(singleWorkerDto.CompanyId).WokerCount++;
+                _ctx.Deparment.Find(singleWorkerDto.DepartmentId).WorkerCount++;
                 _ctx.SaveChanges();
                 result = new
                 {

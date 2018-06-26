@@ -29,7 +29,7 @@ export default new Router({
         {
           path: '/company',
           name: 'company',
-          component: () => import('../view/dangan/company')
+          component: () => import('../view/dangan/company/index')
         },
         {
           path: '/deparment',
@@ -41,6 +41,15 @@ export default new Router({
           name: 'worker',
           component: () => import('../view/dangan/worker/index')
         },
+        {
+          path:'/addApplication',
+          name:'addApplication',
+          component:()=>import('../view/approval/addApplication')
+        },{
+          path:'/unApplicationList',
+          name:'unApplicationList',
+          component:()=>import('../view/approval/unApplicationList')
+        }
       ]
     }
   ]

@@ -15,19 +15,17 @@
                   <li >
                       <div class="step-div step-bar-active"></div>
                   </li>
-                  <!-- <li class="step-bar-active">
+                  <li class="step-bar-active">
                       <div v-if="step==='SecondStep'" class="step-div step-bar-active"></div>
                       <div v-else class="step-div"></div>
-                  </li> -->
+                  </li>
                   <li>
                       <div v-if="step==='Resule'" class="step-div step-bar-active"></div>
                       <div v-else class="step-div"></div>
                   </li>
               </ol>
           </div>
-          <div class="add-box">
-              <!-- <first-step v-show="show.showFirStep" :show="show"></first-step>
-              <second-step v-show="show.showSecStep" :show="show"></second-step>                 -->
+          <div class="add-box">               
               <component v-bind:is="step"></component>
           </div>
       </div>

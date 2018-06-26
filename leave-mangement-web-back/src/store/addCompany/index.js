@@ -7,7 +7,7 @@ export default {
             corporation:'',
             createTime:'',
             cellPhoneNumber:'',
-            email:''
+            email:'',
         },
     },
     mutations: {
