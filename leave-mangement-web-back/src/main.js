@@ -7,6 +7,7 @@ import router from './router'
 import {store} from './store'
 import './assets/styles/index.scss'
 import 'element-ui/lib/theme-chalk/index.css'
+import './permission'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI, {

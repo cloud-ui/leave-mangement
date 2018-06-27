@@ -86,7 +86,24 @@
                 }
             }
         },
+        created() {
+            this.fetchData();
+        },
+        watch: {
+            $route: "fetchData"
+        },
         methods: {
+            //初始化表单
+            fetchData(){
+                //获取到地址栏传的参数
+                const id = parseInt(this.$route.params.id);
+                //-1为添加申请状态状态
+                if(id === -1){
+                    this.resetForm()
+                }else{
+                    alert(id)
+                }
+            },
             handleSelect(key, keyPath) {
                 if(key === "1"){
                     this.form.type1 = 1
@@ -112,7 +129,7 @@
             },
             //重置表单
             resetForm(){
-                this.$refs['form'].resetFields()
+                this.$refs['form'].resetFields();
                 this.form.startTime=''
                 this.form.endTime=''
             },

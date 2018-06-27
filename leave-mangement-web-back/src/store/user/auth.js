@@ -11,6 +11,12 @@ export class Auth {
     const userInfo = Cookies.get('user.userInfo');
     return userInfo ? JSON.parse(JSON.parse(Cookies.get('user.userInfo'))) : null
   }
+  // 注销
+  static logout() {
+    Auth.removeUserInfo();
+    Auth.removeLogin();
+    Auth.removeToken();
+  }
 
   static removeUserInfo() {
     return Cookies.remove('user.userInfo')

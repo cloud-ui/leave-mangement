@@ -65,7 +65,7 @@
         </div>
         <el-dialog :visible.sync="dialogVisible" :before-close="handleClose">
          <comp-adddep @closeForm='handleClose' @close='closeForm' ref="compForm"></comp-adddep>
-    </el-dialog>
+        </el-dialog>
     </div>
 </template>
 <script>

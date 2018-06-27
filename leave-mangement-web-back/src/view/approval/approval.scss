@@ -3,3 +3,47 @@
     color: #606266;
     padding-left: 10px;
 }
+.approval-state{
+    padding: 0px 5px;
+    font-size: 11px;
+    border-radius: 6px;
+    display: inline-block;
+}
+.unlook{
+    border: 1px solid #333333;
+}
+.refuse{
+    border: 1px solid red;
+    color: red;
+}
+.agree{
+    border: 1px solid #5fb878;
+    color: #5fb878;
+}
+.approval-message{
+    background-color: #f5f7facc;
+    width: 100%;
+    min-height: 100px;
+    &-title{
+        background-color: #fff;
+        margin-left: 2%;
+        top: -8px;
+        display: inline-block;
+        position: relative;
+        font-size: 12px;
+    };
+    &-body{
+        margin-left: 2%;
+        font-size: 12px;
+        &-part{
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+            padding-bottom: 5px;
+            > p{
+                width:80px;
+                text-align: right;
+            }
+        }
+    }
+}

@@ -13,6 +13,12 @@ export default{
             Auth.setUserInfo(JSON.stringify(data));
             Auth.setLogin();
         },
+        ACCOUNT_LOGOUT_FAILURE(state) {
+            state.token = null;
+            state.userInfo = {};
+            state.isLogin = false;
+            Auth.logout();
+          },
     },
     getters: {
         // doneTodos: state => {
@@ -23,6 +29,13 @@ export default{
         setUser({commit},data={}){
             commit('setToken',data.token);
             commit('setUserInfo',data.user);
+        },
+        /** 登出 */
+        accountLogoutSubmit({commit}) {
+            return new Promise((resolve, reject) => {
+            commit('ACCOUNT_LOGOUT_FAILURE');
+            resolve()
+            })
+        },
         }
-    }
 }

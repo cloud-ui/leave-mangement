@@ -1,12 +1,12 @@
 <template>
     <div class="index">
         <div class="index-title">
-            <p>未提交申请</p>
+            <p>提交申请</p>
         </div>
         <div class="index-body">
             <div class="index-body-title">
                 <div style="display:flex;">
-                    <p>共 <span>{{totalCount}}</span> 条未提交的申请</p>
+                    <p>共 <span>{{totalCount}}</span> 条提交的申请</p>
                     <router-link to="/addApplication/-1" class="link"><i class="el-icon-plus"></i>添加申请</router-link>
                 </div>
                 <el-input style="width:30%" placeholder="请输入内容" v-model="query" class="input-with-select">
@@ -15,10 +15,20 @@
             </div>
             <el-table :data="tableData" :header-cell-style="headerCellStyle" border style="width: 100%">
                 <el-table-column align="center" prop="id" label="序号" width="80">
+                    <template slot-scope="scope">
+                            {{scope.row.id}}
+                    </template>
                 </el-table-column>
                 <el-table-column align="center" prop="workerName" label="员工名称" width="100">
                 </el-table-column>
                 <el-table-column align="center" prop="type" label="请假类型" width="120">
+                </el-table-column>
+                <el-table-column align="center" label="申请状态" width="100">
+                    <template slot-scope="scope">
+                        <p v-if="scope.row.state===1" class="approval-state unlook">{{scope.row.stateName}}</p>
+                        <p v-if="scope.row.state===2" class="approval-state agree">{{scope.row.stateName}}</p>
+                        <p v-if="scope.row.state===3" class="approval-state refuse">{{scope.row.stateName}}</p>
+                    </template>
                 </el-table-column>
                 <el-table-column align="center" prop="startTime" label="开始时间">
                 </el-table-column>
@@ -33,15 +43,6 @@
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item>
                                  <el-button type="text" size="small" @click="handleLook(scope.row.id)" icon="el-icon-view">查看</el-button>
-                                </el-dropdown-item>
-                                <el-dropdown-item>
-                                 <el-button @click="handleSubmit(scope.row.id)" style="color:#5fb878;" type="text" size="small" icon="el-icon-upload2">提交</el-button>
-                                </el-dropdown-item>
-                                <el-dropdown-item>
-                                 <el-button @click="handleEdit(scope.row.id)" type="text" size="small" icon="el-icon-edit">编辑</el-button>
-                                </el-dropdown-item>
-                                <el-dropdown-item>
-                                 <el-button @click="handleDelete(scope.row.id)" style="color:red;" type="text" size="small" icon="el-icon-delete">删除</el-button>
                                 </el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
@@ -66,6 +67,7 @@
 </template>
 <script>
     import '../index.scss'
+    import './approval.scss'
     import CompLook from './applicationView'
     export default {
         components:{
@@ -76,6 +78,26 @@
                 tableData: [{
                     id: 1,
                     workerName: '张三',
+                    state:1,
+                    stateName:'未审批',
+                    type: '事前-病假',
+                    startTime: '2018-06-08',
+                    endTime: '2018-06-08',
+                    createTime: '2018-02-06'
+                },{
+                    id: 2,
+                    workerName: '张三',
+                    state:2,
+                    stateName:'未审批',
+                    type: '事前-病假',
+                    startTime: '2018-06-08',
+                    endTime: '2018-06-08',
+                    createTime: '2018-02-06'
+                },{
+                    id: 3,
+                    workerName: '张三',
+                    state:3,
+                    stateName:'未审批',
                     type: '事前-病假',
                     startTime: '2018-06-08',
                     endTime: '2018-06-08',
@@ -110,26 +132,13 @@
                 console.log(id)
                 console.log(command)
             },
+            //点击搜索
+            handleChangeQuery() {
+            },
             //点击查看
             handleLook(id){
                 this.applicationId = id
-                this.dialogVisible = true
-            },
-            //点击提交
-            handleSubmit(id) {
-                alert("提交成功")
-            },
-            //点击编辑
-            handleEdit(id) {
-                this.$router.push({
-                    path: "/addApplication/" + id
-                });
-            },
-            handleDelete(id) {
-                alert("shanchuchengg!")
-            },
-            //点击搜索
-            handleChangeQuery() {
+                this.dialogVisible = true                
             },
             //关闭弹框
             handleClose(){
