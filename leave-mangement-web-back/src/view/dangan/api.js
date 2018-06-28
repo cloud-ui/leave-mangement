@@ -20,4 +20,36 @@ export class FileApi {
   static addSingleDep(data={}){
     return server.connection('POST','api/File/AddSingleDpearment',data)
   }
+  //获取员工状态列表
+  static getStateList(){
+    return server.connection('GET','api/File/GetStateList')
+  }
+  //删除员工状态
+  static deleteState(id){
+    return server.connection('DELETE',`api/File/DeleteStateById?id=`+id)
+  }
+  //新增员工状态
+  static addState(data={}){
+    return server.connection('POST','api/File/AddState',data)
+  }
+  //编辑员工状态
+  static editState(data={}){
+    return server.connection('PUT','api/File/EditState',data)
+  }
+  //获取职位
+  static getPositionList(){
+    return server.connection('GET','api/File/GetPositionList')
+  }
+  //删除职位
+  static deletePosition(id){
+    return server.connection('DELETE',`api/File/DeletePositionById?id=`+id)
+  }
+  //新增职位
+  static addPosition(data={}){
+    return server.connection('POST','api/File/AddPosition',data)
+  }
+  //编辑职位
+  static editPosition(data={}){
+    return server.connection('PUT','api/File/EditPosition',data)
+  }
 }

@@ -1,6 +1,6 @@
 <template>
     <el-card style="width:82%" class="box-card">
-        <div class="comp-body-title">
+        <div class="index-body-title">
             <p>共 <span>{{tableData.length}}</span> 个职位</p>
             <el-button @click="addPosition()" type="primary" size="mini">添加</el-button>
         </div>
@@ -12,6 +12,9 @@
 </template>
 <script>
     import '../dangan.scss';
+    import {
+        FileApi
+    } from '../api.js'
     import CompTable from '../../../packages/components/table'
     import compForm from './addForm'
     export default {
@@ -55,14 +58,10 @@
                     label: '职位名称',
                 }, {
                     prop: 'pay',
-                    label: '薪资',
+                    label: '薪资(/月)',
                     width: 180
                 }],
-                tableData: [{
-                    id: 1,
-                    name: '经理',
-                    pay: 1000,
-                }],
+                tableData: [],
                 headerCellStyle: {
                     backgroundColor: '#f2f2f2',
                     fontSize: '14px',
@@ -72,7 +71,15 @@
                 query: ''
             }
         },
+        mounted() {
+            this.loadData()
+        },
         methods: {
+            loadData() {
+                FileApi.getPositionList().then(res => {
+                    this.tableData = res.data
+                })
+            },
             tableOtherClick(row, type, index) {
                 console.log(row)
                 if (type === 'edit') {
@@ -84,6 +91,30 @@
                     this.dialogVisible = true
                 }
                 if (type === 'delete') {
+                    this.$confirm('此操作将永久删除该职位, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        FileApi.deletePosition(row.id).then(res => {
+                            this.loadData()
+                            var type1 = ''
+                            if(res.data.isSuccess){
+                                type1 = 'success'
+                            }else{
+                                type1 = 'error'
+                            }
+                            this.$message({
+                                type: type1,
+                                message: res.data.message
+                            });
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
                 }
             },
             //点击添加按钮
@@ -101,6 +132,7 @@
             closeForm(val) {
                 this.dialogVisible = val
                 this.$refs.compForm.resetForm('addForm');
+                this.loadData()
             }
         }
     }

@@ -207,5 +207,194 @@ namespace LeaveMangement_Core.DangAn
                            }).ToList();
             return workers;
         }
+        //获取登录用户所在的公司的职位列表
+        public object GetPositionListByCompId(int compId)
+        {
+            var positions = _ctx.Position.Where(p => p.CompanyId == compId).ToList();
+            return positions;
+        }
+        public object DeletePosition(int id)
+        {
+            Position position = _ctx.Position.Find(id);
+            var result = new object();
+            try
+            {
+                _ctx.Position.Remove(position);
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "删除成功！",
+                };
+            }
+            catch
+            {
+                result = new
+                {
+                    isSuccess = false,
+                    message = "删除失败！",
+                };
+            }
+            return result;
+        }
+        public object AddPosition(AddStateDto addStateDto)
+        {
+            Position position = _ctx.Position.SingleOrDefault(p => p.CompanyId == addStateDto.CompId && p.Name.Equals(addStateDto.Name));
+            var result = new object();
+            if (position!=null)
+                result = new
+                {
+                    isSuccess = false,
+                    message = "该职位已经存在！",
+                };
+            else
+            {
+                Position newPosition = new Position()
+                {
+                    Name = addStateDto.Name,
+                    Pay = addStateDto.Pay,
+                    CompanyId = addStateDto.CompId
+                };
+                try
+                {
+                    _ctx.Position.Add(newPosition);
+                    _ctx.SaveChanges();
+                    result = new
+                    {
+                        isSuccess = true,
+                        message = "添加职位成功！",
+                    };
+                }
+                catch
+                {
+                    result = new
+                    {
+                        isSuccess = false,
+                        message = "添加失败！",
+                    };
+                }
+                
+            }
+            return result;
+        }
+        public object EditPosition(AddStateDto addStateDto)
+        {
+            Position position = _ctx.Position.Find(addStateDto.Id);
+            var result = new object();
+            try
+            {
+                position.Name = addStateDto.Name;
+                position.Pay = addStateDto.Pay;
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "编辑成功！",
+                };
+            }
+            catch
+            {
+                result = new
+                {
+                    isSuccess = false,
+                    message = "编辑失败！",
+                };
+            }
+            return result;
+        }
+        //获取登录用户所在的公司的员工状态列表
+        public object GetStateListByCompId(int compId)
+        {
+            return _ctx.State.Where(s => s.CompanyId == compId).ToList();
+        }
+        public object DeleteState(int id)
+        {
+            State state = _ctx.State.Find(id);
+            var result = new object();
+            try
+            {
+                _ctx.State.Remove(state);
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "删除成功！",
+                };
+            }
+            catch
+            {
+                result = new
+                {
+                    isSuccess = false,
+                    message = "删除失败！",
+                };
+            }
+            return result;
+        }
+        public object AddState(AddStateDto addStateDto)
+        {
+            State state = _ctx.State.SingleOrDefault(p => p.CompanyId == addStateDto.CompId && p.Name.Equals(addStateDto.Name));
+            var result = new object();
+            if (state != null)
+                result = new
+                {
+                    isSuccess = false,
+                    message = "该状态已经存在！",
+                };
+            else
+            {
+                State newState = new State()
+                {
+                    Name = addStateDto.Name,
+                    Pay = addStateDto.Pay,
+                    CompanyId = addStateDto.CompId
+                };
+                try
+                {
+                    _ctx.State.Add(newState);
+                    _ctx.SaveChanges();
+                    result = new
+                    {
+                        isSuccess = true,
+                        message = "添加员工状态成功！",
+                    };
+                }
+                catch
+                {
+                    result = new
+                    {
+                        isSuccess = false,
+                        message = "添加失败！",
+                    };
+                }
+
+            }
+            return result;
+        }
+        public object EditState(AddStateDto addStateDto)
+        {
+            State state = _ctx.State.Find(addStateDto.Id);
+            var result = new object();
+            try
+            {
+                state.Name = addStateDto.Name;
+                state.Pay = addStateDto.Pay;
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "编辑成功！",
+                };
+            }
+            catch
+            {
+                result = new
+                {
+                    isSuccess = false,
+                    message = "编辑失败！",
+                };
+            }
+            return result;
+        }
     }
 }

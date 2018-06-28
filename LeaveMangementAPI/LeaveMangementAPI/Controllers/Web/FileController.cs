@@ -163,5 +163,104 @@ namespace LeaveMangementAPI.Controllers.Web
             query.CompId = _commonAppService.GetUserCompId(account);
             return _dangAnAppService.GetWorkList(query);
         }
+        /// <summary>
+        /// 获取到登录用户所在公司的职位
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> GetPositionList()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            int compId = _commonAppService.GetUserCompId(account);
+            return _dangAnAppService.GetPositionListByCompId(compId);
+        }
+        /// <summary>
+        /// 删除职位
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Authorize]
+        public object DeletePositionById(int id)
+        {
+            return _dangAnAppService.DeletePosition(id);
+        }
+        /// <summary>
+        /// 添加职位
+        /// </summary>
+        /// <param name="addStateDto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public async Task<object> AddPosition([FromBody] AddStateDto addStateDto)
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            addStateDto.CompId = _commonAppService.GetUserCompId(account);
+            return _dangAnAppService.AddPosition(addStateDto);
+        }
+        /// <summary>
+        /// 编辑职位
+        /// </summary>
+        /// <param name="addStateDto"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Authorize]
+        public object EditPosition([FromBody] AddStateDto addStateDto)
+        {
+            return _dangAnAppService.EditPosition(addStateDto);
+        }
+        /// <summary>
+        /// 获取到登录用户所在公司的员工职位状态
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> GetStateList()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            int compId = _commonAppService.GetUserCompId(account);
+            return _dangAnAppService.GetStateListByCompId(compId);
+        }
+        /// <summary>
+        /// 删除员工状态
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Authorize]
+        public object DeleteStateById(int id)
+        {
+            return _dangAnAppService.DeleteState(id);
+        }
+        /// <summary>
+        /// 添加员工状态
+        /// </summary>
+        /// <param name="addStateDto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public async Task<object> AddState([FromBody] AddStateDto addStateDto)
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            addStateDto.CompId = _commonAppService.GetUserCompId(account);
+            return _dangAnAppService.AddState(addStateDto);
+        }
+        /// <summary>
+        /// 编辑员工状态
+        /// </summary>
+        /// <param name="addStateDto"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Authorize]
+        public object EditState([FromBody] AddStateDto addStateDto)
+        {
+            return _dangAnAppService.EditState(addStateDto);
+        }
+
     }
 }

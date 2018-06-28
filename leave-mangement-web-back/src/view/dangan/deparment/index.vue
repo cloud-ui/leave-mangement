@@ -9,7 +9,7 @@
                     <p>共 <span>{{totalCount}}</span> 个部门</p>
                     <el-button style="padding:0px 0px 0px 10px;" @click="dialogVisible = true" type="text" icon="el-icon-plus">添加部门</el-button>
                 </div>
-                <el-input style="width:30%" placeholder="请输入内容" v-model="input5" class="input-with-select">
+                <el-input style="width:30%" placeholder="请输入内容" v-model="query" class="input-with-select">
                 <el-button slot="append" @click="handleChangeQuery()">搜索</el-button></el-input>
             </div>
             <el-table :data="tableData" border stripe 
@@ -18,9 +18,9 @@
             style="width: 100%">
              <el-table-column
                 prop="code"
-                label="编号"
+                label="部门编码"
                 align="center"
-                width="80">
+                width="100">
              </el-table-column>
              <el-table-column
                 prop="name"
@@ -47,8 +47,20 @@
                 header-align="center"
                 width="100">
                 <template slot-scope="scope">
-                    <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                    <el-button type="text" size="small">编辑</el-button>
+                    <el-dropdown>
+                        <i class="el-icon-menu"></i>
+                        <el-dropdown-menu slot="dropdown">
+                            <el-dropdown-item>
+                             <el-button @click="handleLook(scope.row.id)" type="text" size="small" icon="el-icon-view">查看</el-button>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                             <el-button @click="handleEdit(scope.row.id)" type="text" size="small" icon="el-icon-edit">编辑</el-button>
+                            </el-dropdown-item>
+                            <el-dropdown-item>
+                             <el-button @click="handleDelete(scope.row.id)" style="color:red;" type="text" size="small" icon="el-icon-delete">删除</el-button>
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </el-dropdown>
                 </template>
              </el-table-column>
             </el-table>
@@ -108,6 +120,14 @@ export default {
       handleChangeQuery(){
           this.loadData()
       },
+      //点击删除
+      handleDelete(id){
+
+      },
+      //点击编辑
+      handleEdit(id){},
+      //点击查看
+      handleLook(id){},
       loadData(){
           const params = {
               currentPage:this.currentPage,

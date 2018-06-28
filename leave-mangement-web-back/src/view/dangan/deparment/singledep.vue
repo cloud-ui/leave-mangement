@@ -10,7 +10,10 @@
         </el-form-item>
         <el-form-item label="部门经理" prop="mangerId">
             <el-select style="width:100%" v-model="formData.mangerId" filterable placeholder="请选择">
-                <el-option  v-for="item in workerList" :key="item.id" :label="item.name" :value="item.id"> </el-option>
+                <el-option  v-for="item in workerList" :key="item.id" :label="item.name" :value="item.id">
+                    <span>{{item.name}}</span> 
+                    <span style="color: #c0c4cc;font-size: 12px;">({{item.position}})</span>
+                </el-option>
             </el-select>
         </el-form-item>
         <el-form-item label="部门人数" prop="workerCount">
@@ -34,7 +37,7 @@ export default {
             loading:false,
             formData:{
                 name:'',
-                mangerId:0,
+                mangerId:'',
                 workerCount:0,
             },
             workerList:{},
@@ -60,13 +63,23 @@ export default {
                  if(valid){
                      this.loading = true;
                      FileApi.addSingleDep(this.formData).then(res=>{
-                         console.log(res.data)
+                            var type1 = ''
+                            if(res.data.isSuccess){
+                                type1 = 'success'
+                            }else{
+                                type1 = 'error'
+                            }
+                            this.$message({
+                                type: type1,
+                                message: res.data.message
+                            });
                      })
                  }
              })
         },
         resetForm(form){
-
+            this.loading = false
+            this.$refs[form].resetFields()
         }
     }
 }

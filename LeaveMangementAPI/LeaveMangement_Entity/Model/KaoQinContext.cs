@@ -180,8 +180,6 @@ namespace LeaveMangement_Entity.Model
 
             modelBuilder.Entity<State>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(20);

@@ -8,16 +8,18 @@
         </el-form-item>
         <el-form-item style="display: flex;justify-content: flex-end;">
             <el-button @click="closeForm()" >取消</el-button>
-            <el-button @click="submitData()"  type="primary" >提交</el-button>
+            <el-button @click="submitData()" :loading="loading"  type="primary" >提交</el-button>
         </el-form-item>
     </el-form>
 </template>
 <script>
+import {FileApi} from '../api.js'
 export default {
     props:['formInfo'],
     data(){
         return{
             form:this.formInfo.data,
+            loading:false,
             rule:{
                 name:[{required: true,message: '请输入名称',trigger: 'blur'}],
                 pay:[{required:true,message:'请输入薪资',trigger:'blur'}]
@@ -40,24 +42,49 @@ export default {
                     const params = {
                         ...this.form
                     };
+                    this.loading = true
                     //判断是职位的操作
                     if(this.formInfo.state === 'position'){
                         switch(this.formInfo.type){
                             case 'edit':
-                            alert("职位的编辑")
+                            FileApi.editPosition(this.form).then(res=>{
+                                this.closeForm()
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.message
+                                });
+                            })
                             break;
                             case 'add':
-                            alert("职位的添加")
+                            FileApi.addPosition(this.form).then(res=>{
+                                this.closeForm()
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.message
+                                });
+                            })
                             break;
                             default:
                         }
                     }else if(this.formInfo.state === 'state'){
                         switch(this.formInfo.type){
                             case 'edit':
-                            alert("状态的编辑")
+                            FileApi.editState(this.form).then(res=>{
+                                this.closeForm()
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.message
+                                });
+                            })
                             break;
                             case 'add':
-                            alert("状态的添加")
+                            FileApi.addState(this.form).then(res=>{
+                                this.closeForm()
+                                this.$message({
+                                    type: 'success',
+                                    message: res.data.message
+                                });
+                            })
                             break;
                             default:
                         }
@@ -71,6 +98,7 @@ export default {
         },
         // ..........清空表单信息
         resetForm(formName) {
+            this.loading = false
             this.$refs[formName].resetFields()
         },
         

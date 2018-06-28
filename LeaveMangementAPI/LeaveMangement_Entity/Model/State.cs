@@ -8,5 +8,6 @@ namespace LeaveMangement_Entity.Model
         public int Id { get; set; }
         public int CompanyId { get; set; }
         public string Name { get; set; }
+        public int Pay { get; set; }
     }
 }

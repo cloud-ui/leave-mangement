@@ -50,5 +50,37 @@ namespace LeaveMangement_Application.DangAn
         {
             return _dangAnManager.GetWorkerList(compId);
         }
+        public object GetPositionListByCompId(int compId)
+        {
+            return _dangAnManager.GetPositionListByCompId(compId);
+        }
+        public object DeletePosition(int id)
+        {
+            return _dangAnManager.DeletePosition(id);
+        }
+        public object AddPosition(AddStateDto addStateDto)
+        {
+            return _dangAnManager.AddPosition(addStateDto);
+        }
+        public object EditPosition(AddStateDto addStateDto)
+        {
+            return _dangAnManager.EditPosition(addStateDto);
+        }
+        public object GetStateListByCompId(int compId)
+        {
+            return _dangAnManager.GetStateListByCompId(compId);
+        }
+        public object DeleteState(int id)
+        {
+            return _dangAnManager.DeleteState(id);
+        }
+        public object AddState(AddStateDto addStateDto)
+        {
+            return _dangAnManager.AddState(addStateDto);
+        }
+        public object EditState(AddStateDto addStateDto)
+        {
+            return _dangAnManager.EditState(addStateDto);
+        }
     }
 }

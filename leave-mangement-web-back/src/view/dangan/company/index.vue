@@ -8,19 +8,21 @@
                 <el-menu default-active="1" class="el-menu-vertical-demo" @select="handleSelect">
                     <el-menu-item index="1">
                         <i class="el-icon-document"></i>
-                        <span slot="title">公司资料</span>
+                        <span>公司资料</span>
                     </el-menu-item>
                     <el-menu-item index="2">
                         <i class="el-icon-setting"></i>
-                        <span slot="title">职位管理</span>
+                        <span>职位管理</span>
                     </el-menu-item>
                     <el-menu-item index="3">
                         <i class="el-icon-setting"></i>
-                        <span slot="title">员工状态管理</span>
+                        <span>员工状态管理</span>
                     </el-menu-item>
                 </el-menu>
             </div>
-            <component v-bind:is="defaShow"></component>
+            <comp-company v-if="defaShow==='CompCompany'"></comp-company>
+            <comp-position v-if="defaShow==='CompPosition'"></comp-position>
+            <comp-worker-state v-if="defaShow==='CompWorkerState'"></comp-worker-state>
         </div>
     </div>
 </template>
@@ -48,13 +50,13 @@
         methods: {
             handleSelect(key, keyPath) {
                 switch(key){
-                    case '1':
+                    case "1":
                     this.defaShow = 'CompCompany'
                     break;
-                    case '2':
+                    case "2":
                     this.defaShow = 'CompPosition'
                     break;
-                    case '3':
+                    case "3":
                     this.defaShow = 'CompWorkerState'
                 }
             },
