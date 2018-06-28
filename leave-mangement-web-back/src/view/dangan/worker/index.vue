@@ -7,7 +7,7 @@
             <div class="index-body-title"> 
                 <div style="display:flex;">
                     <p>共 <span>{{totalCount}}</span> 名员工</p>
-                    <el-button style="padding:0px 0px 0px 10px;" @click="dialogVisible = true" type="text" icon="el-icon-plus">添加部门</el-button>
+                    <el-button style="padding:0px 0px 0px 10px;" @click="dialogVisible = true" type="text" icon="el-icon-plus">添加员工</el-button>
                 </div>
                 <el-input style="width:30%" placeholder="请输入内容" v-model="input5" class="input-with-select">
                 <el-button slot="append" @click="handleChangeQuery()">搜索</el-button></el-input>
@@ -88,8 +88,11 @@ export default {
     },
     components:{
     },
-    mounted(){
+    created(){
         this.loadData()
+    },
+    watch: {
+        $route: "loadData"
     },
     methods:{
         handleSizeChange(val) {
@@ -104,12 +107,22 @@ export default {
           this.loadData()
       },
       loadData(){
+          var depId = 0
+          //获取到地址栏传的参数
+            const id = parseInt(this.$route.params.depId);
+            //-1为添加申请状态状态
+            if(id === -1){
+                depId=0
+            }else{
+                depId = id
+            }
           const params = {
               currentPage:this.currentPage,
               currentPageSize:this.pageSize,
+              depId:depId,
               query:this.query
           };
-          FileApi.getDeparmentList(params).then(res=>{
+          FileApi.getWorkerList(params).then(res=>{
               this.totalCount = res.data.totalCount;
               this.tableData = res.data.data;
           });

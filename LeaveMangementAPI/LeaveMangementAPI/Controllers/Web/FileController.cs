@@ -33,12 +33,7 @@ namespace LeaveMangementAPI.Controllers.Web
             _configuration = configuration;
             _dangAnAppService = dangAnAppService;
             _commonAppService = commonAppService;
-        }
-        [HttpGet]
-        public List<Company> GetCompanyList()
-        {
-            return _dangAnAppService.GetCompanyList();
-        }
+        }        
         /// <summary>
         /// 获取登录用户所在的公司信息
         /// </summary>
@@ -63,16 +58,6 @@ namespace LeaveMangementAPI.Controllers.Web
         {
             return _dangAnAppService.AddCompany(company);
         }
-        ///// <summary>
-        ///// 添加新公司时发送验证码(手机号)
-        ///// </summary>
-        ///// <param name="phone"></param>
-        ///// <returns></returns>
-        //[HttpPost]
-        //public object SendAuthCode(string phone)
-        //{
-        //    return _dangAnAppService.SendMessage(phone);
-        //}
         /// <summary>
         /// 添加新公司时发送验证码(邮箱)
         /// </summary>
@@ -109,6 +94,17 @@ namespace LeaveMangementAPI.Controllers.Web
             return true;
         }
         /// <summary>
+        /// 编辑部门
+        /// </summary>
+        /// <param name="addSingleDeparmentDto"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Authorize]
+        public object EditDeparment([FromBody]AddSingleDeparmentDto addSingleDeparmentDto)
+        {
+            return _dangAnAppService.EditDeparment(addSingleDeparmentDto);
+        }
+        /// <summary>
         /// 获取当前登录用户所在公司的部门列表
         /// </summary>
         /// <returns></returns>
@@ -136,22 +132,7 @@ namespace LeaveMangementAPI.Controllers.Web
             return _dangAnAppService.GetWorkerList(compId);
         }
         /// <summary>
-        /// 获取部门的员工列表
-        /// </summary>
-        /// <param name="query"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Authorize]
-        public async Task<object> GetWorkListByDepId([FromBody]WorkDto query)
-        {
-            var context = HttpContext;
-            string account = await _jwtUtil.GetMessageByToken(context);
-            query.CompId = _commonAppService.GetUserCompId(account);
-            query.DepId = _commonAppService.GetUserDepId(account);
-            return _dangAnAppService.GetWorkList(query);
-        }
-        /// <summary>
-        /// 获取当前用户公司的员工列表
+        /// 获取当前用户公司的员工列表/获取部门的员工列表(传部门ID)
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -225,17 +206,17 @@ namespace LeaveMangementAPI.Controllers.Web
             int compId = _commonAppService.GetUserCompId(account);
             return _dangAnAppService.GetStateListByCompId(compId);
         }
-        /// <summary>
-        /// 删除员工状态
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        [HttpDelete]
-        [Authorize]
-        public object DeleteStateById(int id)
-        {
-            return _dangAnAppService.DeleteState(id);
-        }
+        ///// <summary>
+        ///// 删除员工状态
+        ///// </summary>
+        ///// <param name="id"></param>
+        ///// <returns></returns>
+        //[HttpDelete]
+        //[Authorize]
+        //public object DeleteStateById(int id)
+        //{
+        //    return _dangAnAppService.DeleteState(id);
+        //}
         /// <summary>
         /// 添加员工状态
         /// </summary>

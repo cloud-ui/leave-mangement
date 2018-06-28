@@ -41,8 +41,8 @@ export default new Router({
           component: () => import('../view/dangan/deparment/index')
         },
         {
-          path: '/worker',
-          name: 'worker',
+          path: '/worker/:depId',
+          name: 'worker/:depId',
           meta: {requireAuth: true},
           component: () => import('../view/dangan/worker/index')
         },

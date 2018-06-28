@@ -116,6 +116,7 @@ namespace LeaveMangement_Core.DangAn
                               where dep.CompanyId == query.CompId && dep.Name.Contains(query.Query)
                               select new
                               {
+                                  id = dep.Id,
                                   name = dep.Name,
                                   code = dep.Code,
                                   workerCount = dep.WorkerCount,
@@ -159,7 +160,45 @@ namespace LeaveMangement_Core.DangAn
             }
 
             return result;
-        }        
+        }
+        public object EditDeparment(AddSingleDeparmentDto addSingleDeparmentDto)
+        {
+            var result = new object();
+            Deparment deparment = _ctx.Deparment.Find(addSingleDeparmentDto.Id);
+            try
+            {
+                //若新的部门经理为总经理、部门内员工则部门人数不变，否则部门人数+1,原来的部门人数-1
+                string isAddCount = ChangeWorkerState(deparment, addSingleDeparmentDto.MangerId);
+                switch (isAddCount)
+                {
+                    case "notAdd":
+                        deparment.Name = addSingleDeparmentDto.Name;
+                        deparment.ManagerId = addSingleDeparmentDto.MangerId;
+                        break;
+                    case "add":
+                        deparment.Name = addSingleDeparmentDto.Name;
+                        deparment.ManagerId = addSingleDeparmentDto.MangerId;
+                        deparment.WorkerCount++;
+                        break;
+                }
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "编辑部门资料成功！"
+                };
+            }
+            catch
+            {
+                result = new
+                {
+                    isSuccess = false,
+                    message = "编辑部门资料失败！"
+                };
+            }
+            return result;
+        }
+        
         public object GetWorkerList(WorkDto query)
         {
             query.Query = string.IsNullOrEmpty(query.Query) ? "" : query.Query;
@@ -174,6 +213,7 @@ namespace LeaveMangement_Core.DangAn
                            (worker.Account.Contains(query.Query)))
                            select new
                            {
+                               id = worker.Id,
                                name = worker.Name,
                                company = comp.Name,
                                deparment = dep.Name,
@@ -215,10 +255,18 @@ namespace LeaveMangement_Core.DangAn
         }
         public object DeletePosition(int id)
         {
+            
             Position position = _ctx.Position.Find(id);
             var result = new object();
             try
             {
+                //删除职位后，该职位的所有员工，职位更改为员工(workerId)
+                int workerId = _ctx.Position.SingleOrDefault(p => p.CompanyId == position.Id && p.Name.Equals("员工")).Id;
+                List<Worker> workers = _ctx.Worker.Where(w => w.PositionId == workerId).ToList();
+                foreach(Worker worker in workers)
+                {
+                    worker.PositionId = workerId;
+                }
                 _ctx.Position.Remove(position);
                 _ctx.SaveChanges();
                 result = new
@@ -395,6 +443,27 @@ namespace LeaveMangement_Core.DangAn
                 };
             }
             return result;
+        }
+        private string ChangeWorkerState(Deparment deparment, int newMangerId)
+        {
+            //将原本的部门经理的职位调整为员工
+            Worker oldManger = _ctx.Worker.Find(deparment.ManagerId);
+            oldManger.StateId = _ctx.Position.SingleOrDefault(p => p.CompanyId == deparment.CompanyId && p.Name.Equals("员工")).Id;
+            //将选择的managerId对应的员工的职位调整为经理职位，为总经理则职位不变
+            Worker newManger = _ctx.Worker.Find(newMangerId);
+            if (_ctx.Position.Find(newManger.StateId).Name.Equals("总经理") || newManger.DepartmentId == deparment.Id)
+            {
+                _ctx.SaveChanges();
+                return "notAdd";
+            }
+            else
+            {
+                newManger.StateId = _ctx.Position.SingleOrDefault(p => p.CompanyId == deparment.CompanyId && p.Name.Equals("部门经理")).Id;
+                Deparment oldDeparment = _ctx.Deparment.Find(newManger.DepartmentId);
+                oldDeparment.WorkerCount--;
+                _ctx.SaveChanges();
+                return "add";
+            }
         }
     }
 }

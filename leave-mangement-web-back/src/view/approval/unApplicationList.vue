@@ -142,11 +142,6 @@
     }
 </script>
 <style lang="scss" scoped>
-    .link {
-        padding: 0px 0px 0px 10px;
-        font-size: 14px;
-        color: #409eff;
-        text-decoration: none;
-    }
+    
 </style>
 

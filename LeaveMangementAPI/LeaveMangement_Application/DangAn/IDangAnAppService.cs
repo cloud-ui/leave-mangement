@@ -17,6 +17,7 @@ namespace LeaveMangement_Application.DangAn
         object GetWorkList(WorkDto query);
         object GetWorkerList(int compId);
         object AddSingleDpearment(AddSingleDeparmentDto dpearmentDto);
+        object EditDeparment(AddSingleDeparmentDto addSingleDeparmentDto);
         object GetPositionListByCompId(int compId);
         object DeletePosition(int id);
         object AddPosition(AddStateDto addStateDto);

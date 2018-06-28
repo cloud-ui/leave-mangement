@@ -38,13 +38,13 @@
                             icon: 'el-icon-edit',
                             color: '#409eff'
                         },
-                        {
-                            name: '删除',
-                            style: 'text',
-                            type: 'delete',
-                            icon: 'el-icon-delete',
-                            color: '#f56c6c'
-                        },
+                        // {
+                        //     name: '删除',
+                        //     style: 'text',
+                        //     type: 'delete',
+                        //     icon: 'el-icon-delete',
+                        //     color: '#f56c6c'
+                        // },
                     ]
                 },
                 tableHeader: [{

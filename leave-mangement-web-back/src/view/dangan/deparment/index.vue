@@ -39,20 +39,17 @@
                 align="center"
                 label="部门人数">
                 <template slot-scope="scope">
-                    <a>{{scope.row.workerCount}}</a>
+                    <router-link class="link" :to="`/worker/`+scope.row.id">{{scope.row.workerCount}}</router-link>
                 </template>
              </el-table-column>
              <el-table-column
                 label="操作"
-                header-align="center"
+                align="center"
                 width="100">
                 <template slot-scope="scope">
                     <el-dropdown>
                         <i class="el-icon-menu"></i>
                         <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>
-                             <el-button @click="handleLook(scope.row.id)" type="text" size="small" icon="el-icon-view">查看</el-button>
-                            </el-dropdown-item>
                             <el-dropdown-item>
                              <el-button @click="handleEdit(scope.row.id)" type="text" size="small" icon="el-icon-edit">编辑</el-button>
                             </el-dropdown-item>
@@ -122,12 +119,33 @@ export default {
       },
       //点击删除
       handleDelete(id){
-
+          this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        FileApi.deletePosition(row.id).then(res => {
+                            this.loadData()
+                            var type1 = ''
+                            if(res.data.isSuccess){
+                                type1 = 'success'
+                            }else{
+                                type1 = 'error'
+                            }
+                            this.$message({
+                                type: type1,
+                                message: res.data.message
+                            });
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
       },
       //点击编辑
       handleEdit(id){},
-      //点击查看
-      handleLook(id){},
       loadData(){
           const params = {
               currentPage:this.currentPage,
