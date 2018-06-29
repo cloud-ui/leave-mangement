@@ -7,7 +7,7 @@
             <div class="index-body-title">
                 <div style="display:flex;">
                     <p>共 <span>{{totalCount}}</span> 名员工</p>
-                    <el-button style="padding:0px 0px 0px 10px;" @click="dialogVisible = true" type="text" icon="el-icon-plus">添加员工</el-button>
+                    <el-button style="padding:0px 0px 0px 10px;" @click="handleAdd()" type="text" icon="el-icon-plus">添加员工</el-button>
                 </div>
                 <div style="display:flex;">
                     <comp-dep-select :depId="depId" @change="changeDep"></comp-dep-select>
@@ -26,22 +26,20 @@
                 <el-table-column prop="entryTime" align="center" label="入职时间"></el-table-column>
                 <el-table-column
                 label="操作"
-                header-align="center"
-                width="100">
+                align="center"
+                width="80">
                 <template slot-scope="scope">
                     <el-dropdown>
                         <i class="el-icon-menu"></i>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
-                             <el-button @click="handleLook(scope.row.id)" type="text" size="small" icon="el-icon-eye">查看</el-button>
+                             <el-button @click="handleLook(scope.row.id)" type="text" size="small" icon="el-icon-view">查看</el-button>
                             </el-dropdown-item>
                             <el-dropdown-item>
-                             <el-button style="color:#5fb878;" type="text" size="small" 
-                             icon="el-icon-delete">人事调动</el-button>
+                             <el-button style="color:#5fb878;" type="text" size="small" icon="el-icon-delete">人事调动</el-button>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
-                    
                 </template>
              </el-table-column>
             </el-table>
@@ -56,25 +54,30 @@
             :total="totalCount">
             </el-pagination>
         </div>
+        <el-dialog :title="formTitle" :visible.sync="dialogVisible" :before-close="handleClose">
+         <comp-view @closeForm='handleClose' @close='closeForm' :workerId="workerId" :type="type" ref="compForm"></comp-view>
+        </el-dialog>
     </div>
 </template>
 <script>
     import '../dangan.scss'
     import '../../index.scss'
-    import {
-        FileApi
-    } from '../api.js'
+    import {FileApi} from '../api.js'
     import CompDepSelect from '@/packages/components/dep-select'
+    import CompView from './operatorview'
     export default {
         data() {
             return {
                 tableData: [],
                 totalCount: 0,
-                depId: '',
+                depId: 0,
                 query: '',
                 currentPage: 1,
                 pageSize: 20,
                 dialogVisible: false,
+                formTitle:'',
+                workerId:'',
+                type:'',
                 headerCellStyle: {
                     backgroundColor: '#f2f2f2',
                     fontSize: '14px',
@@ -84,7 +87,8 @@
             }
         },
         components: {
-            CompDepSelect
+            CompDepSelect,
+            CompView
         },
         created() {
             this.loadData()
@@ -105,17 +109,17 @@
                 this.loadData()
             },
             changeDep(val){
-                this.depId = val
+                this.depId = val === ""?0:val
                 this.loadData()
             },
             //加载表格数据
             loadData() {
                 //获取到地址栏传的参数
                 const id = parseInt(this.$route.params.depId);
-                const params = {
+                let params = {
                     currentPage: this.currentPage,
                     currentPageSize: this.pageSize,
-                    depId: id === -1 ? 0 : this.depId,
+                    depId: id != -1 ? id : this.depId,
                     query: this.query
                 };
                 FileApi.getWorkers(params).then(res => {
@@ -124,8 +128,18 @@
                     this.tableData = res.data.data;
                 });
             },
+            handleAdd(){
+                this.type = 'add'
+                this.formTitle = ''
+                this.dialogVisible = true
+            },
             //点击查看详情
-            handleLook(id){},
+            handleLook(id){
+                this.workerId = id
+                this.type = 'look'
+                this.formTitle = '员工详情'
+                this.dialogVisible = true
+            },
             //关闭弹窗
             handleClose() {
                 this.dialogVisible = false

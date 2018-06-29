@@ -68,4 +68,8 @@ export class FileApi {
   static editPosition(data={}){
     return server.connection('PUT','api/File/EditPosition',data)
   }
+  //获取一个员工详细信息
+  static getWorkerMessage(id){
+    return server.connection('POST',`api/User/GetWorkerById?userId=`+id)
+  }
 }

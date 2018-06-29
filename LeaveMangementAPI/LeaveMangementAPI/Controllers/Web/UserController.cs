@@ -107,7 +107,7 @@ namespace LeaveMangementAPI.Controllers.Web
         /// </summary>
         /// <param name="userId">员工ID</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         public object GetWorkerById(int userId)
         {
