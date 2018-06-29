@@ -99,7 +99,7 @@ namespace LeaveMangement_Core.User
                             account = worker.Account,
                             company = comp.Name,
                             deparment = dep.Name,
-                            deparmentId = worker.Id,
+                            deparmentId = worker.DepartmentId,
                             position = position.Name,
                             age = worker.Age,
                             address = worker.Address,
@@ -110,6 +110,7 @@ namespace LeaveMangement_Core.User
                             paperType = paperType.Name,
                             paperNumber = worker.PaperNumber,
                             state = state.Name,
+                            isAuth = worker.IsAuth,
                         }).ToList();
             return user[0];
         }

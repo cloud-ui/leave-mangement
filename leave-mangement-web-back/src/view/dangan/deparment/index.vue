@@ -7,7 +7,7 @@
             <div class="index-body-title"> 
                 <div style="display:flex;">
                     <p>共 <span>{{totalCount}}</span> 个部门</p>
-                    <el-button style="padding:0px 0px 0px 10px;" @click="dialogVisible = true" type="text" icon="el-icon-plus">添加部门</el-button>
+                    <el-button style="padding:0px 0px 0px 10px;" @click="handleAdd()" type="text" icon="el-icon-plus">添加部门</el-button>
                 </div>
                 <el-input style="width:30%" placeholder="请输入内容" v-model="query" class="input-with-select">
                 <el-button slot="append" @click="handleChangeQuery()">搜索</el-button></el-input>
@@ -51,10 +51,10 @@
                         <i class="el-icon-menu"></i>
                         <el-dropdown-menu slot="dropdown">
                             <el-dropdown-item>
-                             <el-button @click="handleEdit(scope.row.id)" type="text" size="small" icon="el-icon-edit">编辑</el-button>
+                             <el-button @click="handleEdit(scope.row)" type="text" size="small" icon="el-icon-edit">编辑</el-button>
                             </el-dropdown-item>
                             <el-dropdown-item>
-                             <el-button @click="handleDelete(scope.row.id)" style="color:red;" type="text" size="small" icon="el-icon-delete">删除</el-button>
+                             <el-button @click="handleDelete(scope.row)" style="color:red;" type="text" size="small" icon="el-icon-delete">删除</el-button>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
@@ -73,7 +73,8 @@
             </el-pagination>
         </div>
         <el-dialog :visible.sync="dialogVisible" :before-close="handleClose">
-         <comp-adddep @closeForm='handleClose' @close='closeForm' ref="compForm"></comp-adddep>
+         <comp-adddep v-if="formInfo.type === 'add'" @closeForm='handleClose' @close='closeForm' ref="compForm"></comp-adddep>
+         <comp-singledep v-if="formInfo.type === 'edit'" :formInfo="formInfo" :close="closeForm" @close='closeForm' ref="editForm"></comp-singledep>
         </el-dialog>
     </div>
 </template>
@@ -81,6 +82,7 @@
 import '../dangan.scss'
 import '../../index.scss'
 import CompAdddep from './adddep'
+import CompSingledep from './singledep'
 import {FileApi} from '../api.js'
 export default {
     data(){
@@ -97,10 +99,15 @@ export default {
                 color: '#434343',
                 fontWeight: 400
             },
+            formInfo:{
+                type:'add',
+                formData:{}
+            }
         }
     },
     components:{
         CompAdddep,
+        CompSingledep
     },
     mounted(){
         this.loadData()
@@ -118,13 +125,19 @@ export default {
           this.loadData()
       },
       //点击删除
-      handleDelete(id){
+      handleDelete(row){
           this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        FileApi.deletePosition(row.id).then(res => {
+                        if(row.workerCount !=0){
+                            this.$message({
+                            type: 'error',
+                            message: '您要删除的部门有员工，请进行调整后再删除！'
+                        });
+                        }else{
+                            FileApi.deleteDeparment(row.id).then(res => {
                             this.loadData()
                             var type1 = ''
                             if(res.data.isSuccess){
@@ -137,6 +150,7 @@ export default {
                                 message: res.data.message
                             });
                         })
+                        }
                     }).catch(() => {
                         this.$message({
                             type: 'info',
@@ -145,7 +159,16 @@ export default {
                     });
       },
       //点击编辑
-      handleEdit(id){},
+      handleEdit(row){
+          this.dialogVisible = true
+          this.formInfo.type = 'edit'
+          this.formInfo.formData = row
+      },
+      //点击添加
+      handleAdd(){
+          this.dialogVisible = true
+          this.formInfo.type = 'add'
+      },
       loadData(){
           const params = {
               currentPage:this.currentPage,
@@ -160,10 +183,11 @@ export default {
       //关闭弹窗
       handleClose(){
           this.dialogVisible = false
-      },
-      closeForm(dialogVisible){
-      this.dialogVisible = dialogVisible
-    }
+      }, 
+      closeForm(val){
+          this.loadData()
+          this.dialogVisible = val
+      }
     }
 }
 </script>

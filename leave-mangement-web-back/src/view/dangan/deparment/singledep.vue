@@ -17,7 +17,7 @@
             </el-select>
         </el-form-item>
         <el-form-item label="部门人数" prop="workerCount">
-            <el-input  type="text" v-model="formData.workerCount" auto-complete="off"></el-input>
+            <el-input :readonly="readonly" type="text" v-model="formData.workerCount" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item>
             <el-button :loading="loading" type="primary" @click="submitForm('ruleForm2')">提交</el-button>
@@ -32,14 +32,12 @@
 import {FileApi} from '../api.js'
 import '../dangan.scss'
 export default {
+    props:['formInfo'],
     data(){
         return{
             loading:false,
-            formData:{
-                name:'',
-                mangerId:'',
-                workerCount:0,
-            },
+            readonly:this.formInfo.type==='edit'?true:false,
+            formData:this.formInfo.formData,
             workerList:{},
             rule:{
                 name:[{required: true, message: '请输入名称', trigger: 'blur'}],
@@ -62,21 +60,32 @@ export default {
              this.$refs[form].validate((valid) => {
                  if(valid){
                      this.loading = true;
-                     FileApi.addSingleDep(this.formData).then(res=>{
-                            var type1 = ''
-                            if(res.data.isSuccess){
-                                type1 = 'success'
-                            }else{
-                                type1 = 'error'
-                            }
+                     if(this.formInfo.type === 'add'){
+                        FileApi.addSingleDep(this.formData).then(res=>{
+                        const type1 =res.data.isSuccess?'success':'error'
+                        this.$message({
+                            type: type1,
+                            message: res.data.message
+                        });
+                     })
+                     }else if(this.formInfo.type === 'edit'){
+                         FileApi.editDeparment(this.formData).then(res=>{
+                            const type1 =res.data.isSuccess?'success':'error'
                             this.$message({
                                 type: type1,
                                 message: res.data.message
                             });
-                     })
+                         })
+                     }
+                     this.closeForm()
                  }
              })
         },
+        //关闭弹框
+        closeForm(){
+            this.$emit('close',false)
+        },
+        //清空表单
         resetForm(form){
             this.loading = false
             this.$refs[form].resetFields()

@@ -8,9 +8,17 @@ export class FileApi {
   static getCompany () {
     return server.connection('GET', 'api/File/GetCompanyInfo')
   }
+  //获取员工列表
+  static getWorkers(data={}){
+    return server.connection('POST','api/File/GetWorkList',data)
+  }
   //获取到部门列表
   static getDeparmentList(data={}){
     return server.connection('POST','api/File/GetDeparmentList',data)
+  }
+  //员工列表，获取部门选择器数据
+  static getDeparments(){
+    return server.connection('GET','api/File/GetDeparments')
   }
   //添加部门时，获取经理的下拉列表
   static getWorkerList(){
@@ -19,6 +27,14 @@ export class FileApi {
   //单个添加部门
   static addSingleDep(data={}){
     return server.connection('POST','api/File/AddSingleDpearment',data)
+  }
+  //编辑部门资料
+  static editDeparment(data={}){
+    return server.connection('PUT','api/File/EditDeparment',data)
+  }
+  //删除部门
+  static deleteDeparment(id){
+    return server.connection('DELETE',`api/File/DeleteDeparment?id=`+id)
   }
   //获取员工状态列表
   static getStateList(){

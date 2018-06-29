@@ -105,6 +105,17 @@ namespace LeaveMangementAPI.Controllers.Web
             return _dangAnAppService.EditDeparment(addSingleDeparmentDto);
         }
         /// <summary>
+        /// 删除部门
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Authorize]
+        public object DeleteDeparment(int id)
+        {
+            return _dangAnAppService.DeleteDeparment(id);
+        }
+        /// <summary>
         /// 获取当前登录用户所在公司的部门列表
         /// </summary>
         /// <returns></returns>
@@ -143,6 +154,19 @@ namespace LeaveMangementAPI.Controllers.Web
             string account = await _jwtUtil.GetMessageByToken(context);
             query.CompId = _commonAppService.GetUserCompId(account);
             return _dangAnAppService.GetWorkList(query);
+        }
+        /// <summary>
+        /// 员工列表，显示部门选择器数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> GetDeparments()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            int compId = _commonAppService.GetUserCompId(account);
+            return _dangAnAppService.GetDeparments(compId);
         }
         /// <summary>
         /// 获取到登录用户所在公司的职位

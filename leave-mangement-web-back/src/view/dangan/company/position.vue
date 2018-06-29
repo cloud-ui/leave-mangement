@@ -130,9 +130,10 @@
                 this.$refs.compForm.resetForm('addForm');
             },
             closeForm(val) {
+                this.loadData()
                 this.dialogVisible = val
                 this.$refs.compForm.resetForm('addForm');
-                this.loadData()
+                
             }
         }
     }

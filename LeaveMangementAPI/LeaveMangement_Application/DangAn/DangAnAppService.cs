@@ -38,6 +38,10 @@ namespace LeaveMangement_Application.DangAn
         {
             return _dangAnManager.GetDeparmentList(query);
         }
+        public object GetDeparments(int compId)
+        {
+            return _dangAnManager.GetDeparments(compId);
+        }
         public object AddSingleDpearment(AddSingleDeparmentDto deparmentDto)
         {
             return _dangAnManager.AddSingleDpearment(deparmentDto);
@@ -45,6 +49,10 @@ namespace LeaveMangement_Application.DangAn
         public object EditDeparment(AddSingleDeparmentDto addSingleDeparmentDto)
         {
             return _dangAnManager.EditDeparment(addSingleDeparmentDto);
+        }
+        public object DeleteDeparment(int id)
+        {
+            return _dangAnManager.DeleteDeparment(id);
         }
         public object GetWorkList(WorkDto query)
         {

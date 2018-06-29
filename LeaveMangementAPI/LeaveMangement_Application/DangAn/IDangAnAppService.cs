@@ -14,10 +14,12 @@ namespace LeaveMangement_Application.DangAn
         object DeleteCompany(int compId);
         object SendMessage(string address);
         object GetDeparmentList(DepartmentDto query);
+        object GetDeparments(int compId);
         object GetWorkList(WorkDto query);
         object GetWorkerList(int compId);
         object AddSingleDpearment(AddSingleDeparmentDto dpearmentDto);
         object EditDeparment(AddSingleDeparmentDto addSingleDeparmentDto);
+        object DeleteDeparment(int id);
         object GetPositionListByCompId(int compId);
         object DeletePosition(int id);
         object AddPosition(AddStateDto addStateDto);
