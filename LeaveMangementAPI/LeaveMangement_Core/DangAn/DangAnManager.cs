@@ -42,15 +42,17 @@ namespace LeaveMangement_Core.DangAn
                     Address = company.Address,
                     WokerCount = company.WokerCount,
                     DeparmentCount = company.DeparmentCount,
-                };
-                _ctx.Company.Add(newComp);
-                _ctx.SaveChanges();
+                };                
                 if (_userManager.CreateCompanyAdmin(newComp))
+                {
+                    _ctx.Company.Add(newComp);
+                    _ctx.SaveChanges();
                     result = new
                     {
                         isSuccess = true,
                         message = "公司添加成功！"
                     };
+                }                    
                 else
                     result = new
                     {

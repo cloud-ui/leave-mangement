@@ -54,7 +54,7 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <param name="company"></param>
         /// <returns></returns>
         [HttpPost]
-        public object AddCompany(Company company)
+        public object AddCompany([FromBody]Company company)
         {
             return _dangAnAppService.AddCompany(company);
         }

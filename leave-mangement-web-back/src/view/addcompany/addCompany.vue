@@ -3,7 +3,7 @@
   <div class="add-head">
       <div class="head-container">
           <div style="padding-top:15px;">
-            <p class="head-title">人事考勤系统</p>
+            <p class="head-title">JX人事考勤系统</p>
             <span class="add-company">添加公司</span>
           </div>
       </div>
@@ -16,17 +16,15 @@
                       <div class="step-div step-bar-active"></div>
                   </li>
                   <li class="step-bar-active">
-                      <div v-if="step==='SecondStep'" class="step-div step-bar-active"></div>
-                      <div v-else class="step-div"></div>
-                  </li>
-                  <li>
-                      <div v-if="step==='Resule'" class="step-div step-bar-active"></div>
+                      <div v-if="show === 'second'" class="step-div step-bar-active"></div>
                       <div v-else class="step-div"></div>
                   </li>
               </ol>
           </div>
           <div class="add-box">               
-              <component v-bind:is="step"></component>
+              <!-- <component v-bind:is="step"></component> -->
+              <first-step v-if="show === 'first'" @change="changeShow"></first-step>
+              <second-step v-if="show === 'second'" :result="result"></second-step>
           </div>
       </div>
   </div>
@@ -42,21 +40,21 @@ export default{
        FirstStep,
        SecondStep
    },
-   watch: {
-      show: {
-        handler(val, olaval) {
-          this.show = val.show;
-        },
-        deep: true
-      }
-    },
    data(){
-       return{           
+       return{  
+           result:{},
+           show:'first',       
        }
    },
-   computed:mapState({
-           step: state=>state.addCompany.step
-       }),
+   methods:{
+       changeShow(data={}){
+           this.result = data,
+           this.show = 'second'
+       }
+   },
+//    computed:mapState({
+//            step: state=>state.addCompany.step
+//        }),
 }
 </script>
 <style lang="scss" scoped>

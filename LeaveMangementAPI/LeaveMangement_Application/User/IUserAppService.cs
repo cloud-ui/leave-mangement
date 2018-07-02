@@ -1,4 +1,5 @@
 ﻿using LeaveMangement_Entity.Dtos.DangAn;
+using LeaveMangement_Entity.Dtos.User;
 using LeaveMangement_Entity.Model;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,7 @@ namespace LeaveMangement_Application.User
         Worker Login(string account,string password);
         object AddSingleWorker(SingleWorkerDto singleWorkerDto);
         object GetWorkerById(int userId);
+        object ModifyPassword(ModifyPasswordDto modifyPasswordDto);
+        List<Menus> GetMenu(int positionId, int parentId = 0);
     }
 }

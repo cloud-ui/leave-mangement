@@ -2,43 +2,30 @@
   <div class="login">
     <div class="background">
     </div>
-    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="0px"
-             class="demo-ruleForm login-container">
+    <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
       <h3 class="login-title">系统登录</h3>
       <el-form-item prop="loginStr">
-        <el-input
-          type="text"
-          v-model="ruleForm.loginStr"
-          ref="adminAccount"
-          auto-complete="off"
-          placeholder="请输入用户名">
+        <el-input type="text" v-model="ruleForm.loginStr" ref="adminAccount" auto-complete="off" placeholder="请输入用户名">
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input
-          type="password"
-          v-model="ruleForm.password"
-          auto-complete="off"
-          placeholder="请输入密码"
-        >
+        <el-input type="password" v-model="ruleForm.password" auto-complete="off" placeholder="请输入密码">
         </el-input>
       </el-form-item>
+      <el-form-item class="login-link">
+        <router-link style="font-size: 5px;color: #409eff;text-decoration: none;" to="/addCompany">没有账号？注册公司</router-link>
+      </el-form-item>
       <el-form-item>
-        <el-button
-          style="width: 100%;"
-          type="primary"
-          @click.native.prevent="submitForm"
-          :loading="loading">登录
+        <el-button style="width: 100%;" type="primary" @click.native.prevent="submitForm" :loading="loading">登录
         </el-button>
       </el-form-item>
     </el-form>
-    
   </div>
 </template>
 
 <script>
-import {LoginApi} from './api.js'
-import {mapActions} from "vuex"
+  import {LoginApi} from './api.js'
+  import {mapActions} from "vuex"
   export default {
     name: 'Login',
     components: {},
@@ -52,13 +39,23 @@ import {mapActions} from "vuex"
         },
         // 表单数据规则
         rules: {
-          loginStr: [
-            {required: true, message: '请输入登录账户', trigger: 'blur'},
-            {min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur'}
+          loginStr: [{
+              required: true,
+              message: '请输入登录账户',
+              trigger: 'blur'
+            },
+            {
+              min: 6,
+              max: 12,
+              message: '长度在 6 到 12 个字符',
+              trigger: 'blur'
+            }
           ],
-          password: [
-            {required: true, message: '请输入登录密码', trigger: 'blur'}
-          ],
+          password: [{
+            required: true,
+            message: '请输入登录密码',
+            trigger: 'blur'
+          }],
         }
       }
     },
@@ -92,13 +89,15 @@ import {mapActions} from "vuex"
           if (valid) {
             this.loading = true;
             const param = {
-              account:this.ruleForm.loginStr,
-              password:this.ruleForm.password
+              account: this.ruleForm.loginStr,
+              password: this.ruleForm.password
             }
-            LoginApi.login(param).then(res=>{
+            LoginApi.login(param).then(res => {
               this.loading = false;
               this.setUser(res.data)
-              this.$router.push({path: '/'})
+              this.$router.push({
+                path: '/'
+              })
             })
           } else {
             return false
@@ -138,7 +137,7 @@ import {mapActions} from "vuex"
       text-align: center;
     }
   }
-  .background{
+  .background {
     width: 100%;
     height: 100%;
     background-color: #fff;
@@ -147,7 +146,6 @@ import {mapActions} from "vuex"
     background-size: cover;
     background-position: center;
   }
-
   .login-container {
     -webkit-border-radius: 5px;
     border-radius: 5px;
@@ -169,8 +167,14 @@ import {mapActions} from "vuex"
       color: #505458;
     }
   }
-
   .login-footer {
     text-align: center;
+  }
+  .login-link{
+    margin: 0px;
+    padding: 0px;
+    margin-top: -15px;
+    display: flex;
+    justify-content: flex-end;
   }
 </style>

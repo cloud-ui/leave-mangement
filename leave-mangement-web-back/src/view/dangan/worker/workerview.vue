@@ -37,7 +37,8 @@
         </div>
         <div>
             <el-col :span="16" class="worker-message-box-part">
-                <p>证件号码：</p><span>{{data.paperNumber}}</span><span class="paper-type">{{data.paperType}}</span>
+                <p>证件号码：</p><span>{{data.paperNumber}}</span>
+                <span class="paper-type">{{data.paperType}}</span>
             </el-col>
             <el-col :span="8" class="worker-message-box-part">
                 <p>联系方式：</p><span>{{data.phoneNumber}}</span>
@@ -56,24 +57,7 @@ export default {
     props:['id'],
     data(){
         return{
-            data:{
-                name: '姜鑫',//
-                account: '123456',//
-                company: '皮包公司',
-                deparment: '后勤部门',//
-                deparmentId: 1,
-                position: '总经理',//
-                age: null,
-                address: null,
-                phoneNumber: '13628471426',//
-                sex: '女',//
-                entryTime: '2018-05-09T00:00:00',
-                birth: null,
-                paperType: '居民身份证',//
-                paperNumber: '"500225199702067769"',//
-                state: '"实习"',//
-                isAuth: false//
-            }
+            data:{}
         }
     },
     watch:{

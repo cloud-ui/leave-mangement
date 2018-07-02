@@ -129,9 +129,16 @@
             },
             //重置表单
             resetForm(){
-                this.$refs['form'].resetFields();
-                this.form.startTime=''
-                this.form.endTime=''
+                this.form={
+                    name:'',
+                    deparmentName:'',
+                    type1:1,
+                    type2:0,
+                    account:'',
+                    startTime:'',
+                    endTime:'',
+                    isSubmit:'',
+                }
             },
             //获取到请假的天数
             getDateLeng(){

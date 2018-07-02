@@ -1,16 +1,16 @@
 import {Auth} from './auth';
 export default{
     state:{
-        token: Auth.getToken()||null,
+        token: Auth.getToken()|| {},
         userInfo: Auth.getUserInfo() || {},
         isLogin: Auth.getLogin() || false,
+        menu:Auth.getMenu() || {},
     },
     mutations:{
-        setToken(state,data){
-            Auth.setToken(data)
-        },
-        setUserInfo(state,data){
-            Auth.setUserInfo(JSON.stringify(data));
+        ACCOUNT_SET(state,data={}){
+            Auth.setToken(data.token)
+            Auth.setUserInfo(data.user);
+            Auth.setMenu(data.menu);
             Auth.setLogin();
         },
         ACCOUNT_LOGOUT_FAILURE(state) {
@@ -27,8 +27,11 @@ export default{
       },
     actions:{
         setUser({commit},data={}){
-            commit('setToken',data.token);
-            commit('setUserInfo',data.user);
+            return new Promise((resolve, reject) => {
+                commit('ACCOUNT_SET',{...data});
+                resolve()
+                })
+            
         },
         /** 登出 */
         accountLogoutSubmit({commit}) {

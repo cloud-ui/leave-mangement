@@ -72,4 +72,8 @@ export class FileApi {
   static getWorkerMessage(id){
     return server.connection('POST',`api/User/GetWorkerById?userId=`+id)
   }
+  //单个添加员工
+  static addSingleWorker(data={}){
+    return server.connection('POST','api/User/AddSingleWorker',data)
+  }
 }

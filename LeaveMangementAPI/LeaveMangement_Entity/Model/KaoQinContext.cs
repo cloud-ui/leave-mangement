@@ -156,6 +156,7 @@ namespace LeaveMangement_Entity.Model
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(20);
+                entity.Property(e => e.Icon).IsRequired().HasMaxLength(50);
 
                 entity.Property(e => e.ParentId).HasDefaultValueSql("((0))");
 

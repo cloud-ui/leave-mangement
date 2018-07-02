@@ -19,7 +19,6 @@ export default new Router({
     {
       path: '/',
       name: 'shouye',
-      meta: {requireAuth: true},
       component: () => import ('../packages/ui/container'),
       children: [
         {
@@ -61,6 +60,11 @@ export default new Router({
           name:'applicationList',
           meta: {requireAuth: true},
           component:()=>import('../view/approval/applicationList')
+        },{
+          path:'/userpage',
+          name:'userpage',
+          meta: {requireAuth: true},
+          component:()=>import('../view/userpage/index')
         }
       ]
     }

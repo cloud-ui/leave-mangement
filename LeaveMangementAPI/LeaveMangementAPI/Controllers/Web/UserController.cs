@@ -2,6 +2,7 @@
 using LeaveMangement_Application.User;
 using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.DangAn;
+using LeaveMangement_Entity.Dtos.User;
 using LeaveMangement_Entity.Model;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authentication;
@@ -52,6 +53,7 @@ namespace LeaveMangementAPI.Controllers.Web
                     isSuccess = true,
                     message = "登录成功！",
                     user = userResult,
+                    menu = _userAppService.GetMenu(userResult.PositionId),
                     token
                 };
             }
@@ -112,6 +114,16 @@ namespace LeaveMangementAPI.Controllers.Web
         public object GetWorkerById(int userId)
         {
             return _userAppService.GetWorkerById(userId);
+        }
+        /// <summary>
+        /// 修改密码
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [Authorize]
+        public object ModifyPassword([FromBody]ModifyPasswordDto modifyPasswordDto)
+        {
+            return _userAppService.ModifyPassword(modifyPasswordDto);
         }
 
     }

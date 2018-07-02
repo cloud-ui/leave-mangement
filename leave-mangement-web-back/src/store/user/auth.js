@@ -4,22 +4,34 @@ const sessionStorage = window.sessionStorage;
 
 export class Auth {
   static setUserInfo(value = {}) {
-    return Cookies.set('user.userInfo', JSON.stringify(value));
+    return sessionStorage.setItem('user.userInfo', JSON.stringify(value));
   }
 
   static getUserInfo() {
-    const userInfo = Cookies.get('user.userInfo');
-    return userInfo ? JSON.parse(JSON.parse(Cookies.get('user.userInfo'))) : null
+    return JSON.parse(sessionStorage.getItem('user.userInfo'))
   }
+
+  static setMenu(value={}){
+    return sessionStorage.setItem('user.menu', JSON.stringify(value));
+  }
+
+  static getMenu(){
+    return JSON.parse(sessionStorage.getItem('user.menu'))
+  }
+
   // 注销
   static logout() {
     Auth.removeUserInfo();
     Auth.removeLogin();
     Auth.removeToken();
+    Auth.removeMenu();
   }
 
+  static removeMenu(){
+    return sessionStorage.removeItem('user.menu')
+  }
   static removeUserInfo() {
-    return Cookies.remove('user.userInfo')
+    return sessionStorage.removeItem('user.userInfo')
   }
 
   static setLogin() {

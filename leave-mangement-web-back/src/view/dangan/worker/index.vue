@@ -10,7 +10,7 @@
                     <el-button style="padding:0px 0px 0px 10px;" @click="handleAdd()" type="text" icon="el-icon-plus">添加员工</el-button>
                 </div>
                 <div style="display:flex;">
-                    <comp-dep-select :depId="depId" @change="changeDep"></comp-dep-select>
+                    <comp-dep-select style="padding-right:10px;" :depId="depId" @change="changeDep"></comp-dep-select>
                     <el-input placeholder="请输入内容" v-model="query" class="input-with-select">
                         <el-button slot="append" @click="handleChangeQuery()">搜索</el-button>
                     </el-input>
@@ -145,6 +145,7 @@
                 this.dialogVisible = false
             },
             closeForm(dialogVisible) {
+                this.loadData()
                 this.dialogVisible = dialogVisible
             }
         }

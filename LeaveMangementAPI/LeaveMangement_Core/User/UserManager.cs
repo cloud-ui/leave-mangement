@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using LeaveMangement_Entity.Dtos.DangAn;
+using LeaveMangement_Entity.Dtos.User;
 
 namespace LeaveMangement_Core.User
 {
@@ -12,20 +13,10 @@ namespace LeaveMangement_Core.User
     {
         private KaoQinContext _ctx = new KaoQinContext();
         private UserService _userService = new UserService();
-        public Worker Login(string account,string password)
+        public Worker Login(string account, string password)
         {
-            //var admin = _ctx.AdminUser.SingleOrDefault(u => u.Account.Equals(account) && u.Password.Equals(password));
-            //var result = new object();
-            //if (admin != null)
-            //    return admin;
-            //else
-            //{
-            int[] positionIds = _ctx.Position.Where(u => u.Name.Equals("总经理") || u.Name.Equals("部门经理"))
-                .Select(p => p.Id).ToArray();
-            var manager = _ctx.Worker.SingleOrDefault(u => u.Account.Equals(account) && u.Password.Equals(password)
-            && (positionIds.Contains(u.PositionId)||u.PositionId==0));
-            return manager ?? null;
-            //}
+            Worker worker = _ctx.Worker.SingleOrDefault(u => u.Account.Equals(account) && u.Password.Equals(password));
+            return worker ?? null;
         }
         public bool CreateCompanyAdmin(Company company)
         {
@@ -41,7 +32,7 @@ namespace LeaveMangement_Core.User
             };
             _ctx.Worker.Add(user);
             _ctx.SaveChanges();
-            return _userService.SendEMail(company.Email,user);            
+            return _userService.SendEMail(company.Email, user);
         }
         public object AddSingleWorker(SingleWorkerDto singleWorkerDto)
         {
@@ -113,6 +104,72 @@ namespace LeaveMangement_Core.User
                             isAuth = worker.IsAuth,
                         }).ToList();
             return user[0];
+        }
+        public object ModifyPassword(ModifyPasswordDto modifyPasswordDto)
+        {
+            Worker worker = _ctx.Worker.SingleOrDefault(w => w.Id == modifyPasswordDto.Id && w.Password.Equals(modifyPasswordDto.Password));
+            var result = new object();
+            if (worker != null)
+            {
+                worker.Password = modifyPasswordDto.NewPassword;
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "修改密码成功！"
+                };
+            } else
+                result = new
+                {
+                    isSuccess = false,
+                    message = "修改密码失败！"
+                };
+            return result;
+        }
+        //根据当前用户的职位ID去获取目录
+        public List<Menus> GetMenu(int parentId,int positionId)
+        {
+            //找出根目录
+            List<Menus> parents = (from menu in _ctx.Menu
+                                   where menu.ParentId == parentId
+                                   select new Menus
+                                   {
+                                       Id = menu.Id,
+                                       Name = menu.Name,
+                                       PositionId = menu.PositionId,
+                                       Icon = menu.Icon,
+                                       Url = menu.Url,
+                                   }).ToList();
+            List<Menus> menus = new List<Menus>();
+            foreach (Menus menu in parents)
+            {
+                int[] positionIds = StringToInt(menu.PositionId);
+                if (Array.IndexOf(positionIds,positionId) != -1)   //-1不存在
+                {
+                    Menus menuNode = new Menus()
+                    {
+                        Id = menu.Id,
+                        Name = menu.Name,
+                        PositionId = menu.PositionId,
+                        Url = menu.Url,
+                        Icon = menu.Icon,
+                        Children = GetMenu( menu.Id, positionId)
+                    };
+                    menus.Add(menuNode);
+                }                
+            };
+            return menus;
+        } 
+        private int[] StringToInt(string positionId)
+        {
+            string[] positionIdStr = positionId.Split(',');
+            int[] positionIds = new int[positionIdStr.Length];
+            for(int i = 0; i < positionIdStr.Length; i++)
+            {
+                positionIds[i] = int.Parse(positionIdStr[i]);
+                i++;
+            }
+            return positionIds;
         }
     }
 }
