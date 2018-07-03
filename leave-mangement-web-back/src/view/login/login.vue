@@ -96,7 +96,7 @@
               this.loading = false;
               this.setUser(res.data)
               this.$router.push({
-                path: '/'
+                path: '/home'
               })
             })
           } else {
@@ -108,7 +108,7 @@
     /** 监听函数 */
     watch: {
       $route() {
-        this.path = this.$route.path.split('/')[2]
+        this.path = this.$route.path.split('/home')[2]
       }
     }
   }

@@ -13,6 +13,6 @@ namespace LeaveMangement_Entity.Model
         public string Email { get; set; }
         public int DeparmentCount { get; set; }
         public int WokerCount { get; set; }
-        public DateTime CreateTime { get; set; }
+        public long CreateTime { get; set; }
     }
 }

@@ -57,6 +57,7 @@
 </template>
 <script>
 import './approval.scss'
+import { ApprovalApi } from "./api.js";
 export default {
     props:['id'],
     watch:{
@@ -67,30 +68,19 @@ export default {
         deep: true
         },
     },
-    created(){
+    mounted(){
         this.loadData(this.id)
     },
     data(){
         return{
-            data:{
-                workerName:'张三',
-                deparment:'设计部',
-                account:'今天天气很好',
-                type:'事前-事假',
-                state:2,
-                stateName:'未审批',
-                startTime:'2018-02-06',
-                endTime:'2018-03-01',
-                remark:'情况属实',
-                handerName:'里斯',
-                handerTime:'2018-02-25',
-                createTime:'2018-02-01',
-            }
+            data:{}
         }
     },
     methods:{
         loadData(id){
-            alert(id)
+            ApprovalApi.getApplication(id).then(res=>{
+                this.data = res.data
+            })
         }
     }
 }

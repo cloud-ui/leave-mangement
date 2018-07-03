@@ -30,6 +30,10 @@ namespace LeaveMangement_Application.DangAn
         {
             return _dangAnManager.DeleteCompany(compId);
         }
+        public object GetDeparmentById(int id)
+        {
+            return _dangAnManager.GetDeparmentById(id);
+        }
         public object SendMessage(string address)
         {
             return _dangAnService.SendAuthCodeEMail(address);

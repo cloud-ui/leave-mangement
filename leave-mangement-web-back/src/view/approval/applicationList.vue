@@ -1,7 +1,7 @@
 <template>
     <div class="index">
         <div class="index-title">
-            <p>提交申请</p>
+            <p>已提交申请</p>
         </div>
         <div class="index-body">
             <div class="index-body-title">
@@ -31,8 +31,14 @@
                     </template>
                 </el-table-column>
                 <el-table-column align="center" prop="startTime" label="开始时间">
+                    <template slot-scope="scope">
+                        {{scope.row.startTime | formatDate}}
+                    </template>
                 </el-table-column>
                 <el-table-column align="center" prop="endTime" label="结束时间">
+                    <template slot-scope="scope">
+                        {{scope.row.endTime | formatDate}}
+                    </template>
                 </el-table-column>
                 <el-table-column align="center" prop="createTime" label="创建时间">
                 </el-table-column>
@@ -69,40 +75,14 @@
     import '../index.scss'
     import './approval.scss'
     import CompLook from './applicationView'
+    import { ApprovalApi } from "./api.js"
     export default {
         components:{
             CompLook
         },
         data() {
             return {
-                tableData: [{
-                    id: 1,
-                    workerName: '张三',
-                    state:1,
-                    stateName:'未审批',
-                    type: '事前-病假',
-                    startTime: '2018-06-08',
-                    endTime: '2018-06-08',
-                    createTime: '2018-02-06'
-                },{
-                    id: 2,
-                    workerName: '张三',
-                    state:2,
-                    stateName:'未审批',
-                    type: '事前-病假',
-                    startTime: '2018-06-08',
-                    endTime: '2018-06-08',
-                    createTime: '2018-02-06'
-                },{
-                    id: 3,
-                    workerName: '张三',
-                    state:3,
-                    stateName:'未审批',
-                    type: '事前-病假',
-                    startTime: '2018-06-08',
-                    endTime: '2018-06-08',
-                    createTime: '2018-02-06'
-                }],
+                tableData: [],
                 headerCellStyle: {
                     backgroundColor: '#f2f2f2',
                     fontSize: '14px',
@@ -117,8 +97,20 @@
                 applicationId:0,
             }
         },
+        mounted(){
+            this.loadData()
+        },
         methods: {
             loadData() {
+                const params={
+                    currentPage: this.currentPage,
+                    currentPageSize: this.pageSize,
+                    query: this.query,
+                }
+                ApprovalApi.getApplicationList(params).then(res=>{
+                    this.totalCount = res.data.count
+                    this.tableData = res.data.data
+                })
             },
             handleSizeChange(val) {
                 this.pageSize = val;
@@ -128,12 +120,9 @@
                 this.currentPage = val;
                 this.loadData();
             },
-            handleCommand(id,command){
-                console.log(id)
-                console.log(command)
-            },
             //点击搜索
             handleChangeQuery() {
+                this.loadData();
             },
             //点击查看
             handleLook(id){
@@ -147,7 +136,18 @@
             closeForm(val){
                 this.dialogVisible = val
             }
-        }
+        },
+        filters: {
+            formatDate: function (value) {
+                let date = new Date(value);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? ('0' + MM) : MM;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                return y + '-' + MM + '-' + d;
+                }
+            }
     }
 </script>
 <style lang="scss" scoped>

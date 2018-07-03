@@ -108,11 +108,13 @@
         handleSubmit(){
             this.companyMessage.address = this.cityName+this.smallAddress
             console.log(this.companyMessage)
-            //if(this.authCode === this.sendAuthCode){
+            if(this.authCode === this.sendAuthCode){
                 AddCompanyApi.addCompany(this.companyMessage).then(res=>{
                     this.$emit('change',{...res.data})
                 })
-            //}
+            }else{
+                this.$message.error('验证码错误');
+            }
         },
         getAuthTime(){
             this.authTime = 120;

@@ -13,13 +13,13 @@ namespace LeaveMangement_Application.Approval
         {
             return _approvalManager.AddApplication(addApplicationDto);
         }
-        public object GetApplicationList(string account)
+        public object GetApplicationList(GetApplicationListDto getApplicationListDto)
         {
-            return _approvalManager.GetApplicationList(account);
+            return _approvalManager.GetApplicationList(getApplicationListDto);
         }
-        public object GetUnApplicationList(string account)
+        public object GetUnApplicationList(GetApplicationListDto getApplicationListDto)
         {
-            return _approvalManager.GetUnApplicationList(account);
+            return _approvalManager.GetUnApplicationList(getApplicationListDto);
         }
         public object GetApplicationById(int id)
         {
@@ -32,6 +32,14 @@ namespace LeaveMangement_Application.Approval
         public object EditApplication(EditApplicationDto editApplicationDto)
         {
             return _approvalManager.EditApplication(editApplicationDto);
+        }
+        public object DeleteApplicationById(int id)
+        {
+            return _approvalManager.DeleteApplicationById(id);
+        }
+        public int GetApprovalCount(string account, int compId)
+        {
+            return _approvalManager.GetApprovalCount(account, compId);
         }
     }
 }

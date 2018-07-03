@@ -11,8 +11,8 @@ namespace LeaveMangement_Entity.Dtos.Approval
         public int Type2 { get; set; }
         //请假理由
         public string Account { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public long StartTime { get; set; }
+        public long EndTime { get; set; }
         public bool IsSubmit { get; set; }
     }
 }

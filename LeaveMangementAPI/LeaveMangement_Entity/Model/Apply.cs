@@ -15,10 +15,10 @@ namespace LeaveMangement_Entity.Model
         public int? State { get; set; }
         public string Remark { get; set; }
         public int? LeaderId { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public DateTime CreateTime { get; set; }
-        public DateTime? HandleTime { get; set; }
+        public long StartTime { get; set; }
+        public long EndTime { get; set; }
+        public long CreateTime { get; set; }
+        public long? HandleTime { get; set; }
         public bool IsSubmit { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace LeaveMangement_Entity.Model
     {
         public int Id { get; set; }
         public string Content { get; set; }
-        public DateTime CreateTime { get; set; }
+        public long CreateTime { get; set; }
         public bool IsLook { get; set; }
         public int WorkId { get; set; }
     }

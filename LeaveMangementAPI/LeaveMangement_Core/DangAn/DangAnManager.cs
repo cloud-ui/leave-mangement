@@ -42,10 +42,11 @@ namespace LeaveMangement_Core.DangAn
                     Address = company.Address,
                     WokerCount = company.WokerCount,
                     DeparmentCount = company.DeparmentCount,
-                };                
+                };
+                _ctx.Company.Add(newComp);
                 if (_userManager.CreateCompanyAdmin(newComp))
                 {
-                    _ctx.Company.Add(newComp);
+                    
                     _ctx.SaveChanges();
                     result = new
                     {
@@ -220,6 +221,10 @@ namespace LeaveMangement_Core.DangAn
                 };
             }
             return result;
+        }
+        public object GetDeparmentById(int id)
+        {
+            return _ctx.Deparment.Find(id);
         }
         public object EditDeparment(AddSingleDeparmentDto addSingleDeparmentDto)
         {

@@ -103,6 +103,7 @@
             },
             //单独添加员工
             handleSingleSubmit(){
+                this.data.entryTime = this.data.entryTime.getTime()
                 FileApi.addSingleWorker(this.data).then(res=>{
                     const type1 = res.data.isSuccess?'success': 'error'
                     this.$message({ type: type1,message: res.data.message});

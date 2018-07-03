@@ -19,11 +19,12 @@ export default new Router({
     {
       path: '/',
       name: 'shouye',
+      meta: {requireAuth: true},
       component: () => import ('../packages/ui/container'),
       children: [
         {
-          path: '/',
-          name: 'shouye',
+          path: '/home',
+          name: 'home',
           meta: {requireAuth: true},
           component: () => import('../view/shouye/index')
         },

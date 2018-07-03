@@ -116,6 +116,17 @@ namespace LeaveMangementAPI.Controllers.Web
             return _dangAnAppService.DeleteDeparment(id);
         }
         /// <summary>
+        /// 根据部门编号获取到部门信息
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public object GetDeparment(int id)
+        {
+            return _dangAnAppService.GetDeparmentById(id);
+        }
+        /// <summary>
         /// 获取当前登录用户所在公司的部门列表
         /// </summary>
         /// <returns></returns>

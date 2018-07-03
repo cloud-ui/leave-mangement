@@ -17,11 +17,11 @@ namespace LeaveMangement_Core.User
             do
             {
                 account = "";
-                for (int i = 0; i < 12; i++)
+                for (int i = 0; i < 10; i++)
                 {
-                    account += random.Next(0, 12).ToString();
+                    account += random.Next(0, 10).ToString();
                 }
-            } while (_ctx.AdminUser.SingleOrDefault(u => u.Account.Equals(account)) != null);            
+            } while (_ctx.Worker.SingleOrDefault(u => u.Account.Equals(account)) != null);            
             return account;
         }
 

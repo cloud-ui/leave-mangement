@@ -7,9 +7,9 @@ namespace LeaveMangement_Entity.Model
     {
         public int Id { get; set; }
         public int WorkId { get; set; }
-        public DateTime ClockDay { get; set; }
-        public DateTime? SrartTime { get; set; }
-        public DateTime? EndTime { get; set; }
+        public long ClockDay { get; set; }
+        public long? SrartTime { get; set; }
+        public long? EndTime { get; set; }
         public bool IsFull { get; set; }
     }
 }

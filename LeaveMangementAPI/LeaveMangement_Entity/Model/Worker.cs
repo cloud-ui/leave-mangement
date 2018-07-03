@@ -17,10 +17,10 @@ namespace LeaveMangement_Entity.Model
         public string Address { get; set; }
         public int? PaperType { get; set; }
         public string PaperNumber { get; set; }
-        public DateTime? Brith { get; set; }
+        public long? Brith { get; set; }
         public int? Age { get; set; }
         public bool IsAuth { get; set; }
         public int StateId { get; set; }
-        public DateTime? EntryTime { get; set; }
+        public long? EntryTime { get; set; }
     }
 }

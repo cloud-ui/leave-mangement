@@ -21,7 +21,7 @@
                     <ul>
                         <li>1.请假类型之间不能组合</li>
                         <li>2.请假天数限制：事假不得超过7天，年假不得超过15天</li>
-                        <li>3.您当月请假次数为：<span style="color:red">0</span> 次</li>
+                        <li>3.您当月请假次数为：<span style="color:red">{{count}}</span> 次</li>
                     </ul>
                 </div>
                 <el-form label-position="right" style="padding-top:20px;" ref="form" :rules="rules" :model="form" label-width="100px">
@@ -38,13 +38,15 @@
                             <el-radio label=3>年假</el-radio>
                         </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="起止时间：">
-                        <el-col :span="8">
-                            <el-date-picker type="date" placeholder="选择开始日期" v-model="form.startTime" style="width: 100%;"></el-date-picker>
-                        </el-col>
-                        <el-col class="line" :span="1">------</el-col>
-                        <el-col :span="8">
-                            <el-date-picker type="date" @change="getDateLeng()" placeholder="选择结束时间" v-model="form.endTime" style="width: 100%;"></el-date-picker>
+                    <el-form-item prop="value13" label="起止时间：">
+                        <el-col :span="12">
+                           <el-date-picker
+                                v-model="form.value13"
+                                type="daterange"
+                                start-placeholder="开始日期"
+                                end-placeholder="结束日期"
+                                :default-time="['00:00:00', '23:59:59']">
+                            </el-date-picker>
                         </el-col>
                         <el-col class="approval-date-leng" :span="6">您请假天数为：<span style="color:red">{{dateLeng}}</span> 天</el-col>
                     </el-form-item>
@@ -65,24 +67,38 @@
 <script>
     import '../index.scss'
     import './approval.scss'
+    import {mapGetters} from 'vuex'
+    import {ApprovalApi} from './api.js'
     export default {
         data(){
+            var checkDateLeng=(rule, value, callback)=>{
+                console.log(this.form.value13)
+                if(this.form.value13.length !== 2){
+                    return callback(new Error('时间未必填项'));
+                }else if(!this.getDateLeng()){
+                    return callback(new Error('请假天数不符合规定'));
+                }
+                callback();
+            };
             return{
                 form:{
                     name:'',
-                    deparmentName:'',
+                    deparmentName:'开发部',
                     type1:1,
                     type2:0,
                     account:'',
                     startTime:'',
                     endTime:'',
                     isSubmit:'',
+                    value13:[],
                 },
+                count:'',
                 dateLeng:0,
+                isEdit:'',
                 rules:{
                     type2:[{required: true,message: '请假类型为必选项',trigger: 'blur'}],
-                    startTime:[{required: true,message: '起始时间为必选项',trigger: 'blur'}],
-                    account:[{required: true,message: '请假理由为必填项',trigger: 'blur'}]
+                    account:[{required: true,message: '请假理由为必填项',trigger: 'blur'}],
+                    value13:[{required:true,trigger:'blur',validator: checkDateLeng,}]
                 }
             }
         },
@@ -92,16 +108,31 @@
         watch: {
             $route: "fetchData"
         },
+        computed: {
+            ...mapGetters([
+                'userInfo'
+            ])
+        },
         methods: {
             //初始化表单
             fetchData(){
                 //获取到地址栏传的参数
                 const id = parseInt(this.$route.params.id);
                 //-1为添加申请状态状态
+                this.loadCount()
                 if(id === -1){
-                    this.resetForm()
+                    this.isEdit = false
+                    this.form.name = this.userInfo.name
+                    ApprovalApi.getDeparment(this.userInfo.departmentId).then(res=>{
+                        this.form.deparmentName = res.data.name
+                    })
                 }else{
-                    alert(id)
+                    this.isEdit = true
+                    ApprovalApi.getApplication(id).then(res=>{
+                        this.form = {...res.data}
+                        this.form.value13[0] = this.formatDate(res.data.startTime)
+                        this.form.value13[1] = this.formatDate(res.data.endTime)
+                    })
                 }
             },
             handleSelect(key, keyPath) {
@@ -111,19 +142,46 @@
                     this.form.type1 = 2
                 }
             },
+            loadCount(){
+                ApprovalApi.getApplicationCount().then(res=>{
+                    this.count = res.data
+                })
+            },
             //提交
             onSubmit(isSubmit){
                 this.$refs['form'].validate(valid=>{
                     if(valid){
                         const params={
+                            workerId:this.userInfo.id,
                             type1 : this.form.type1,
                             type2 : parseInt(this.form.type2),
                             account : this.form.account,
-                            statrTime:this.form.startTime,
+                            startTime:this.form.startTime,
                             endTime:this.form.endTime,
                             isSubmit:isSubmit,
                         }
-                        console.log(params)
+                        if(!this.isEdit){
+                            ApprovalApi.addApplication(params).then(res=>{
+                            const type1 = res.data.isSuccess?'success':'error'
+                            this.$message({
+                                type:type1,
+                                message:res.data.message
+                            })
+                            const path = this.form.isSubmit?'/applicationList':'/unApplicationList'
+                            this.$router.push({ path: path})
+                        })
+                        }else{
+                            ApprovalApi.editApplication(params).then(res=>{
+                                const type1 = res.data.isSuccess?'success':'error'
+                                this.$message({
+                                    type:type1,
+                                    message:res.data.message
+                                })
+                                const path = this.form.isSubmit?'/applicationList':'/unApplicationList'
+                                this.$router.push({ path: path})
+                            })
+                        }
+                        
                     }
                 })
             },
@@ -142,10 +200,22 @@
             },
             //获取到请假的天数
             getDateLeng(){
-                console.log(this.form)
-                var dateDiff = this.form.endTime.getTime() - this.form.startTime.getTime();//时间差的毫秒数
+                var dateDiff = this.form.value13[1].getTime() - this.form.value13[0].getTime();//时间差的毫秒数
                 var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
-                this.dateLeng = dayDiff
+                if((this.form.type2 === "2" && dayDiff > 7) ||(this.form.type2 === "3" && dayDiff > 15) ){
+                    this.dateLeng = dayDiff
+                    return false
+                }else{
+                    this.dateLeng = dayDiff
+                    this.form.startTime = this.form.value13[0].getTime()
+                    this.form.endTime = this.form.value13[1].getTime()
+                    return true
+                }                    
+            },
+            //转换时间格式
+            formatDate(value) {
+                let date = new Date(value);
+                return date;
             }
         },
         

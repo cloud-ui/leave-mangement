@@ -55,20 +55,20 @@ namespace LeaveMangementAPI.Controllers.Web
         /// 获取已提交的请假列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Authorize]
-        public async Task<object> GetApplicationList()
+        public async Task<object> GetApplicationList([FromBody]GetApplicationListDto getApplicationListDto)
         {
             var context = HttpContext;
-            string account = await _jwtUtil.GetMessageByToken(context);
-            return _approvalAppService.GetApplicationList(account);
+            getApplicationListDto.Account = await _jwtUtil.GetMessageByToken(context);
+            return _approvalAppService.GetApplicationList(getApplicationListDto);
         }
         /// <summary>
         /// 获取一条请假申请的详细信息
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Authorize]
         public object GetApplicationById(int id)
         {
@@ -78,13 +78,13 @@ namespace LeaveMangementAPI.Controllers.Web
         /// 获取登录用户未提交的申请
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Authorize]
-        public async Task<object> GetUnApplicationList()
+        public async Task<object> GetUnApplicationList([FromBody]GetApplicationListDto getApplicationListDto)
         {
             var context = HttpContext;
-            string account = await _jwtUtil.GetMessageByToken(context);
-            return _approvalAppService.GetUnApplicationList(account);
+            getApplicationListDto.Account = await _jwtUtil.GetMessageByToken(context);
+            return _approvalAppService.GetUnApplicationList(getApplicationListDto);
         }
         /// <summary>
         /// 提交申请
@@ -93,7 +93,7 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public object SubmitApplication([FromBody]int id)
+        public object SubmitApplication(int id)
         {
             return _approvalAppService.SubmitApplication(id);
         }
@@ -109,6 +109,17 @@ namespace LeaveMangementAPI.Controllers.Web
             return _approvalAppService.EditApplication(editApplicationDto);
         }
         /// <summary>
+        /// 删除未提交的申请通过编号
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Authorize]
+        public object DeleteApplicationById(int id)
+        {
+            return _approvalAppService.DeleteApplicationById(id);
+        }
+        /// <summary>
         /// 获取到当前登录的管理员用户待审核的申请列表
         /// </summary>
         /// <returns></returns>
@@ -118,6 +129,18 @@ namespace LeaveMangementAPI.Controllers.Web
         {
             return true;
         }
-        
+        /// <summary>
+        /// 获取的当前登录用户当月请假次数
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<int> GetApprovalCount()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            int compId = _commonAppService.GetUserCompId(account);
+            return _approvalAppService.GetApprovalCount(account,compId);
+        }
     }
 }

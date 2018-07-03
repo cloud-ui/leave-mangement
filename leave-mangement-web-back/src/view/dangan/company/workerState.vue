@@ -96,12 +96,7 @@
                     }).then(() => {
                         FileApi.deleteState(row.id).then(res => {
                             this.loadData()
-                            var type1 = ''
-                            if(res.data.isSuccess){
-                                type1 = 'success'
-                            }else{
-                                type1 = 'error'
-                            }
+                            const type1 = res.data.isSuccess?'success':'error'
                             this.$message({
                                 type: type1,
                                 message: res.data.message

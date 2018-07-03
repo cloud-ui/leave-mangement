@@ -23,7 +23,11 @@
                 <el-table-column prop="deparment" align="center" label="部门"></el-table-column>
                 <el-table-column prop="position" width="100" align="center" label="职位"></el-table-column>
                 <el-table-column prop="state" width="100" align="center" label="员工状态"></el-table-column>
-                <el-table-column prop="entryTime" align="center" label="入职时间"></el-table-column>
+                <el-table-column prop="entryTime" align="center" label="入职时间">
+                    <template slot-scope="scope">
+                        {{scope.row.entryTime|formatDate}}
+                    </template>
+                </el-table-column>
                 <el-table-column
                 label="操作"
                 align="center"
@@ -148,7 +152,18 @@
                 this.loadData()
                 this.dialogVisible = dialogVisible
             }
-        }
+        },
+        filters: {
+            formatDate: function (value) {
+                let date = new Date(value);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? ('0' + MM) : MM;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                return y + '-' + MM + '-' + d;
+                }
+            }
     }
 </script>
 <style>

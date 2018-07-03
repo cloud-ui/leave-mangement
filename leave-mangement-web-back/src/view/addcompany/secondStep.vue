@@ -55,7 +55,12 @@ export default {
 <style lang="scss" scoped>
 .show{
     display: flex;
-    align-items: center
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    >span{
+        padding-left: 5px;
+    }
 }
 </style>
 

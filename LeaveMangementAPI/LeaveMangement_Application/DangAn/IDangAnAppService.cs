@@ -20,6 +20,7 @@ namespace LeaveMangement_Application.DangAn
         object AddSingleDpearment(AddSingleDeparmentDto dpearmentDto);
         object EditDeparment(AddSingleDeparmentDto addSingleDeparmentDto);
         object DeleteDeparment(int id);
+        object GetDeparmentById(int id);
         object GetPositionListByCompId(int compId);
         object DeletePosition(int id);
         object AddPosition(AddStateDto addStateDto);

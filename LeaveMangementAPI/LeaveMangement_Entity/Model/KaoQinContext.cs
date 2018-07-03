@@ -58,16 +58,15 @@ namespace LeaveMangement_Entity.Model
                     .HasMaxLength(200);
 
                 entity.Property(e => e.CreateTime)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("(getdate())");
+                    .HasColumnType("bigint");
 
-                entity.Property(e => e.EndTime).HasColumnType("datetime");
+                entity.Property(e => e.EndTime).HasColumnType("bigint");
 
-                entity.Property(e => e.HandleTime).HasColumnType("datetime");
+                entity.Property(e => e.HandleTime).HasColumnType("bigint");
 
                 entity.Property(e => e.Remark).HasMaxLength(100);
 
-                entity.Property(e => e.StartTime).HasColumnType("datetime");
+                entity.Property(e => e.StartTime).HasColumnType("bigint");
             });
 
             modelBuilder.Entity<Authorization>(entity =>
@@ -77,11 +76,11 @@ namespace LeaveMangement_Entity.Model
 
             modelBuilder.Entity<Clock>(entity =>
             {
-                entity.Property(e => e.ClockDay).HasColumnType("date");
+                entity.Property(e => e.ClockDay).HasColumnType("bigint");
 
-                entity.Property(e => e.EndTime).HasColumnType("datetime");
+                entity.Property(e => e.EndTime).HasColumnType("bigint");
 
-                entity.Property(e => e.SrartTime).HasColumnType("datetime");
+                entity.Property(e => e.SrartTime).HasColumnType("bigint");
             });
 
             modelBuilder.Entity<Company>(entity =>
@@ -96,7 +95,7 @@ namespace LeaveMangement_Entity.Model
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.CreateTime).HasColumnType("datetime");
+                entity.Property(e => e.CreateTime).HasColumnType("bigint");
 
                 entity.Property(e => e.DeparmentCount).HasDefaultValueSql("((0))");
 
@@ -141,14 +140,14 @@ namespace LeaveMangement_Entity.Model
             {
                 entity.Property(e => e.Content).IsRequired();
 
-                entity.Property(e => e.CreateTime).HasColumnType("datetime");
+                entity.Property(e => e.CreateTime).HasColumnType("bigint");
             });
 
             modelBuilder.Entity<Journal>(entity =>
             {
                 entity.Property(e => e.Content).IsRequired();
 
-                entity.Property(e => e.CreateTime).HasColumnType("datetime");
+                entity.Property(e => e.CreateTime).HasColumnType("bigint");
             });
 
             modelBuilder.Entity<Menu>(entity =>
@@ -194,9 +193,9 @@ namespace LeaveMangement_Entity.Model
 
                 entity.Property(e => e.Address).HasMaxLength(60);
 
-                entity.Property(e => e.Brith).HasColumnType("datetime");
+                entity.Property(e => e.Brith).HasColumnType("bigint");
 
-                entity.Property(e => e.EntryTime).HasColumnType("datetime");
+                entity.Property(e => e.EntryTime).HasColumnType("bigint");
 
                 entity.Property(e => e.Name)
                     .IsRequired()

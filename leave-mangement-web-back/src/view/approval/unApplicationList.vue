@@ -21,8 +21,14 @@
                 <el-table-column align="center" prop="type" label="请假类型" width="120">
                 </el-table-column>
                 <el-table-column align="center" prop="startTime" label="开始时间">
+                    <template slot-scope="scope">
+                        {{scope.row.startTime | formatDate}}
+                    </template>
                 </el-table-column>
                 <el-table-column align="center" prop="endTime" label="结束时间">
+                    <template slot-scope="scope">
+                        {{scope.row.endTime | formatDate}}
+                    </template>
                 </el-table-column>
                 <el-table-column align="center" prop="createTime" label="创建时间">
                 </el-table-column>
@@ -67,20 +73,14 @@
 <script>
     import '../index.scss'
     import CompLook from './applicationView'
+    import { ApprovalApi } from "./api.js";
     export default {
         components:{
             CompLook
         },
         data() {
             return {
-                tableData: [{
-                    id: 1,
-                    workerName: '张三',
-                    type: '事前-病假',
-                    startTime: '2018-06-08',
-                    endTime: '2018-06-08',
-                    createTime: '2018-02-06'
-                }],
+                tableData: [],
                 headerCellStyle: {
                     backgroundColor: '#f2f2f2',
                     fontSize: '14px',
@@ -95,8 +95,20 @@
                 applicationId:0,
             }
         },
+        mounted(){
+            this.loadData()
+        },
         methods: {
             loadData() {
+                const params={
+                    currentPage: this.currentPage,
+                    currentPageSize: this.pageSize,
+                    query: this.query,
+                }
+                ApprovalApi.getUnApplicationList(params).then(res=>{
+                    this.totalCount = res.data.count
+                    this.tableData = res.data.data
+                })
             },
             handleSizeChange(val) {
                 this.pageSize = val;
@@ -106,10 +118,6 @@
                 this.currentPage = val;
                 this.loadData();
             },
-            handleCommand(id,command){
-                console.log(id)
-                console.log(command)
-            },
             //点击查看
             handleLook(id){
                 this.applicationId = id
@@ -117,7 +125,26 @@
             },
             //点击提交
             handleSubmit(id) {
-                alert("提交成功")
+                this.$confirm('是否确定提交此条申请?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        ApprovalApi.submitApplication(id).then(res => {
+                            this.loadData()
+                            const type1 = res.data.isSuccess? 'success':'error'
+                            this.$message({
+                                type: type1,
+                                message: res.data.message
+                            });
+                            if(res.data.isSuccess){this.$router.push({ path: '/applicationList'})}                       
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
             },
             //点击编辑
             handleEdit(id) {
@@ -126,10 +153,29 @@
                 });
             },
             handleDelete(id) {
-                alert("shanchuchengg!")
+                this.$confirm('此操作将永久删除该申请, 是否继续?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        ApprovalApi.deleteApplication(id).then(res => {
+                            this.loadData()
+                            const type1 = res.data.isSuccess? 'success':'error'
+                            this.$message({
+                                type: type1,
+                                message: res.data.message
+                            });                            
+                        })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
             },
             //点击搜索
             handleChangeQuery() {
+                this.loadData()
             },
             //关闭弹框
             handleClose(){
@@ -137,8 +183,20 @@
             },
             closeForm(val){
                 this.dialogVisible = val
+            },            
+        },
+        filters: {
+            formatDate: function (value) {
+                let date = new Date(value);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? ('0' + MM) : MM;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                return y + '-' + MM + '-' + d;
+                }
             }
-        }
+
     }
 </script>
 <style lang="scss" scoped>
