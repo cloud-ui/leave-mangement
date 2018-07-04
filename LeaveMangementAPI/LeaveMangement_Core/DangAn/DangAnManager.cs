@@ -63,13 +63,16 @@ namespace LeaveMangement_Core.DangAn
             }
             return result;
         }
-        public object EditCompany(Company company)
+        public object EditCompany(EditCompanyDto editCompanyDto)
         {
-            Company comp = _ctx.Company.Find(company.Id);
+            Company comp = _ctx.Company.Find(editCompanyDto.CompId);
             var result = new object();
             try
             {
-                comp = company;
+                comp.CellphoneNumber = editCompanyDto.CellphoneNumber;
+                comp.Corporation = editCompanyDto.Corporation;
+                comp.Address = editCompanyDto.Address;
+                comp.Name = editCompanyDto.Name;
                 _ctx.SaveChanges();
                 result = new
                 {
@@ -81,7 +84,7 @@ namespace LeaveMangement_Core.DangAn
             {
                 result = new
                 {
-                    isSuccess = true,
+                    isSuccess = false,
                     message = "修改公司信息失败！"
                 };
             }

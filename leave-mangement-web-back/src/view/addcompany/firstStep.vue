@@ -107,7 +107,7 @@
         },
         handleSubmit(){
             this.companyMessage.address = this.cityName+this.smallAddress
-            console.log(this.companyMessage)
+            this.companyMessage.createTime = this.companyMessage.createTime.getTime()
             if(this.authCode === this.sendAuthCode){
                 AddCompanyApi.addCompany(this.companyMessage).then(res=>{
                     this.$emit('change',{...res.data})

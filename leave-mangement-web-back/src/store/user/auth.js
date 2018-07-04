@@ -18,6 +18,12 @@ export class Auth {
   static getMenu(){
     return JSON.parse(sessionStorage.getItem('user.menu'))
   }
+  static setInform(value={}){
+    return sessionStorage.setItem('user.info', JSON.stringify(value));
+  }
+  static getInform(){
+    return JSON.parse(sessionStorage.getItem('user.info'))
+  }
 
   // 注销
   static logout() {
@@ -25,8 +31,12 @@ export class Auth {
     Auth.removeLogin();
     Auth.removeToken();
     Auth.removeMenu();
+    Auth.removeInform();
   }
 
+  static removeInform(){
+    return sessionStorage.removeItem('user.info')
+  }
   static removeMenu(){
     return sessionStorage.removeItem('user.menu')
   }

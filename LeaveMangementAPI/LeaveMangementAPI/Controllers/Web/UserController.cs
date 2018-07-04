@@ -65,20 +65,6 @@ namespace LeaveMangementAPI.Controllers.Web
                 };
             return result;
         }
-        [HttpGet]
-        public bool CreateUser()
-        {
-            AdminUser user = new AdminUser()
-            {
-                Account = "123456789",
-                Password = "123456789",
-                Name = "joy",
-                Status = "systemAdmin",
-            };
-            _ctx.AdminUser.Add(user);
-            _ctx.SaveChanges();
-            return true;
-        }
         /// <summary>
         /// 单个添加员工
         /// </summary>
@@ -124,6 +110,16 @@ namespace LeaveMangementAPI.Controllers.Web
         public object ModifyPassword([FromBody]ModifyPasswordDto modifyPasswordDto)
         {
             return _userAppService.ModifyPassword(modifyPasswordDto);
+        }
+        /// <summary>
+        /// 完善用户信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [Authorize]
+        public object EditUserMessage([FromBody] EditUserMessageDto editUserMessageDto)
+        {
+            return _userAppService.EditUserMessage(editUserMessageDto);
         }
 
     }

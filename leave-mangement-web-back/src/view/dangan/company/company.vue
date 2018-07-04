@@ -17,10 +17,10 @@
             <el-input v-model="companyInfo.cellphoneNumber" :readonly="readonly" style="width:40%;"></el-input>
         </el-form-item>
         <el-form-item label="部门数量:">
-            <el-input v-model="companyInfo.deparmentCount" :readonly="readonly" style="width:40%;"></el-input>
+            <el-input v-model="companyInfo.deparmentCount" :readonly="true" style="width:40%;"></el-input>
         </el-form-item>
         <el-form-item label="员工数量:">
-            <el-input v-model="companyInfo.wokerCount" :readonly="readonly" style="width:40%;"></el-input>
+            <el-input v-model="companyInfo.wokerCount" :readonly="true" style="width:40%;"></el-input>
         </el-form-item>
         <el-form-item>
             <el-button v-if="showSave != 'show'" @click="handleEdit()" type="primary" size="mini">编辑</el-button>
@@ -66,6 +66,22 @@ export default {
             },
             handleSave(){
                 this.loading = true
+                const params={
+                    compId: this.companyInfo.id,
+                    name: this.companyInfo.name,
+                    address: this.companyInfo.address,
+                    corporation: this.companyInfo.corporation,
+                    cellphoneNumber: this.companyInfo.cellphoneNumber
+                }
+                FileApi.editCompany(params).then(res=>{
+                    const type1 = res.data.isSuccess?'success':'error'
+                    this.$message({
+                        type:type1,
+                        message:res.data.message
+                    })
+                    this.showSave = 'hide',
+                    this.getCompanyInfo();
+                })
             },
             formatDate (value) {
                 let date = new Date(value);

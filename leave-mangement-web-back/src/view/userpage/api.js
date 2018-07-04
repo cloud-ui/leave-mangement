@@ -12,4 +12,8 @@ export class UserPageApi {
   static modifyPassword(data={}){
     return server.connection('PUT','api/User/ModifyPassword',data)
   }
+  //完善用户信息
+  static editUserMessage(data={}){
+    return server.connection('PUT','api/User/EditUserMessage',data)
+  }
 }

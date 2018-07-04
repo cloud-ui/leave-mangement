@@ -141,6 +141,7 @@ namespace LeaveMangement_Entity.Model
                 entity.Property(e => e.Content).IsRequired();
 
                 entity.Property(e => e.CreateTime).HasColumnType("bigint");
+
             });
 
             modelBuilder.Entity<Journal>(entity =>

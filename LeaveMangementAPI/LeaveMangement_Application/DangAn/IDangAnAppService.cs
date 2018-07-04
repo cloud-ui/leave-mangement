@@ -10,7 +10,7 @@ namespace LeaveMangement_Application.DangAn
         List<Company> GetCompanyList();
         Company GetCompanyById(int compId);
         object AddCompany(Company company);
-        object EditCompany(Company company);
+        object EditCompany(EditCompanyDto editCompanyDto);
         object DeleteCompany(int compId);
         object SendMessage(string address);
         object GetDeparmentList(DepartmentDto query);

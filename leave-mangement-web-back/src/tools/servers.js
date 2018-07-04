@@ -17,7 +17,6 @@ export class BaseApi {
     this.servers = axios.create({
       baseURL: process.env.BASE_API,
       headers,
-      timeout: 1,
       withCredentials: true
     });
     this.servers.defaults.timeout = 50000;

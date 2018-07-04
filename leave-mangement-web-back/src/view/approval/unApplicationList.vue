@@ -182,6 +182,7 @@
                 this.dialogVisible = false
             },
             closeForm(val){
+                this.loadData()
                 this.dialogVisible = val
             },            
         },

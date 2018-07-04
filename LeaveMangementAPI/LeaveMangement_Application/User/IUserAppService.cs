@@ -14,5 +14,6 @@ namespace LeaveMangement_Application.User
         object GetWorkerById(int userId);
         object ModifyPassword(ModifyPasswordDto modifyPasswordDto);
         List<Menus> GetMenu(int positionId, int parentId = 0);
+        object EditUserMessage(EditUserMessageDto editUserMessageDto);
     }
 }

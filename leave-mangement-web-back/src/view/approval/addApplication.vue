@@ -56,7 +56,7 @@
                     <el-form-item style="display: flex;justify-content: flex-end;">
                         <el-button @click="resetForm()">重置</el-button>
                         <el-button type="primary" @click="onSubmit(false)">保存</el-button>
-                        <el-button type="primary" @click="onSubmit(true)">提交</el-button>
+                        <el-button type="primary" :loading="loading" @click="onSubmit(true)">提交</el-button>
                         
                     </el-form-item>
                 </el-form>
@@ -95,6 +95,7 @@
                 count:'',
                 dateLeng:0,
                 isEdit:'',
+                loading:false,
                 rules:{
                     type2:[{required: true,message: '请假类型为必选项',trigger: 'blur'}],
                     account:[{required: true,message: '请假理由为必填项',trigger: 'blur'}],
@@ -151,6 +152,7 @@
             onSubmit(isSubmit){
                 this.$refs['form'].validate(valid=>{
                     if(valid){
+                        this.loading = true
                         const params={
                             workerId:this.userInfo.id,
                             type1 : this.form.type1,
@@ -167,6 +169,7 @@
                                 type:type1,
                                 message:res.data.message
                             })
+                            this.loading = false
                             const path = this.form.isSubmit?'/applicationList':'/unApplicationList'
                             this.$router.push({ path: path})
                         })
@@ -177,6 +180,7 @@
                                     type:type1,
                                     message:res.data.message
                                 })
+                                this.loading = false
                                 const path = this.form.isSubmit?'/applicationList':'/unApplicationList'
                                 this.$router.push({ path: path})
                             })

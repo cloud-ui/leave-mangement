@@ -31,5 +31,9 @@ namespace LeaveMangement_Application.User
         {
             return _userManager.ModifyPassword(modifyPasswordDto);
         }
+        public object EditUserMessage(EditUserMessageDto editUserMessageDto)
+        {
+            return _userManager.EditUserMessage(editUserMessageDto);
+        }
     }
 }

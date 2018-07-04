@@ -1,15 +1,14 @@
 <template>
     <div class="index">
         <div class="index-title">
-            <p>已提交申请</p>
+            <p>待审核申请</p>
         </div>
         <div class="index-body">
             <div class="index-body-title">
                 <div style="display:flex;">
-                    <p>共 <span>{{totalCount}}</span> 条提交的申请</p>
-                    <router-link to="/addApplication/-1" class="link"><i class="el-icon-plus"></i>添加申请</router-link>
+                    <p>共 <span>{{totalCount}}</span> 条待审核的申请</p>
                 </div>
-                <el-input style="width:30%" placeholder="请输入内容" v-model="query" class="input-with-select">
+                <el-input style="width:30%" placeholder="请输入员工名称" v-model="query" class="input-with-select">
                     <el-button slot="append" @click="handleChangeQuery()">搜索</el-button>
                 </el-input>
             </div>
@@ -26,8 +25,6 @@
                 <el-table-column align="center" label="申请状态" width="100">
                     <template slot-scope="scope">
                         <p v-if="scope.row.state===1" class="approval-state unlook">{{scope.row.stateName}}</p>
-                        <p v-if="scope.row.state===2" class="approval-state agree">{{scope.row.stateName}}</p>
-                        <p v-if="scope.row.state===3" class="approval-state refuse">{{scope.row.stateName}}</p>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" prop="startTime" label="开始时间">
@@ -66,19 +63,18 @@
             :total="totalCount">
             </el-pagination>
         </div>
-        <el-dialog title="申请详情" :visible.sync="dialogVisible" :before-close="handleClose">
-         <comp-look @closeForm='handleClose' @close='closeForm' :id="applicationId" ref="compForm"></comp-look>
+        <el-dialog title="审核" :visible.sync="dialogVisible" :before-close="handleClose">
+         <comp-check @closeForm='handleClose' @close='closeForm' :appId="applicationId" ref="compForm"></comp-check>
         </el-dialog>
     </div>
 </template>
 <script>
     import '../index.scss'
-    import './approval.scss'
-    import CompLook from './applicationView'
-    import { ApprovalApi } from "./api.js"
+    import { CheckApi } from "./api.js"
+    import CompCheck from './checkapplication'
     export default {
         components:{
-            CompLook
+            CompCheck
         },
         data() {
             return {
@@ -107,7 +103,7 @@
                     currentPageSize: this.pageSize,
                     query: this.query,
                 }
-                ApprovalApi.getApplicationList(params).then(res=>{
+                CheckApi.getCheckingList(params).then(res=>{
                     this.totalCount = res.data.count
                     this.tableData = res.data.data
                 })
@@ -136,6 +132,7 @@
             closeForm(val){
                 this.loadData()
                 this.dialogVisible = val
+                
             }
         },
         filters: {

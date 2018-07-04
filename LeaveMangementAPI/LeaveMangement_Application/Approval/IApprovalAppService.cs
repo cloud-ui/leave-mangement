@@ -7,6 +7,7 @@ namespace LeaveMangement_Application.Approval
 {
     public interface IApprovalAppService
     {
+        object GetInform(string account);
         object AddApplication(AddApplicationDto addApplicationDto);
         object GetApplicationList(GetApplicationListDto getApplicationListDto);
         object GetUnApplicationList(GetApplicationListDto getApplicationListDto);
@@ -15,5 +16,7 @@ namespace LeaveMangement_Application.Approval
         object EditApplication(EditApplicationDto editApplicationDto);
         object DeleteApplicationById(int id);
         int GetApprovalCount(string account, int compId);
+        object GetCheckingList(CheckingDto checkingDto);
+        object CheckApplication(CheckDto checkDto,string account);
     }
 }

@@ -31,17 +31,18 @@ namespace LeaveMangement_Core.Approval
         public object AddApplication(AddApplicationDto addApplicationDto)
         {
             var result = new object();
-            //var application = _ctx.Apply.SingleOrDefault(a => a.WorkerId == addApplicationDto.WorkerId && a.EndTime >= addApplicationDto.EndTime.ToFileTime());
+            var application = _ctx.Apply.SingleOrDefault(a => a.WorkerId == addApplicationDto.WorkerId &&
+            a.StartTime <= addApplicationDto.StartTime && a.EndTime >= addApplicationDto.EndTime);
             //状态
             int state = addApplicationDto.IsSubmit ? ApprovalHelper.DEFAULT_APPROVAL_STATE : 0;
-            //if (application != null)
-            //    result = new
-            //    {
-            //        isSuccess = false,
-            //        message = "您已有该时间段的假期！"
-            //    };
-            //else
-            //{
+            if (application != null)
+                result = new
+                {
+                    isSuccess = false,
+                    message = "您已有该时间段的假期！"
+                };
+            else
+            {
                 Apply newApply = new Apply()
                 {
                     WorkerId = addApplicationDto.WorkerId,
@@ -63,8 +64,37 @@ namespace LeaveMangement_Core.Approval
                     isSuccess = true,
                     message = "申请已保存！"
                 };
-            //}
+                //添加完成后添加通知
+                AddInform(newApply);
+            }
             return result;
+        }
+        private void AddInform(Apply apply)
+        {
+            //找到当前提交申请员工的上级用户
+            int deparmentId = _ctx.Worker.Find(apply.WorkerId).DepartmentId;
+            int mangerId = _ctx.Deparment.Find(deparmentId).ManagerId;
+            int workerId = 0;
+            //判断经理的ID是否等于提交申请的用户的ID,不等于则直接创建通知。等于就将通知转给总经理
+            if (mangerId != apply.WorkerId)
+                workerId = mangerId;
+            else
+            {
+                //找到公司的总经理的编号
+                int positionId = _ctx.Position.SingleOrDefault(p => p.CompanyId == apply.CompanyId && p.Name.Equals("总经理")).Id;
+                workerId = _ctx.Worker.SingleOrDefault(w => w.PositionId == positionId).Id;
+            }
+            //添加通知
+            Inform inform = new Inform()
+            {
+                WorkId = workerId,
+                ApplicationId = apply.Id,
+                IsLook = false,
+                CreateTime = DateTime.Now.ToFileTime(),
+                Content = "待审核的申请",
+            };
+            _ctx.Inform.Add(inform);
+            _ctx.SaveChanges();
         }
         //获取提交申请列表
         public object GetApplicationList(GetApplicationListDto getApplicationListDto)
@@ -217,6 +247,77 @@ namespace LeaveMangement_Core.Approval
             }
             return result;
         }
+
+        public object GetInform(string account)
+        {
+            int workerId = _ctx.Worker.SingleOrDefault(w=>w.Account.Equals(account)).Id;
+            return _ctx.Inform.Where(i => i.WorkId == workerId).ToList();
+        }
+        public object GetCheckingList(CheckingDto checkingDto)
+        {
+            //从通知表里找出该用户需要审核的条目
+            int workerId = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(checkingDto.Account) && w.CompanyId == checkingDto.CompId).Id;
+            int[] applicationIds = (from info in _ctx.Inform
+                                   where info.WorkId == workerId
+                                   select info.ApplicationId).ToArray();
+            //再找出申请列表
+            var applications = (from apply in _ctx.Apply
+                               join worker in _ctx.Worker on apply.WorkerId equals worker.Id
+                               join deparment in _ctx.Deparment on apply.DeparmentId equals deparment.Id
+                               where applicationIds.Contains(apply.Id) && worker.Name.Contains(checkingDto.Query)
+                               select new
+                               {
+                                   id = apply.Id,
+                                   workerName = worker.Name,
+                                   deparment = deparment.Name,
+                                   type = _approvalService.GetApplicationType(apply.Type1, apply.Type2),
+                                   state = apply.State,
+                                   stateName = _approvalService.GetStateName(apply.State),
+                                   startTime = apply.StartTime,
+                                   endTime = apply.EndTime,
+                                   createTime = _commonServer.ChangeTime(apply.CreateTime),
+                               }).ToList();
+            var result = new object();
+            result = new
+            {
+                count = applications.Count(),
+                data = applications.Skip((checkingDto.CurrentPage - 1) * checkingDto.CurrentPageSize).Take(checkingDto.CurrentPageSize),
+            };
+            return result;
+
+        }
+        public object CheckApplication(CheckDto checkDto, string account)
+        {
+            var result = new object();
+            try
+            {
+                //找出处理人的ID
+                Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
+                //找出申请
+                Apply apply = _ctx.Apply.Find(checkDto.ApplicationId);
+                string remark = worker.Name + "：" + checkDto.Remark + ";" + apply.Remark;
+                //更新申请的处理信息
+                apply.HandleTime = DateTime.Now.ToFileTime();
+                apply.LeaderId = worker.Id;
+                apply.Remark = remark;
+                apply.State = checkDto.IsAgree ? 2 : 3;
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "审核成功！",
+                };
+            }
+            catch
+            {
+                result = new
+                {
+                    isSuccess = false,
+                    message = "审核失败！",
+                };
+            }
+            return result;
+        }
         //获取处理申请人姓名
         public string GetHanderName(int? id)
         {
@@ -229,6 +330,7 @@ namespace LeaveMangement_Core.Approval
                 return "";
             }            
         }
+
 
     }
 }

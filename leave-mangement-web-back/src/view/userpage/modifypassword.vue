@@ -1,5 +1,5 @@
 <template>
-    <el-form ref="password" style="padding-right:20px;" label-width="120px" :rules="rule" :model="formData">
+    <el-form ref="password" label-width="120px" :rules="rule" :model="formData">
         <el-form-item prop="password" label="原始密码：">
             <el-input type="password" v-model="formData.password"></el-input>
         </el-form-item>
@@ -7,10 +7,10 @@
             <el-input v-model="formData.newPassword"></el-input>
         </el-form-item>
         <el-form-item prop="reNewPassword" label="重复新密码：">
-            <el-input v-model="reNewPassword"></el-input>
+            <el-input v-model="formData.reNewPassword"></el-input>
         </el-form-item>
         <el-form-item style="display:flex;justify-content: flex-end;">
-            <el-button>取消</el-button>
+            <el-button @click="handleClose">取消</el-button>
             <el-button @click="handleSubmit()" :loading="loading" type="primary">提交修改</el-button>
         </el-form-item>
     </el-form>
@@ -77,8 +77,14 @@ export default {
         },
         handleClose(){
             this.loading = false
-            this.formData = ''
-        }
+            this.formData = {
+                id:this.workerId,
+                password:'',
+                newPassword:'',
+                reNewPassword:'',}
+            this.$emit('closeForm',false)
+            }
+            
     }
 }
 </script>

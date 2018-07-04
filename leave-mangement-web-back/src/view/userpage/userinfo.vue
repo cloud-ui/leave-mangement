@@ -1,7 +1,7 @@
 <template>
     <el-card style="width:82%" class="box-card">
         <div>
-            <el-col :span="20">
+            <el-col :span="20" style="padding-right:30px;">
                 <div class="userinfo-title">
                     <hr/>
                     <p>个人信息</p>
@@ -70,7 +70,8 @@
                         <hr/>
                         <p>{{title}}</p>
                     </div>
-                    <comp-password v-if="showBox==='password'" :workerId="userInfo.id"></comp-password>
+                    <comp-message v-if="showBox==='message'" @closeForm="closeForm" :workerId="userInfo.id"></comp-message>
+                    <comp-password v-if="showBox==='password'" @closeForm="closeForm" :workerId="userInfo.id"></comp-password>
                 </div>
             </el-col>
             <el-col :span="4">
@@ -78,7 +79,7 @@
                 <div class="userinfo-btn">
                     <ul>
                         <li><el-button @click="handleCompleteMessage()" type="primary" size="mini">完善资料</el-button></li>
-                        <li><el-button @click="handleAuth()" type="primary" size="mini">个人认证</el-button></li>
+                        <!-- <li><el-button @click="handleAuth()" type="primary" size="mini">个人认证</el-button></li> -->
                         <li><el-button @click="handleModifyPassword()" type="primary" size="mini">修改密码</el-button></li>
                     </ul>
                 </div>
@@ -91,9 +92,11 @@ import './userpage.scss'
 import {mapGetters} from 'vuex'
 import { UserPageApi } from "./api.js";
 import CompPassword from './modifypassword'
+import CompMessage from './workermessage'
 export default {
     components:{
-        CompPassword
+        CompPassword,
+        CompMessage
     },
     data(){
         return{
@@ -133,6 +136,10 @@ export default {
             this.title = title
             this.showBox = part
             this.show = true
+        },
+        closeForm(value){
+            this.loadUserinfo()
+            this.show = value
         }
     },
     filters: {

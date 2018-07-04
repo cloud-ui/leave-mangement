@@ -68,6 +68,17 @@ namespace LeaveMangementAPI.Controllers.Web
         {
             return _dangAnAppService.SendMessage(email);
         }
+
+        /// <summary>
+        /// 编辑公司资料
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [Authorize]
+        public object EditCompany([FromBody]EditCompanyDto editCompanyDto)
+        {
+            return _dangAnAppService.EditCompany(editCompanyDto);
+        }
         /// <summary>
         /// 单个添加部门
         /// </summary>

@@ -36,6 +36,16 @@ namespace LeaveMangementAPI.Controllers.Web
             _commonAppService = commonAppService;
             _configuration = configuration;
         }
+
+        //获取当前登录用户的通知数目和内容
+        [HttpGet]
+        [Authorize]
+        public async Task<object> GetInform()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            return _approvalAppService.GetInform(account);
+        }
         /// <summary>
         /// 提交请假申请
         /// </summary>
@@ -123,11 +133,26 @@ namespace LeaveMangementAPI.Controllers.Web
         /// 获取到当前登录的管理员用户待审核的申请列表
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpPost]
         [Authorize]
-        public object GetCheckingList()
+        public async Task<object> GetCheckingList([FromBody]CheckingDto checkingDto)
         {
-            return true;
+            var context = HttpContext;
+            checkingDto.Account = await _jwtUtil.GetMessageByToken(context);
+            checkingDto.CompId = _commonAppService.GetUserCompId(checkingDto.Account);
+            return _approvalAppService.GetCheckingList(checkingDto);
+        }
+        /// <summary>
+        /// 经理或总经理审核请假申请                                                           
+        /// </summary>
+        /// <returns></returns>
+        [HttpPut]
+        [Authorize]
+        public async Task<object> CheckApplication([FromBody] CheckDto checkDto)
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            return _approvalAppService.CheckApplication(checkDto, account);
         }
         /// <summary>
         /// 获取的当前登录用户当月请假次数

@@ -10,5 +10,6 @@ namespace LeaveMangement_Entity.Model
         public long CreateTime { get; set; }
         public bool IsLook { get; set; }
         public int WorkId { get; set; }
+        public int ApplicationId { get; set; }
     }
 }

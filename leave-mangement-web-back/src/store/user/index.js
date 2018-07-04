@@ -5,6 +5,7 @@ export default{
         userInfo: Auth.getUserInfo() || {},
         isLogin: Auth.getLogin() || false,
         menu:Auth.getMenu() || {},
+        inform:Auth.getInform() || {}
     },
     mutations:{
         ACCOUNT_SET(state,data={}){
@@ -19,6 +20,9 @@ export default{
             state.isLogin = false;
             Auth.logout();
           },
+        SET_INFORM(state,data={}){
+            Auth.setInform(data)
+        }
     },
     getters: {
         // doneTodos: state => {
@@ -32,6 +36,12 @@ export default{
                 resolve()
                 })
             
+        },
+        setInform({commit},data={}){
+            return new Promise((resolve, reject) => {
+                commit('SET_INFORM',{...data});
+                resolve()
+                })
         },
         /** 登出 */
         accountLogoutSubmit({commit}) {

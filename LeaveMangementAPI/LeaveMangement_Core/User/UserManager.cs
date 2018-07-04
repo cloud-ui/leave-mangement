@@ -167,9 +167,37 @@ namespace LeaveMangement_Core.User
             for(int i = 0; i < positionIdStr.Length; i++)
             {
                 positionIds[i] = int.Parse(positionIdStr[i]);
-                i++;
             }
             return positionIds;
+        }
+        public object EditUserMessage(EditUserMessageDto editUserMessageDto)
+        {
+            var result = new object();
+            try
+            {
+                Worker worker = _ctx.Worker.Find(editUserMessageDto.Id);
+                worker.PhoneNumber = editUserMessageDto.PhoneNumber;
+                worker.Age = editUserMessageDto.Age;
+                worker.Address = editUserMessageDto.Address;
+                worker.Brith = editUserMessageDto.Birth;
+                worker.IsAuth = true;
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "完善资料成功！"
+                };
+            }
+            catch
+            {
+                result = new
+                {
+                    isSuccess = false,
+                    message = "完善资料失败！"
+                };
+            }
+            return result;
+            
         }
     }
 }

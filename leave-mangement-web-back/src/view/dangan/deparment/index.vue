@@ -187,6 +187,7 @@ export default {
       closeForm(val){
           this.loadData()
           this.dialogVisible = val
+          this.loadData()
       }
     }
 }

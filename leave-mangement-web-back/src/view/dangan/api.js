@@ -8,6 +8,10 @@ export class FileApi {
   static getCompany () {
     return server.connection('GET', 'api/File/GetCompanyInfo')
   }
+  //编辑公司信息
+  static editCompany(data={}){
+    return server.connection('PUT','api/File/EditCompany',data)
+  }
   //获取员工列表
   static getWorkers(data={}){
     return server.connection('POST','api/File/GetWorkList',data)

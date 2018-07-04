@@ -66,6 +66,10 @@ export default new Router({
           name:'userpage',
           meta: {requireAuth: true},
           component:()=>import('../view/userpage/index')
+        },{
+          path:'/check',
+          name:'check',
+          component:()=>import('../view/check/index')
         }
       ]
     }

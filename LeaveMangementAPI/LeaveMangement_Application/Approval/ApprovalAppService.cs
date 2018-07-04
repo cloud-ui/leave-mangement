@@ -9,6 +9,10 @@ namespace LeaveMangement_Application.Approval
     public class ApprovalAppService : IApprovalAppService
     {
         private ApprovalManager _approvalManager = new ApprovalManager();
+        public object GetInform(string account)
+        {
+            return _approvalManager.GetInform(account);
+        }
         public object AddApplication(AddApplicationDto addApplicationDto)
         {
             return _approvalManager.AddApplication(addApplicationDto);
@@ -40,6 +44,14 @@ namespace LeaveMangement_Application.Approval
         public int GetApprovalCount(string account, int compId)
         {
             return _approvalManager.GetApprovalCount(account, compId);
+        }
+        public object GetCheckingList(CheckingDto checkingDto)
+        {
+            return _approvalManager.GetCheckingList(checkingDto);
+        }
+        public object CheckApplication(CheckDto checkDto, string account)
+        {
+            return _approvalManager.CheckApplication(checkDto, account);
         }
     }
 }
