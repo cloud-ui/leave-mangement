@@ -1,57 +1,92 @@
 <template>
-    <el-tree
+<div>
+<el-tree
     :data="data2"
     show-checkbox
     node-key="id"
-    :default-expanded-keys="[2, 3]"
-    :default-checked-keys="[5]"
+    ref="tree"
+    :default-expanded-keys="defaultCheckKeys"
+    :default-checked-keys="defaultCheckKeys"
     :props="defaultProps">
 </el-tree>
+<div style="display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;">
+  <el-button :loading="loding" type="primary"  @click="submit()">提交</el-button>
+</div>
+
+</div>
+    
 </template>
 <script>
+import {FileApi} from '../api.js'
   export default {
+    props:['positionId'],
     data() {
       return {
-        data2: [{
-          id: 1,
-          label: '一级 1',
-          children: [{
-            id: 4,
-            label: '二级 1-1',
-            children: [{
-              id: 9,
-              label: '三级 1-1-1'
-            }, {
-              id: 10,
-              label: '三级 1-1-2'
-            }]
-          }]
-        }, {
-          id: 2,
-          label: '一级 2',
-          children: [{
-            id: 5,
-            label: '二级 2-1'
-          }, {
-            id: 6,
-            label: '二级 2-2'
-          }]
-        }, {
-          id: 3,
-          label: '一级 3',
-          children: [{
-            id: 7,
-            label: '二级 3-1'
-          }, {
-            id: 8,
-            label: '二级 3-2'
-          }]
-        }],
+        data2: [],
+        id:this.positionId,
+        loding:false,
+        defaultCheckKeys:[],
         defaultProps: {
           children: 'children',
           label: 'label'
         }
-      };
+      }
+    },
+    watch:{
+      positionId:{
+        handler(val,oldVal){
+          this.id = val
+          this.loadSelectMenuId(this.id)
+        },
+        deep:true
+      }
+    },
+    mounted(){
+      this.loadMenuTree()
+      this.loadSelectMenuId(this.id)
+    },
+    methods:{
+      loadMenuTree(){
+        FileApi.loadMenuTree().then(res=>{
+          this.data2 = res.data
+        })
+      },
+      loadSelectMenuId(val){
+        FileApi.loadSelectMenuId(val).then(res=>{
+          this.getIds(res.data)
+        })
+      },
+      getIds(data){
+        data.map(item=>{
+          this.defaultCheckKeys.push(item.id);
+          if(item.children.length != 0){
+            item.children.map(value=>{
+              this.defaultCheckKeys.push(value.id)
+            })
+          }
+        })
+      },
+      submit(){
+        const params={
+          id:this.id,
+          menuIds:this.$refs.tree.getCheckedKeys()
+        }
+        this.loding = true
+        FileApi.SaveSelectMenu(params).then(res=>{
+          const type1 = res.data.isSuccess?'success':'error'
+          this.$message({
+            type:type1,
+            message:res.data.message
+          })
+          this.close
+        })
+      },
+      close(){
+        this.loding = false
+        this.$emit('close',false)
+      }
     }
   };
 </script>

@@ -7,7 +7,7 @@
         <comp-table :tableData="tableData" :tableHeader="tableHeader" :tableAttr="tableAttr" :headerCellStyle="headerCellStyle" className="tableClassName" @tableOtherClick="tableOtherClick"></comp-table>
         <el-dialog :title="formTitle" :visible.sync="dialogVisible" width="408px" :before-close="handleClose">
             <comp-form v-if="!treeShow" @closeForm='handleClose' @close='closeForm' ref="compForm" :formInfo="formInfo"></comp-form>
-            <comp-tree @closeForm='handleClose'></comp-tree>
+            <comp-tree @closeForm='handleClose' @close='closeForm' @positionId="positionId"></comp-tree>
         </el-dialog>
     </el-card>
 </template>
@@ -100,6 +100,7 @@
                         ...row
                     }
                     this.dialogVisible = true
+                    this.treeShow = false
                 }
                 if (type === 'delete') {
                     this.$confirm('此操作将永久删除该职位, 是否继续?', '提示', {
@@ -124,6 +125,7 @@
                 }
                 if(type === 'permission'){
                     this.treeShow = true
+                    this.formTitle = "权限配置"
                     this.positionId = row.id
                     this.dialogVisible = true
                 }
@@ -138,13 +140,18 @@
             //关闭弹框
             handleClose() {
                 this.dialogVisible = false
-                this.$refs.compForm.resetForm('addForm');
+                if(!this.treeShow){
+                    this.$refs.compForm.resetForm('addForm');
+                }
+                
             },
             closeForm(val) {
                 this.loadData()
                 this.dialogVisible = val
                 this.$refs.compForm.resetForm('addForm');
-                
+                if(!this.treeShow){
+                    this.$refs.compForm.resetForm('addForm');
+                }
             }
         }
     }

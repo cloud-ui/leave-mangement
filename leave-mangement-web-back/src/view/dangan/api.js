@@ -80,4 +80,14 @@ export class FileApi {
   static addSingleWorker(data={}){
     return server.connection('POST','api/User/AddSingleWorker',data)
   }
+  //加载完整树
+  static loadMenuTree(){
+    return server.connection('GET','api/Permission/GetMenuTree')
+  }
+  static loadSelectMenuId(id){
+    return server.connection('POST','api/Permission/GetMenuTreeByPostion?positionId='+id)
+  }
+  static SaveSelectMenu(data={}){
+    return server.connection('POST','api/Permission/SaveSelectMenu',data)
+  }
 }
