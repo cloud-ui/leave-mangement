@@ -167,5 +167,17 @@ namespace LeaveMangementAPI.Controllers.Web
             int compId = _commonAppService.GetUserCompId(account);
             return _approvalAppService.GetApprovalCount(account,compId);
         }
+        /// <summary>
+        /// 提交给上一级
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public async Task<object> PushCheck([FromBody]PushCheck pushCheck)
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            return _approvalAppService.PushCheck(pushCheck, account);
+        }
     }
 }

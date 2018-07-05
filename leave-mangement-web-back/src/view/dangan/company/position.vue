@@ -6,7 +6,8 @@
         </div>
         <comp-table :tableData="tableData" :tableHeader="tableHeader" :tableAttr="tableAttr" :headerCellStyle="headerCellStyle" className="tableClassName" @tableOtherClick="tableOtherClick"></comp-table>
         <el-dialog :title="formTitle" :visible.sync="dialogVisible" width="408px" :before-close="handleClose">
-            <comp-form @closeForm='handleClose' @close='closeForm' ref="compForm" :formInfo="formInfo"></comp-form>
+            <comp-form v-if="!treeShow" @closeForm='handleClose' @close='closeForm' ref="compForm" :formInfo="formInfo"></comp-form>
+            <comp-tree @closeForm='handleClose'></comp-tree>
         </el-dialog>
     </el-card>
 </template>
@@ -17,15 +18,19 @@
     } from '../api.js'
     import CompTable from '../../../packages/components/table'
     import compForm from './addForm'
+    import CompTree from './permissiontree'
     export default {
         components: {
             CompTable,
-            compForm
+            compForm,
+            CompTree
         },
         data() {
             return {
                 formTitle: '',
                 dialogVisible: false,
+                treeShow:false,
+                positionId:'',
                 formInfo: {
                     state: 'position',
                     type: '',
@@ -46,7 +51,13 @@
                             type: 'delete',
                             icon: 'el-icon-delete',
                             color: '#f56c6c'
-                        },
+                        },{
+                            name:'权限配置',
+                            style:'text',
+                            type:'permission',
+                            icon:'el-icon-refresh',
+                            color:'#5fb878'
+                        }
                     ]
                 },
                 tableHeader: [{
@@ -98,12 +109,7 @@
                     }).then(() => {
                         FileApi.deletePosition(row.id).then(res => {
                             this.loadData()
-                            var type1 = ''
-                            if(res.data.isSuccess){
-                                type1 = 'success'
-                            }else{
-                                type1 = 'error'
-                            }
+                            var type1 = res.data.isSuccess?'success': 'error'
                             this.$message({
                                 type: type1,
                                 message: res.data.message
@@ -115,6 +121,11 @@
                             message: '已取消删除'
                         });
                     });
+                }
+                if(type === 'permission'){
+                    this.treeShow = true
+                    this.positionId = row.id
+                    this.dialogVisible = true
                 }
             },
             //点击添加按钮

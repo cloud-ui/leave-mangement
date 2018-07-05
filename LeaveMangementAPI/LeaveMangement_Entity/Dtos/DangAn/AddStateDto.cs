@@ -10,5 +10,6 @@ namespace LeaveMangement_Entity.Dtos.DangAn
         public int CompId { get; set; }
         public int Pay { get; set; }
         public int Id { get; set; }
+        public int ParentId { get; set; }
     }
 }

@@ -5,3 +5,30 @@
         justify-content: flex-end;
     }
 }
+.approval-message{
+    background-color: #f5f7facc;
+    width: 100%;
+    min-height: 100px;
+    &-title{
+        background-color: #fff;
+        margin-left: 2%;
+        top: -8px;
+        display: inline-block;
+        position: relative;
+        font-size: 12px;
+    };
+    &-body{
+        margin-left: 2%;
+        font-size: 12px;
+        &-part{
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-end;
+            padding-bottom: 5px;
+            > p{
+                width:80px;
+                text-align: right;
+            }
+        }
+    }
+}

@@ -18,7 +18,6 @@ export default new Router({
     },
     {
       path: '/',
-      name: 'shouye',
       meta: {requireAuth: true},
       component: () => import ('../packages/ui/container'),
       children: [

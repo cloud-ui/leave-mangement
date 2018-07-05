@@ -369,7 +369,8 @@ namespace LeaveMangement_Core.DangAn
                 {
                     Name = addStateDto.Name,
                     Pay = addStateDto.Pay,
-                    CompanyId = addStateDto.CompId
+                    CompanyId = addStateDto.CompId,
+                    ParentId = addStateDto.ParentId,
                 };
                 try
                 {

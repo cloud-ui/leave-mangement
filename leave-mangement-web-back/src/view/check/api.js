@@ -15,5 +15,9 @@ export class CheckApi {
   //查看申请
   static getApplication(id){
     return server.connection('POST','api/Approval/GetApplicationById?id='+id)
-}
+  }
+  //提交上一级
+  static pushCheck(data={}){
+      return server.connection('POST','api/Approval/PushCheck',data)
+  }
 }

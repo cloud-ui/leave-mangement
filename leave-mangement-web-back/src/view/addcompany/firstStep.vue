@@ -109,7 +109,9 @@
             this.companyMessage.address = this.cityName+this.smallAddress
             this.companyMessage.createTime = this.companyMessage.createTime.getTime()
             if(this.authCode === this.sendAuthCode){
+                this.loading = true
                 AddCompanyApi.addCompany(this.companyMessage).then(res=>{
+                    this.loading = false
                     this.$emit('change',{...res.data})
                 })
             }else{

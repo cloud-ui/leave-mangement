@@ -1,6 +1,7 @@
 <template>
 <div>
   <div class="add-head">
+      <router-link class="add-head-link" to="/login"><i class="el-icon-back"></i>返回</router-link>
       <div class="head-container">
           <div style="padding-top:15px;">
             <p class="head-title">JX人事考勤系统</p>

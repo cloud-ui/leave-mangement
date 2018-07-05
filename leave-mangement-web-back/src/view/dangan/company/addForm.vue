@@ -1,5 +1,15 @@
 <template>
-    <el-form ref="addForm" :model="form" :rules="rule" label-width="15%">
+    <el-form ref="addForm" :model="form" :rules="rule" label-width="80px">
+        <el-form-item v-if="this.formInfo.state === 'position'" label="上级：">
+            <el-select v-model="form.parmentId">
+                <el-option
+                    v-for="item in SelectData"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                </el-option>
+            </el-select>
+        </el-form-item>
         <el-form-item prop="name" label="名称:">
             <el-input v-model="form.name"></el-input>
         </el-form-item>
@@ -19,6 +29,7 @@ export default {
     data(){
         return{
             form:this.formInfo.data,
+            SelectData:[],
             loading:false,
             rule:{
                 name:[{required: true,message: '请输入名称',trigger: 'blur'}],
@@ -30,9 +41,13 @@ export default {
         formInfo: {
             handler(val, olaval) {
             this.form = val.data;
+            
             },
             deep: true
         }
+    },
+    mounted(){
+        this.loadSelectData()
     },
     methods:{
         //点击提交按钮
@@ -91,6 +106,15 @@ export default {
                     }
                 }
              })
+        },
+        loadSelectData(){
+            this.SelectData=[{
+                id:0,
+                name:'最高层'
+            }]
+            FileApi.getPositionList().then(res => {
+                    this.SelectData = res.data
+                })
         },
         //关闭弹框
         closeForm(){

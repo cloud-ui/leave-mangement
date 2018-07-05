@@ -124,7 +124,33 @@ namespace LeaveMangement_Core.Approval
         }
         public object GetApplicationById(int id)
         {
-            var list = (from apply in _ctx.Apply
+            var application = _ctx.Apply.Find(id);
+            var list = new object();
+            if(application.LeaderId == null)
+            {
+                list = (from apply in _ctx.Apply
+                        join worker in _ctx.Worker on apply.WorkerId equals worker.Id
+                        join deparment in _ctx.Deparment on apply.DeparmentId equals deparment.Id
+                        where apply.Id == id
+                        select new
+                        {
+                            workerName = worker.Name,
+                            deparment = deparment.Name,
+                            account = apply.Account,
+                            type = _approvalService.GetApplicationType(apply.Type1, apply.Type2),
+                            state = apply.State,
+                            stateName = apply.State == 0?"":_approvalService.GetStateName(apply.State),
+                            startTime = apply.StartTime,
+                            endTime = apply.EndTime,
+                            remark = "",
+                            handerName = "",
+                            handerTime = "",
+                            createTime = _commonServer.ChangeTime(apply.CreateTime),
+                        }).FirstOrDefault();
+            }
+            else
+            {
+                list = (from apply in _ctx.Apply
                         join worker in _ctx.Worker on apply.WorkerId equals worker.Id
                         join deparment in _ctx.Deparment on apply.DeparmentId equals deparment.Id
                         where apply.Id == id
@@ -142,8 +168,10 @@ namespace LeaveMangement_Core.Approval
                             handerName = GetHanderName(apply.LeaderId),
                             handerTime = _commonServer.ChangeTime((long)apply.HandleTime),
                             createTime = _commonServer.ChangeTime(apply.CreateTime),
-                        }).ToList();
-            return list[0];
+                        }).FirstOrDefault();
+            }
+            
+            return list;
         }
         public object GetUnApplicationList(GetApplicationListDto getApplicationListDto)
         {
@@ -293,6 +321,7 @@ namespace LeaveMangement_Core.Approval
             {
                 //找出处理人的ID
                 Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
+                Inform inform = _ctx.Inform.SingleOrDefault(i => i.ApplicationId == checkDto.ApplicationId);
                 //找出申请
                 Apply apply = _ctx.Apply.Find(checkDto.ApplicationId);
                 string remark = worker.Name + "：" + checkDto.Remark + ";" + apply.Remark;
@@ -301,6 +330,8 @@ namespace LeaveMangement_Core.Approval
                 apply.LeaderId = worker.Id;
                 apply.Remark = remark;
                 apply.State = checkDto.IsAgree ? 2 : 3;
+                //删除待审核的通知记录
+                _ctx.Inform.Remove(inform);
                 _ctx.SaveChanges();
                 result = new
                 {
@@ -314,6 +345,44 @@ namespace LeaveMangement_Core.Approval
                 {
                     isSuccess = false,
                     message = "审核失败！",
+                };
+            }
+            return result;
+        }
+        public object PushCheck(PushCheck pushCheck, string account)
+        {
+            var result = new object();
+            Apply apply = _ctx.Apply.Find(pushCheck.ApplicationId);
+            //找出当前用户的职位编号
+            Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
+            //根据职位编号找出职位
+            Position position = _ctx.Position.Find(worker.PositionId);
+            string remark = worker.Name + "：" + pushCheck.Remark + ";" + apply.Remark;
+            apply.Remark = remark;
+            if (position.ParentId == 0)
+                result = new
+                {
+                    isSuccess = false,
+                    message = "提交失败，您目前没有上级管理！",
+                };
+            else
+            {
+                Inform inform = new Inform()
+                {
+                    WorkId = position.ParentId,
+                    ApplicationId = pushCheck.ApplicationId,
+                    IsLook = false,
+                    CreateTime = DateTime.Now.ToFileTime(),
+                    Content = "待审核的申请",
+                };
+                Inform oldInfo = _ctx.Inform.SingleOrDefault(i => i.WorkId == worker.Id);
+                _ctx.Inform.Remove(oldInfo);
+                _ctx.Inform.Add(inform);
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "提交成功！",
                 };
             }
             return result;

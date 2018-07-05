@@ -18,5 +18,6 @@ namespace LeaveMangement_Application.Approval
         int GetApprovalCount(string account, int compId);
         object GetCheckingList(CheckingDto checkingDto);
         object CheckApplication(CheckDto checkDto,string account);
+        object PushCheck(PushCheck pushCheck,string account);
     }
 }

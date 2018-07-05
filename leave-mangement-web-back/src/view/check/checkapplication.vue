@@ -18,8 +18,8 @@
                 <el-col :span="7" class="approval-message-body-part">
                     <p>申请时间：</p><span>{{data.createTime}}</span>
                 </el-col>
-                <el-col :span="10" class="approval-message-body-part">
-                    <p>起止时间：</p><span>{{data.startTime}} - {{data.endTime}}</span>
+                <el-col :span="17" class="approval-message-body-part">
+                    <p>起止时间：</p><span>{{data.startTime|formatDate}} - {{data.endTime|formatDate}}</span>
                 </el-col>
             </div>
             <div>
@@ -35,7 +35,7 @@
                     <el-input type="textarea" v-model="remark" :rows="2"></el-input>
                 </el-form-item>
                 <el-form-item class="check-btn">
-                    <el-button type="primary">递交上级</el-button>
+                    <el-button @click="pushCheck()" type="primary">递交上级</el-button>
                     <el-button @click="checkApplication(true)" type="primary">同意</el-button>
                     <el-button @click="checkApplication(false)" type="danger">拒绝</el-button>
                 </el-form-item>
@@ -68,7 +68,7 @@ export default {
     methods:{
         loadData(){
             CheckApi.getApplication(this.appId).then(res=>{
-                this.data = {...red.data}
+                this.data = {...res.data}
             })
         },
         checkApplication(val){
@@ -78,13 +78,43 @@ export default {
                 IsAgree:val
             }
             CheckApi.checkApplication(params).then(res=>{
+                const type1 = res.data.isSuccess?'success':'error'
+                this.$message({
+                    type:type1,
+                    message:res.data.message
+                })
+                this.close()
+            })
+        },
+        pushCheck(){
+            const params={
+                remark:this.remark,
+                applicationId:this.appId,
+            }
+            CheckApi.pushCheck(params).then(res=>{
+                const type1 = res.data.isSuccess?'success':'error'
+                this.$message({
+                    type:type1,
+                    message:res.data.message
+                })
                 this.close()
             })
         },
         close(){
             this.$emit('close',false)
         }
-    }
+    },
+    filters: {
+            formatDate: function (value) {
+                let date = new Date(value);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? ('0' + MM) : MM;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                return y + '-' + MM + '-' + d;
+                }
+            }
 }
 </script>
 

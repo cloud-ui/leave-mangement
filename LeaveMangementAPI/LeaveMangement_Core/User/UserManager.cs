@@ -94,7 +94,7 @@ namespace LeaveMangement_Core.User
                             position = position.Name,
                             age = worker.Age,
                             address = worker.Address,
-                            phoneNumber = worker.PaperNumber,
+                            phoneNumber = worker.PhoneNumber,
                             sex = worker.Sex == 0 ? "女" : "男",
                             entryTime = worker.EntryTime,
                             birth = worker.Brith,

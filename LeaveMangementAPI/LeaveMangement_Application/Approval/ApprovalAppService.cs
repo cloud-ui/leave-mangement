@@ -53,5 +53,9 @@ namespace LeaveMangement_Application.Approval
         {
             return _approvalManager.CheckApplication(checkDto, account);
         }
+        public object PushCheck(PushCheck pushCheck, string account)
+        {
+            return _approvalManager.PushCheck(pushCheck, account);
+        }
     }
 }
