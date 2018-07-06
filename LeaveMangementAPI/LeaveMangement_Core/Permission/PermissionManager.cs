@@ -76,12 +76,13 @@ namespace LeaveMangement_Core.Permission
                     {
                         string str = item.PositionId + "," + selectMenuDto.PositionId;
                         item.PositionId = str;
+                        _ctx.SaveChanges();
                     }
                 }
-                _ctx.SaveChanges();
+                
                 result = new
                 {
-                    isSuccess = false,
+                    isSuccess = true,
                     message = "权限配置成功！"
                 };
             }

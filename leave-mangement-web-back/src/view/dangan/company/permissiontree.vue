@@ -21,11 +21,11 @@
 <script>
 import {FileApi} from '../api.js'
   export default {
-    props:['positionId'],
+    props:['formInfo'],
     data() {
       return {
         data2: [],
-        id:this.positionId,
+        form:this.formInfo.data,
         loding:false,
         defaultCheckKeys:[],
         defaultProps: {
@@ -35,17 +35,17 @@ import {FileApi} from '../api.js'
       }
     },
     watch:{
-      positionId:{
-        handler(val,oldVal){
-          this.id = val
-          this.loadSelectMenuId(this.id)
-        },
-        deep:true
-      }
+        formInfo: {
+            handler(val, olaval) {
+            this.form = val.data;
+            this.loadSelectMenuId(this.form.id)
+            },
+            deep: true
+        }
     },
     mounted(){
       this.loadMenuTree()
-      this.loadSelectMenuId(this.id)
+      this.loadSelectMenuId(this.form.id)
     },
     methods:{
       loadMenuTree(){
@@ -70,8 +70,8 @@ import {FileApi} from '../api.js'
       },
       submit(){
         const params={
-          id:this.id,
-          menuIds:this.$refs.tree.getCheckedKeys()
+          positionId:this.form.id,
+          menusId:this.$refs.tree.getCheckedKeys()
         }
         this.loding = true
         FileApi.SaveSelectMenu(params).then(res=>{
@@ -80,7 +80,7 @@ import {FileApi} from '../api.js'
             type:type1,
             message:res.data.message
           })
-          this.close
+          this.close()
         })
       },
       close(){

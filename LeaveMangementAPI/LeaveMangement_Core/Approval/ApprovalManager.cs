@@ -65,7 +65,10 @@ namespace LeaveMangement_Core.Approval
                     message = "申请已保存！"
                 };
                 //添加完成后添加通知
-                AddInform(newApply);
+                if (newApply.State == 1)
+                {
+                    AddInform(newApply);
+                }
             }
             return result;
         }
@@ -75,15 +78,17 @@ namespace LeaveMangement_Core.Approval
             int deparmentId = _ctx.Worker.Find(apply.WorkerId).DepartmentId;
             int mangerId = _ctx.Deparment.Find(deparmentId).ManagerId;
             int workerId = 0;
-            //判断经理的ID是否等于提交申请的用户的ID,不等于则直接创建通知。等于就将通知转给总经理
+            //判断经理的ID是否等于提交申请的用户的ID,不等于则直接创建通知。等于就将通知转给上级
             if (mangerId != apply.WorkerId)
                 workerId = mangerId;
             else
             {
-                //找到公司的总经理的编号
-                int positionId = _ctx.Position.SingleOrDefault(p => p.CompanyId == apply.CompanyId && p.Name.Equals("总经理")).Id;
+                //找到公司的上级的编号
+                int positionId = _ctx.Position.SingleOrDefault(p => p.CompanyId == apply.CompanyId).ParentId;
                 workerId = _ctx.Worker.SingleOrDefault(w => w.PositionId == positionId).Id;
             }
+            //找出上级职位编号
+
             //添加通知
             Inform inform = new Inform()
             {
@@ -206,11 +211,12 @@ namespace LeaveMangement_Core.Approval
                 application.IsSubmit = true;
                 application.State = 1;
                 _ctx.SaveChanges();
+                AddInform(application);
                 result = new
                 {
                     isSuccess = true,
                     message = "提交申请成功！",
-                };
+                };                
             }
             catch
             {

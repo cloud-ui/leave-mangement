@@ -7,7 +7,7 @@
         <comp-table :tableData="tableData" :tableHeader="tableHeader" :tableAttr="tableAttr" :headerCellStyle="headerCellStyle" className="tableClassName" @tableOtherClick="tableOtherClick"></comp-table>
         <el-dialog :title="formTitle" :visible.sync="dialogVisible" width="408px" :before-close="handleClose">
             <comp-form v-if="!treeShow" @closeForm='handleClose' @close='closeForm' ref="compForm" :formInfo="formInfo"></comp-form>
-            <comp-tree @closeForm='handleClose' @close='closeForm' @positionId="positionId"></comp-tree>
+            <comp-tree v-if="treeShow" @closeForm='handleClose' @close='closeTreeForm' :formInfo="formInfo"></comp-tree>
         </el-dialog>
     </el-card>
 </template>
@@ -126,7 +126,9 @@
                 if(type === 'permission'){
                     this.treeShow = true
                     this.formTitle = "权限配置"
-                    this.positionId = row.id
+                    this.formInfo.data = {
+                        ...row
+                    }
                     this.dialogVisible = true
                 }
             },
@@ -152,6 +154,9 @@
                 if(!this.treeShow){
                     this.$refs.compForm.resetForm('addForm');
                 }
+            },
+            closeTreeForm(val){
+                this.dialogVisible = val
             }
         }
     }

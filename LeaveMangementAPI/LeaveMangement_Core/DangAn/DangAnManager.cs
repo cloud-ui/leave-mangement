@@ -329,7 +329,7 @@ namespace LeaveMangement_Core.DangAn
             try
             {
                 //删除职位后，该职位的所有员工，职位更改为员工(workerId)
-                int workerId = _ctx.Position.SingleOrDefault(p => p.CompanyId == position.Id && p.Name.Equals("员工")).Id;
+                int workerId = _ctx.Position.SingleOrDefault(p => p.CompanyId == position.CompanyId && p.Name.Equals("员工")).Id;
                 List<Worker> workers = _ctx.Worker.Where(w => w.PositionId == workerId).ToList();
                 foreach (Worker worker in workers)
                 {
