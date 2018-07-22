@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'iconfont';  /* project id 730049 */
-  src: url('//at.alicdn.com/t/font_730049_sto6nbgtun.eot');
-  src: url('//at.alicdn.com/t/font_730049_sto6nbgtun.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_730049_sto6nbgtun.woff') format('woff'),
-  url('//at.alicdn.com/t/font_730049_sto6nbgtun.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_730049_sto6nbgtun.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_730049_ixlp2uonfi.eot');
+  src: url('//at.alicdn.com/t/font_730049_ixlp2uonfi.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_730049_ixlp2uonfi.woff') format('woff'),
+  url('//at.alicdn.com/t/font_730049_ixlp2uonfi.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_730049_ixlp2uonfi.svg#iconfont') format('svg');
 }
 
 .iconfont {
@@ -32,4 +32,10 @@
 .icon-yuangongguanli:before { content: "\e614"; }
 
 .icon-zhiwei:before { content: "\e7bd"; }
+
+.icon-yuangongzhanghaoguanli:before { content: "\e61e"; }
+
+.icon-zuzhibumen:before { content: "\e68b"; }
+
+.icon-xiangyou-tianchong:before { content: "\e660"; }
 
