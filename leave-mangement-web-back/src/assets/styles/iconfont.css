@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'iconfont';  /* project id 730049 */
-  src: url('//at.alicdn.com/t/font_730049_ixlp2uonfi.eot');
-  src: url('//at.alicdn.com/t/font_730049_ixlp2uonfi.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_730049_ixlp2uonfi.woff') format('woff'),
-  url('//at.alicdn.com/t/font_730049_ixlp2uonfi.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_730049_ixlp2uonfi.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_730049_25o2zhuy8lt.eot');
+  src: url('//at.alicdn.com/t/font_730049_25o2zhuy8lt.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_730049_25o2zhuy8lt.woff') format('woff'),
+  url('//at.alicdn.com/t/font_730049_25o2zhuy8lt.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_730049_25o2zhuy8lt.svg#iconfont') format('svg');
 }
 
 .iconfont {
@@ -39,3 +39,6 @@
 
 .icon-xiangyou-tianchong:before { content: "\e660"; }
 
+.icon-icon1:before { content: "\e60e"; }
+
+.icon-gonggao:before { content: "\e612"; }

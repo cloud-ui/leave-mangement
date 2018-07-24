@@ -1,0 +1,11 @@
+.kq-home-body{
+    display: flex;
+    justify-content: flex-start;
+    &-left{
+        width: 55%;
+        padding-right: 30px;
+    }
+    &-right{
+        width: 42%;
+    }
+}
