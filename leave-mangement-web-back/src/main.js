@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import ElementUI from 'element-ui'
+import Echarts from 'echarts'
 import router from './router'
 import {store} from './store'
 import './assets/styles/index.scss'
@@ -14,6 +15,7 @@ Vue.config.productionTip = false
 Vue.use(ElementUI, {
   size: 'medium',
 });
+Vue.prototype.$echarts = Echarts 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
