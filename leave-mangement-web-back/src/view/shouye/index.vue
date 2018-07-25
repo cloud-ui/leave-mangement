@@ -15,7 +15,7 @@
         <div class="kq-home-body-right">
             <comp-card borderColor="#00a65a" style="width:100%;height:300px;">
                 <div slot="header">
-                    <i style="padding-right:5px" class="iconfont icon-gonggao"></i><span>公司公告</span>
+                    <i style="padding-right:5px" class="iconfont icon-gonggao"></i><span>公告栏</span>
                 </div>
                 <div>
                     555

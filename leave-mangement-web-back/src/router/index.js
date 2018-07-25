@@ -46,20 +46,20 @@ export default new Router({
           component: () => import('../view/dangan/worker/index')
         },
         {
-          path:'/addApplication/:id',
+          path:'/leave/addApplication/:id',
           name:'addApplication/:id',
           meta: {requireAuth: true},
-          component:()=>import('../view/approval/addApplication')
+          component:()=>import('../view/approval/leave/addApplication')
         },{
-          path:'/unApplicationList',
+          path:'/leave/unApplicationList',
           name:'unApplicationList',
           meta: {requireAuth: true},
-          component:()=>import('../view/approval/unApplicationList')
+          component:()=>import('../view/approval/leave/unApplicationList')
         },{
-          path:'/applicationList',
+          path:'/leave/applicationList',
           name:'applicationList',
           meta: {requireAuth: true},
-          component:()=>import('../view/approval/applicationList')
+          component:()=>import('../view/approval/leave/applicationList')
         },{
           path:'/userpage',
           name:'userpage',
@@ -68,7 +68,18 @@ export default new Router({
         },{
           path:'/check',
           name:'check',
+          meta: {requireAuth: true},
           component:()=>import('../view/check/index')
+        },{
+          path:'/notice',
+          name:'notice',
+          meta: {requireAuth: true},
+          component:()=>import('../view/notice/index'),
+        },{
+          path:'/notice/add',
+          name:'add',
+          meta: {requireAuth: true},
+          component:()=>import('../view/notice/addnotice')
         }
       ]
     }

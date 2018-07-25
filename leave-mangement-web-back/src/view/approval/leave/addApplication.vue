@@ -65,10 +65,10 @@
     </div>
 </template>
 <script>
-    import '../index.scss'
-    import './approval.scss'
+    import '../../index.scss'
+    import '../approval.scss'
     import {mapGetters} from 'vuex'
-    import {ApprovalApi} from './api.js'
+    import {ApprovalApi} from '../api.js'
     export default {
         data(){
             var checkDateLeng=(rule, value, callback)=>{

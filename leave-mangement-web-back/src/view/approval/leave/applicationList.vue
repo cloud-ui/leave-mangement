@@ -7,7 +7,7 @@
             <div class="index-body-title">
                 <div style="display:flex;">
                     <p>共 <span>{{totalCount}}</span> 条提交的申请</p>
-                    <router-link to="/addApplication/-1" class="link"><i class="el-icon-plus"></i>添加申请</router-link>
+                    <router-link to="/leave/addApplication/-1" class="link"><i class="el-icon-plus"></i>添加申请</router-link>
                 </div>
                 <el-input style="width:30%" placeholder="请输入内容" v-model="query" class="input-with-select">
                     <el-button slot="append" @click="handleChangeQuery()">搜索</el-button>
@@ -72,10 +72,10 @@
     </div>
 </template>
 <script>
-    import '../index.scss'
-    import './approval.scss'
+    import '../../index.scss'
+    import '../approval.scss'
     import CompLook from './applicationView'
-    import { ApprovalApi } from "./api.js"
+    import { ApprovalApi } from "../api.js"
     export default {
         components:{
             CompLook

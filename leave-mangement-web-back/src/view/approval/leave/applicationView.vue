@@ -56,8 +56,8 @@
 </div>
 </template>
 <script>
-import './approval.scss'
-import { ApprovalApi } from "./api.js";
+import '../approval.scss'
+import { ApprovalApi } from "../api.js";
 export default {
     props:['id'],
     watch:{
