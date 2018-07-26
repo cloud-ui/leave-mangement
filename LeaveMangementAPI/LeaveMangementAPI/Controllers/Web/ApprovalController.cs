@@ -85,6 +85,17 @@ namespace LeaveMangementAPI.Controllers.Web
             return _approvalAppService.GetApplicationById(id);
         }
         /// <summary>
+        /// 销假
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public object RevokeApplication(int id)
+        {
+            return _approvalAppService.RevokeApplication(id);
+        }
+        /// <summary>
         /// 获取登录用户未提交的申请
         /// </summary>
         /// <returns></returns>

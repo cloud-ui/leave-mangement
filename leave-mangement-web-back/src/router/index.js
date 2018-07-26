@@ -56,6 +56,11 @@ export default new Router({
           meta: {requireAuth: true},
           component:()=>import('../view/approval/leave/unApplicationList')
         },{
+          path:'/addapply/:type',
+          name:'addapply/:type',
+          meta: {requireAuth: true},
+          component:()=>import('../view/approval/addapply')
+        },{
           path:'/leave/applicationList',
           name:'applicationList',
           meta: {requireAuth: true},

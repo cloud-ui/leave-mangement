@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LeaveMangement_Core.Approval.State
+namespace LeaveMangement_Core.Approval.approvalState
 {
     public class States
     {

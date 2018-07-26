@@ -57,5 +57,9 @@ namespace LeaveMangement_Application.Approval
         {
             return _approvalManager.PushCheck(pushCheck, account);
         }
+        public object RevokeApplication(int id)
+        {
+            return _approvalManager.RevokeApplication(id);
+        }
     }
 }

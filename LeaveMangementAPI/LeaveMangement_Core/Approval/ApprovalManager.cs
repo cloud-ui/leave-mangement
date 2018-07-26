@@ -56,6 +56,7 @@ namespace LeaveMangement_Core.Approval
                     StartTime = addApplicationDto.StartTime,
                     EndTime = addApplicationDto.EndTime,
                     CreateTime = DateTime.Now.ToFileTime(),
+                    IsRevoke = false,
                 };
                 _ctx.Apply.Add(newApply);
                 _ctx.SaveChanges();
@@ -228,6 +229,14 @@ namespace LeaveMangement_Core.Approval
             }
             return result;
         }
+        public object RevokeApplication(int id)
+        {
+            Apply apply = _ctx.Apply.Find(id);
+            apply.IsRevoke = true;
+            _ctx.SaveChanges();
+            UpdateUserState(apply.CompanyId, apply.WorkerId, "在职");
+            return true;
+        }
         public object EditApplication(EditApplicationDto editApplicationDto)
         {
             var application = _ctx.Apply.Find(editApplicationDto.Id);
@@ -336,6 +345,8 @@ namespace LeaveMangement_Core.Approval
                 apply.LeaderId = worker.Id;
                 apply.Remark = remark;
                 apply.State = checkDto.IsAgree ? 2 : 3;
+                //更新员工的状态
+                UpdateUserState(apply.CompanyId, apply.WorkerId,"休假");
                 //删除待审核的通知记录
                 _ctx.Inform.Remove(inform);
                 _ctx.SaveChanges();
@@ -405,7 +416,13 @@ namespace LeaveMangement_Core.Approval
                 return "";
             }            
         }
-
+        public void UpdateUserState(int companyId,int workerId,string stateName)
+        {
+            State state = _ctx.State.SingleOrDefault(s => s.CompanyId == companyId && s.Name.Contains(stateName));
+            Worker worker = _ctx.Worker.Find(workerId);
+            worker.StateId = state.Id;
+            _ctx.SaveChanges();
+        }
 
     }
 }

@@ -20,5 +20,6 @@ namespace LeaveMangement_Entity.Model
         public long CreateTime { get; set; }
         public long? HandleTime { get; set; }
         public bool IsSubmit { get; set; }
+        public bool IsRevoke { get; set; }
     }
 }

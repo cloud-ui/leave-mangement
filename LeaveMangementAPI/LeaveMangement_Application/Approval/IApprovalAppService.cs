@@ -19,5 +19,6 @@ namespace LeaveMangement_Application.Approval
         object GetCheckingList(CheckingDto checkingDto);
         object CheckApplication(CheckDto checkDto,string account);
         object PushCheck(PushCheck pushCheck,string account);
+        object RevokeApplication(int id);
     }
 }

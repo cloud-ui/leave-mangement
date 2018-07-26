@@ -22,11 +22,6 @@
                 </el-table-column>
                 <el-table-column align="center" prop="type" label="请假类型" width="120">
                 </el-table-column>
-                <el-table-column align="center" label="申请状态" width="100">
-                    <template slot-scope="scope">
-                        <p v-if="scope.row.state===1" class="approval-state unlook">{{scope.row.stateName}}</p>
-                    </template>
-                </el-table-column>
                 <el-table-column align="center" prop="startTime" label="开始时间">
                     <template slot-scope="scope">
                         {{scope.row.startTime | formatDate}}

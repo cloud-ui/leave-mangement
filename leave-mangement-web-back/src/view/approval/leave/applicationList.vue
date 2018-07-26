@@ -42,6 +42,12 @@
                 </el-table-column>
                 <el-table-column align="center" prop="createTime" label="创建时间">
                 </el-table-column>
+                <el-table-column align="center" label="是否结束">
+                    <template slot-scope="scope">
+                        <p v-if="getIsEnd(scope.row.endTime)">已结束</p>
+                        <p v-else>-</p>
+                    </template>
+                </el-table-column>                
                 <el-table-column align="center" label="操作" width="80">
                     <template slot-scope="scope">
                         <el-dropdown>
@@ -49,6 +55,9 @@
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item>
                                  <el-button type="text" size="small" @click="handleLook(scope.row.id)" icon="el-icon-view">查看</el-button>
+                                </el-dropdown-item>
+                                <el-dropdown-item v-if="getIsEnd(scope.row.endTime)">
+                                 <el-button @click="handleRevoke(scope.row.id)" style="color:red;" type="text" size="small" icon="el-icon-delete">销假</el-button>
                                 </el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
@@ -95,6 +104,7 @@
                 totalCount: 0,
                 dialogVisible: false,
                 applicationId:0,
+                nowData:''
             }
         },
         mounted(){
@@ -102,6 +112,7 @@
         },
         methods: {
             loadData() {
+                this.nowData = new Date().getTime()
                 const params={
                     currentPage: this.currentPage,
                     currentPageSize: this.pageSize,
@@ -120,6 +131,13 @@
                 this.currentPage = val;
                 this.loadData();
             },
+            getIsEnd(endTime){
+                if(endTime > this.nowData){
+                    return false
+                }else{
+                    return true
+                }
+            },
             //点击搜索
             handleChangeQuery() {
                 this.loadData();
@@ -128,6 +146,28 @@
             handleLook(id){
                 this.applicationId = id
                 this.dialogVisible = true                
+            },
+            //点击销假
+            handleRevoke(id){
+                this.$confirm('您确定销假吗?', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        // ApprovalApi.deleteApplication(id).then(res => {
+                        //     this.loadData()
+                        //     const type1 = res.data.isSuccess? 'success':'error'
+                        //     this.$message({
+                        //         type: type1,
+                        //         message: res.data.message
+                        //     });                            
+                        // })
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    });
             },
             //关闭弹框
             handleClose(){
