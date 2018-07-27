@@ -1,6 +1,6 @@
 <template>
     <!-- 公告管理 -->
-<div class="index">
+    <div class="index">
         <div class="index-title">
             <p>公告管理</p>
         </div>
@@ -17,28 +17,31 @@
             <el-table :data="tableData" :header-cell-style="headerCellStyle" border style="width: 100%">
                 <el-table-column align="center" prop="id" label="序号" width="80">
                 </el-table-column>
-                <el-table-column align="center" prop="title" label="公告名称" >
+                <el-table-column align="center" prop="title" label="公告名称">
                 </el-table-column>
                 <el-table-column align="center" prop="type" label="公告类型" width="110">
                 </el-table-column>
                 <el-table-column align="center" prop="content" label="公告内容">
+                    <template slot-scope="scope">
+                        <pre  v-html="formatText(scope.row.content)"></pre >
+                    </template>
                 </el-table-column>
                 <el-table-column align="center" prop="createTime" width="110" label="创建时间">
                 </el-table-column>
                 <el-table-column align="center" prop="createHuman" width="100" label="创建人"></el-table-column>
                 <el-table-column align="center" label="操作" width="80">
                     <template slot-scope="scope">
-                        <el-dropdown>
-                            <i class="el-icon-menu"></i>
-                            <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item>
-                                 <el-button type="text" size="small" @click="handleLook(scope.row)" icon="el-icon-view">查看</el-button>
-                                </el-dropdown-item>
-                                <el-dropdown-item>
-                                 <el-button @click="handleDelete(scope.row.id)" style="color:red;" type="text" size="small" icon="el-icon-delete">删除</el-button>
-                                </el-dropdown-item>
-                            </el-dropdown-menu>
-                        </el-dropdown>
+                            <el-dropdown>
+                                <i class="el-icon-menu"></i>
+                                <el-dropdown-menu slot="dropdown">
+                                    <el-dropdown-item>
+                                     <el-button type="text" size="small" @click="handleLook(scope.row)" icon="el-icon-view">查看</el-button>
+                                    </el-dropdown-item>
+                                    <el-dropdown-item>
+                                     <el-button @click="handleDelete(scope.row.id)" style="color:red;" type="text" size="small" icon="el-icon-delete">删除</el-button>
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </el-dropdown>
                     </template>
                 </el-table-column>
             </el-table>
@@ -59,83 +62,113 @@
     </div>
 </template>
 <script>
-import '../index.scss'
-import CompView from './noticeview'
-export default {
-    components:{
-        CompView
-    },
-    data(){
-        return{
-            tableData: [{
-                id:1,
-                title:'3333333333333',
-                type:'部门公告',
-                content:'wertyusdfghjkdfghjkfgh',
-                createTime:'2018-02-15',
-                createHuman:'姜鑫'
-            },{
-                id:2,
-                title:'3333333333333',
-                type:'部门公告',
-                content:'wertyusdfghjkdfghjkfgh',
-                createTime:'2018-02-15',
-                createHuman:'joy'
-            }],
-            headerCellStyle: {
-                backgroundColor: '#f2f2f2',
-                fontSize: '14px',
-                color: '#434343',
-                fontWeight: 400
+    import '../index.scss'
+    import CompView from './noticeview'
+    import {
+        NoticeApi
+    } from './api.js'
+    export default {
+        components: {
+            CompView
+        },
+        data() {
+            return {
+                tableData: [],
+                headerCellStyle: {
+                    backgroundColor: '#f2f2f2',
+                    fontSize: '14px',
+                    color: '#434343',
+                    fontWeight: 400
+                },
+                noticeData: {},
+                currentPage: 1,
+                pageSize: 20,
+                query: '',
+                totalCount: 0,
+                dialogVisible: false,
+            }
+        },
+        mounted() {
+            this.loadData()
+        },
+        methods: {
+            loadData() {
+                const params = {
+                    currentPage: this.currentPage,
+                    currentPageSize: this.pageSize,
+                    query: this.query,
+                }
+                NoticeApi.noticeList(params).then(res => {
+                    this.totalCount = res.data.count
+                    this.tableData = res.data.data
+                })
             },
-            noticeData:{},
-            currentPage: 1,
-            pageSize: 20,
-            query: '',
-            totalCount: 0,
-            dialogVisible: false,
-        }
-    },
-    methods:{
-        loadData(){},
-        handleSizeChange(val) {
-            this.pageSize = val;
-            this.loadData();
-        },
-        handleCurrentChange(val) {
-            this.currentPage = val;
-            this.loadData();
-        },
-        //点击查看
-        handleLook(data){
-            this.noticeData = data
-            this.dialogVisible = true
-        },
-        handleDelete(id) {
-            this.$confirm('此操作将删除该公告, 是否继续?', '提示', {
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.loadData();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.loadData();
+            },
+            //点击查看
+            handleLook(data) {
+                this.noticeData = data
+                this.dialogVisible = true
+            },
+            handleDelete(id) {
+                this.$confirm('此操作将删除该公告, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
+                    NoticeApi.deleteNotice(id).then(res => {
+                        const type1 = res.data.isSuccess ? 'success' : 'error'
+                        this.$message({
+                            type: type1,
+                            message: res.data.message
+                        })
+                        this.loadData()
+                    })
+                    
                 }).catch(() => {
                     this.$message({
                         type: 'info',
                         message: '已取消删除'
+                    });
                 });
-            });
+            },
+            //点击搜索
+            handleChangeQuery() {
+                this.loadData()
+            },
+            //关闭弹框
+            handleClose() {
+                this.dialogVisible = false
+            },
+            closeForm(val) {
+                this.loadData()
+                this.dialogVisible = val
+            },
+            formatText(text){
+                let num = -1,
+                rHtml = new RegExp("\<.*?\>", "ig"), //匹配html标签元素
+                aHtml = text.match(rHtml), //存放html元素的数组
+                rNbsp = new RegExp("\&.*?\;", "ig"), //匹配&nbsp;
+                aNbsp = text.match(rNbsp); //存放&nbsp;元素的数组
+                text = text.replace(rHtml, '{~}'); //替换html标签为{~}
+                text = text.replace(rNbsp, '{&}'); //替换&nbsp;标签为{&}
+                text = text.replace(/{~}/g, function() { //恢复html标签
+                    num++;
+                    return aHtml[num];
+                });
+                num = -1;
+                text = text.replace(/{&}/g, function() { //恢复&nbsp;标签
+                    num++;
+                    return aNbsp[num];
+                });
+                return text;
+            }
         },
-        //点击搜索
-        handleChangeQuery() {
-            this.loadData()
-        },
-        //关闭弹框
-        handleClose(){
-            this.dialogVisible = false
-        },
-        closeForm(val){
-            this.loadData()
-            this.dialogVisible = val
-        }, 
     }
-}
 </script>

@@ -9,8 +9,8 @@
                     <el-input v-model="notice.title" style="width:50%;"></el-input>
                 </el-form-item>
                 <el-form-item label="公告类型:" prop="type">
-                    <el-radio v-model="notice.type" label="company" border size="medium">公司公告</el-radio>
-                    <el-radio v-model="notice.type" label="deparment" border size="medium">部门公告</el-radio>
+                    <el-radio v-model="notice.type" label="1" border size="medium">公司公告</el-radio>
+                    <el-radio v-model="notice.type" label="2" border size="medium">部门公告</el-radio>
                 </el-form-item>
                 <el-form-item label="公告内容:" prop="content">
                     <comp-editor v-model="notice.content" style="height:300px;" ref="notice_editor"></comp-editor>
@@ -28,6 +28,7 @@
 <script>
 import CompEditor from '../../packages/components/editor'
 import '../index.scss'
+import {NoticeApi} from './api.js'
 export default {
     components:{
         CompEditor
@@ -44,9 +45,20 @@ export default {
     },
     methods:{
         submitData(){
+            this.loading = true
             var noticeDetail = this.$refs["notice_editor"].getEditorContent();
             this.notice.content = noticeDetail
-            console.log(this.notice)
+            this.notice.type = this.notice.type === "1"?1:2
+            NoticeApi.addNotice(this.notice).then(res=>{
+                const type1 = res.data.isSuccess?'success':'error'
+                this.$message({
+                    type:type1,
+                    message:res.data.message
+                })
+                this.loading = false
+                const path = this.form.isSuccess?'/notice':'/notice/add'
+                this.$router.push({ path: path})
+            })
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using LeaveMangement_Entity.Dtos.Approval;
-using LeaveMangement_Entity.Model;
+using LeaveMangement_Entity.Models;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -108,7 +108,7 @@ namespace LeaveMangement_Core.Approval
             var worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(getApplicationListDto.Account));
             var list = (from apply in _ctx.Apply
                         join deparment in _ctx.Deparment on apply.DeparmentId equals deparment.Id
-                        where apply.WorkerId == worker.Id&&apply.IsSubmit&&apply.Account.Contains(getApplicationListDto.Query)
+                        where apply.WorkerId == worker.Id&&apply.IsSubmit&&!apply.IsRevoke &&apply.Account.Contains(getApplicationListDto.Query)
                         select new { 
                             id = apply.Id,
                             workerName = worker.Name,
@@ -137,7 +137,7 @@ namespace LeaveMangement_Core.Approval
                 list = (from apply in _ctx.Apply
                         join worker in _ctx.Worker on apply.WorkerId equals worker.Id
                         join deparment in _ctx.Deparment on apply.DeparmentId equals deparment.Id
-                        where apply.Id == id
+                        where apply.Id == id & !apply.IsRevoke
                         select new
                         {
                             workerName = worker.Name,
@@ -159,7 +159,7 @@ namespace LeaveMangement_Core.Approval
                 list = (from apply in _ctx.Apply
                         join worker in _ctx.Worker on apply.WorkerId equals worker.Id
                         join deparment in _ctx.Deparment on apply.DeparmentId equals deparment.Id
-                        where apply.Id == id
+                        where apply.Id == id &&!apply.IsRevoke
                         select new
                         {
                             workerName = worker.Name,
@@ -231,11 +231,17 @@ namespace LeaveMangement_Core.Approval
         }
         public object RevokeApplication(int id)
         {
+            var result = new object();
             Apply apply = _ctx.Apply.Find(id);
             apply.IsRevoke = true;
             _ctx.SaveChanges();
             UpdateUserState(apply.CompanyId, apply.WorkerId, "在职");
-            return true;
+            result = new
+            {
+                isSuccess = true,
+                message = "您已销假成功！",
+            };
+            return result;
         }
         public object EditApplication(EditApplicationDto editApplicationDto)
         {

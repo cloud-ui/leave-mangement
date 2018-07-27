@@ -154,14 +154,14 @@
                         cancelButtonText: '取消',
                         type: 'warning'
                     }).then(() => {
-                        // ApprovalApi.deleteApplication(id).then(res => {
-                        //     this.loadData()
-                        //     const type1 = res.data.isSuccess? 'success':'error'
-                        //     this.$message({
-                        //         type: type1,
-                        //         message: res.data.message
-                        //     });                            
-                        // })
+                        ApprovalApi.revokeApplication(id).then(res => {
+                            this.loadData()
+                            const type1 = res.data.isSuccess? 'success':'error'
+                            this.$message({
+                                type: type1,
+                                message: res.data.message
+                            });                            
+                        })
                     }).catch(() => {
                         this.$message({
                             type: 'info',

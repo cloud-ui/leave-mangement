@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace LeaveMangement_Entity.Model
+namespace LeaveMangement_Entity.Models
 {
     public partial class KaoQinContext : DbContext
     {
@@ -16,6 +16,7 @@ namespace LeaveMangement_Entity.Model
         public virtual DbSet<Inform> Inform { get; set; }
         public virtual DbSet<Journal> Journal { get; set; }
         public virtual DbSet<Menu> Menu { get; set; }
+        public virtual DbSet<Notice> Notice { get; set; }
         public virtual DbSet<PaperType> PaperType { get; set; }
         public virtual DbSet<Position> Position { get; set; }
         public virtual DbSet<PositionOfAuth> PositionOfAuth { get; set; }
@@ -57,16 +58,7 @@ namespace LeaveMangement_Entity.Model
                     .IsRequired()
                     .HasMaxLength(200);
 
-                entity.Property(e => e.CreateTime)
-                    .HasColumnType("bigint");
-
-                entity.Property(e => e.EndTime).HasColumnType("bigint");
-
-                entity.Property(e => e.HandleTime).HasColumnType("bigint");
-
                 entity.Property(e => e.Remark).HasMaxLength(100);
-
-                entity.Property(e => e.StartTime).HasColumnType("bigint");
             });
 
             modelBuilder.Entity<Authorization>(entity =>
@@ -76,11 +68,7 @@ namespace LeaveMangement_Entity.Model
 
             modelBuilder.Entity<Clock>(entity =>
             {
-                entity.Property(e => e.ClockDay).HasColumnType("bigint");
-
-                entity.Property(e => e.EndTime).HasColumnType("bigint");
-
-                entity.Property(e => e.SrartTime).HasColumnType("bigint");
+                entity.Property(e => e.ClockDay).HasColumnType("date");
             });
 
             modelBuilder.Entity<Company>(entity =>
@@ -94,8 +82,6 @@ namespace LeaveMangement_Entity.Model
                 entity.Property(e => e.Corporation)
                     .IsRequired()
                     .HasMaxLength(50);
-
-                entity.Property(e => e.CreateTime).HasColumnType("bigint");
 
                 entity.Property(e => e.DeparmentCount).HasDefaultValueSql("((0))");
 
@@ -139,28 +125,35 @@ namespace LeaveMangement_Entity.Model
             modelBuilder.Entity<Inform>(entity =>
             {
                 entity.Property(e => e.Content).IsRequired();
-
-                entity.Property(e => e.CreateTime).HasColumnType("bigint");
-
             });
 
             modelBuilder.Entity<Journal>(entity =>
             {
                 entity.Property(e => e.Content).IsRequired();
-
-                entity.Property(e => e.CreateTime).HasColumnType("bigint");
             });
 
             modelBuilder.Entity<Menu>(entity =>
             {
+                entity.Property(e => e.Icon)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(20);
-                entity.Property(e => e.Icon).IsRequired().HasMaxLength(50);
 
                 entity.Property(e => e.ParentId).HasDefaultValueSql("((0))");
 
                 entity.Property(e => e.Url).HasMaxLength(30);
+            });
+
+            modelBuilder.Entity<Notice>(entity =>
+            {
+                entity.Property(e => e.Content).IsRequired();
+
+                entity.Property(e => e.Title)
+                    .IsRequired()
+                    .HasMaxLength(50);
             });
 
             modelBuilder.Entity<PaperType>(entity =>
@@ -193,10 +186,6 @@ namespace LeaveMangement_Entity.Model
                     .HasMaxLength(20);
 
                 entity.Property(e => e.Address).HasMaxLength(60);
-
-                entity.Property(e => e.Brith).HasColumnType("bigint");
-
-                entity.Property(e => e.EntryTime).HasColumnType("bigint");
 
                 entity.Property(e => e.Name)
                     .IsRequired()

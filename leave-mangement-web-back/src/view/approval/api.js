@@ -33,6 +33,10 @@ export class ApprovalApi {
   static getApplicationList(data={}){
     return server.connection('POST','api/Approval/GetApplicationList',data)
   }
+  //销假
+  static revokeApplication(id){
+    return server.connection('POST',`api/Approval/RevokeApplication?id=`+id)
+  }
   //查看申请
   static getApplication(id){
       return server.connection('POST','api/Approval/GetApplicationById?id='+id)

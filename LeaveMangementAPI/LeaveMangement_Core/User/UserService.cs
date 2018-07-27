@@ -1,9 +1,10 @@
-﻿using LeaveMangement_Entity.Model;
+﻿
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Mail;
+using LeaveMangement_Entity.Models;
 
 namespace LeaveMangement_Core.User
 {
