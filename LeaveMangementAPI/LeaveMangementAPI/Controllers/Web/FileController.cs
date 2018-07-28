@@ -289,5 +289,17 @@ namespace LeaveMangementAPI.Controllers.Web
             return _dangAnAppService.EditState(addStateDto);
         }
 
+        /// <summary>
+        /// 人事调动
+        /// </summary>
+        /// <param name="transferWorkerDto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public Result TransferWorker([FromBody]TransferWorkerDto transferWorkerDto)
+        {
+            return _dangAnAppService.TransferWorker(transferWorkerDto);
+        }
+
     }
 }

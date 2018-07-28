@@ -40,7 +40,7 @@
                              <el-button @click="handleLook(scope.row.id)" type="text" size="small" icon="el-icon-view">查看</el-button>
                             </el-dropdown-item>
                             <el-dropdown-item>
-                             <el-button style="color:#5fb878;" type="text" size="small" icon="el-icon-delete">人事调动</el-button>
+                             <el-button @click="handleTransfer(scope.row.id)" style="color:#5fb878;" type="text" size="small" icon="el-icon-delete">人事调动</el-button>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
@@ -142,6 +142,13 @@
                 this.workerId = id
                 this.type = 'look'
                 this.formTitle = '员工详情'
+                this.dialogVisible = true
+            },
+            //点击人事调动
+            handleTransfer(id){
+                this.workerId = id
+                this.type = 'transfer'
+                this.formTitle = '人事调动'
                 this.dialogVisible = true
             },
             //关闭弹窗

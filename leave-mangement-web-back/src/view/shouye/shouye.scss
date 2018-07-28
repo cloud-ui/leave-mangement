@@ -9,3 +9,26 @@
         width: 42%;
     }
 }
+.notice-item{
+    display: flex;
+    align-items: center;
+    padding: 8px 0px;
+    border-bottom: 1px solid #ebeef5a6;
+    >span{
+        font-size: 12px;
+        padding-right: 4px;
+    }
+    >p{
+        font-size: 14px;
+        padding: 0px;
+    }
+}
+.notice-item:hover{
+    cursor: pointer;
+}
+.blue-color{
+    color:#00c0ef;
+}
+.green-color{
+    color:#00a65a;
+}

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using LeaveMangement_Core.User;
 using LeaveMangement_Entity.Dtos.DangAn;
+using LeaveMangement_Entity.Dtos;
 
 namespace LeaveMangement_Core.DangAn
 {
@@ -44,10 +45,11 @@ namespace LeaveMangement_Core.DangAn
                     DeparmentCount = company.DeparmentCount,
                 };
                 _ctx.Company.Add(newComp);
+                _ctx.SaveChanges();
                 if (_userManager.CreateCompanyAdmin(newComp))
                 {
                     
-                    _ctx.SaveChanges();
+                    
                     result = new
                     {
                         isSuccess = true,
@@ -159,7 +161,7 @@ namespace LeaveMangement_Core.DangAn
                     CompanyId = deparmentDto.CompId,
                     Code = "01",
                     ManagerId = deparmentDto.MangerId,
-                    WorkerCount = deparmentDto.WorkerCount,
+                    WorkerCount = deparmentDto.WorkerCount+1,
                 };
                 if (ChangeWorkerPosition(deparmentDto.MangerId, "部门经理"))
                 {
@@ -520,7 +522,7 @@ namespace LeaveMangement_Core.DangAn
             oldManger.StateId = _ctx.Position.SingleOrDefault(p => p.CompanyId == deparment.CompanyId && p.Name.Equals("员工")).Id;
             //将选择的managerId对应的员工的职位调整为经理职位，为总经理则职位不变
             Worker newManger = _ctx.Worker.Find(newMangerId);
-            if (_ctx.Position.Find(newManger.StateId).Name.Equals("总经理") || newManger.DepartmentId == deparment.Id)
+            if (_ctx.Position.Find(newManger.StateId).ParentId==0 || newManger.DepartmentId == deparment.Id)
             {
                 _ctx.SaveChanges();
                 return "notAdd";
@@ -541,7 +543,7 @@ namespace LeaveMangement_Core.DangAn
             Worker worker = _ctx.Worker.Find(managerId);
             //判断选择的经理原本是否为总经理
             Position manager = _ctx.Position.SingleOrDefault(p => p.Id == worker.PositionId);
-            if (manager.Name.Equals("总经理"))
+            if (manager.ParentId == 0)
             {
                 return true;
             }
@@ -554,6 +556,63 @@ namespace LeaveMangement_Core.DangAn
                 return true;
             }
 
+        }
+        public Result TransferWorker(TransferWorkerDto transferWorkerDto)
+        {
+            Worker worker = _ctx.Worker.Find(transferWorkerDto.WorkerId);
+            Deparment selectDep = _ctx.Deparment.Find(transferWorkerDto.DeparmentId);
+            Worker manager = _ctx.Worker.Find(selectDep.ManagerId);
+            Deparment odeparment = _ctx.Deparment.Find(worker.DepartmentId);
+            if (worker.DepartmentId != transferWorkerDto.DeparmentId)
+            {
+                odeparment.WorkerCount = odeparment.WorkerCount - 1 <= 0 ? 0 : odeparment.WorkerCount - 1;
+                Deparment ndeparment = _ctx.Deparment.Find(transferWorkerDto.DeparmentId);
+                ndeparment.WorkerCount = ndeparment.WorkerCount + 1;
+                worker.PositionId = transferWorkerDto.PositionId;
+                worker.StateId = transferWorkerDto.StateId;
+                _ctx.SaveChanges();
+            }
+           Result result = ChangeWorkerPosition(worker, manager, odeparment, transferWorkerDto);
+           return result;
+        }
+        private Result ChangeWorkerPosition(Worker worker,Worker manager,Deparment odeparment,TransferWorkerDto transferWorkerDto)
+        {
+            Result result = new Result();
+            try
+            {
+                //判断所选择的职位是否为部门经理
+                string positionName = _ctx.Position.Find(transferWorkerDto.PositionId).Name;
+                if (positionName.Contains("部门经理"))
+                {
+                    //判断所选择部门当前部门经理是否为总经理
+                    int positionParent = _ctx.Position.Where(p => p.Id == manager.PositionId).First().ParentId;
+                    if (positionParent == 0)
+                    {
+                        worker.PositionId = transferWorkerDto.PositionId;
+                        worker.StateId = transferWorkerDto.StateId;
+                        odeparment.WorkerCount = odeparment.WorkerCount - 1 <= 0 ? 0 : odeparment.WorkerCount - 1;
+                    }
+                    else
+                    {
+                        manager.PositionId = _ctx.Position.SingleOrDefault(p => p.CompanyId == worker.CompanyId && p.Name.Equals("员工")).Id;
+                        worker.PositionId = transferWorkerDto.PositionId;
+                        worker.StateId = transferWorkerDto.StateId;
+                    }
+                }
+                else
+                {
+                    worker.PositionId = transferWorkerDto.PositionId;
+                    worker.StateId = transferWorkerDto.StateId;
+                }
+                _ctx.SaveChanges();
+                result.IsSuccess = true;
+                result.Message = "人员调动成功！";
+            }catch(Exception e)
+            {
+                result.IsSuccess = false;
+                result.Message = e.Message;
+            }
+            return result;
         }
     }
 }

@@ -29,7 +29,7 @@
                 <p>年龄：</p><span>{{data.age}}</span>
             </el-col>
             <el-col :span="8" class="worker-message-box-part">
-                <p>出生日期：</p><span>{{data.birth}}</span>
+                <p>出生日期：</p><span>{{data.birth | formatDate}}</span>
             </el-col>
             <el-col :span="8" class="worker-message-box-part">
                 <p>入职时间：</p><span>{{data.entryTime}}</span>
@@ -68,13 +68,27 @@ export default {
         deep: true
         },
     },
+    mounted(){
+        this.loadData(this.id)
+    },
     methods:{
         loadData(id){
             FileApi.getWorkerMessage(id).then(res=>{
                 this.data = res.data
             })
         }
-    }
+    },
+    filters: {
+        formatDate: function (value) {
+            let date = new Date(value);
+            let y = date.getFullYear();
+            let MM = date.getMonth() + 1;
+            MM = MM < 10 ? ('0' + MM) : MM;
+            let d = date.getDate();
+            d = d < 10 ? ('0' + d) : d;
+            return y + '-' + MM + '-' + d;
+            }
+        }
 }
 </script>
 

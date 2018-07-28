@@ -1,4 +1,5 @@
-﻿using LeaveMangement_Entity.Dtos.DangAn;
+﻿using LeaveMangement_Entity.Dtos;
+using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Models;
 using System.Collections.Generic;
 
@@ -29,5 +30,6 @@ namespace LeaveMangement_Application.DangAn
         object DeleteState(int id);
         object AddState(AddStateDto addStateDto);
         object EditState(AddStateDto addStateDto);
+        Result TransferWorker(TransferWorkerDto transferWorkerDto);
     }
 }

@@ -56,8 +56,7 @@ export default {
                     message:res.data.message
                 })
                 this.loading = false
-                const path = this.form.isSuccess?'/notice':'/notice/add'
-                this.$router.push({ path: path})
+                this.$router.push({ path: '/notice'})
             })
         }
     }

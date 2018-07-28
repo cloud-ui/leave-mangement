@@ -63,7 +63,7 @@
 </template>
 <script>
     import '../index.scss'
-    import CompView from './noticeview'
+    import CompView from '../../packages/components/noticeview'
     import {
         NoticeApi
     } from './api.js'
