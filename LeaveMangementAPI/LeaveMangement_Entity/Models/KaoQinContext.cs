@@ -68,7 +68,7 @@ namespace LeaveMangement_Entity.Models
 
             modelBuilder.Entity<Clock>(entity =>
             {
-                entity.Property(e => e.ClockDay).HasColumnType("date");
+                entity.Property(e => e.ClockDay).HasMaxLength(15);
             });
 
             modelBuilder.Entity<Company>(entity =>

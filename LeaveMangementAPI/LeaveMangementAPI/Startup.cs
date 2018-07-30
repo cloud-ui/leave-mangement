@@ -1,4 +1,5 @@
 ﻿using LeaveMangement_Application.Approval;
+using LeaveMangement_Application.Attendance;
 using LeaveMangement_Application.Common;
 using LeaveMangement_Application.DangAn;
 using LeaveMangement_Application.Notice;
@@ -122,6 +123,7 @@ namespace LeaveMangementAPI
             services.AddTransient<IApprovalAppService, ApprovalAppService>();
             services.AddTransient<IPermissionAppService, PermissionAppServer>();
             services.AddTransient<INoticeAppService, NoticeAppService>();
+            services.AddTransient<IAttendanceAppService, AttendanceAppService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

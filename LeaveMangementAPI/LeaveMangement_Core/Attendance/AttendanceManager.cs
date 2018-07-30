@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using LeaveMangement_Entity.Dtos;
 
 namespace LeaveMangement_Core.Attendance
 {
@@ -10,56 +11,75 @@ namespace LeaveMangement_Core.Attendance
     {
         private KaoQinContext _ctx = new KaoQinContext();
         //根据当前登录用户的地理位置打卡
-        public object Clock(string address, string account, int compId)
+        public Result Clock(string address, string account, int compId)
         {
             //找到公司员工
             //根据地址判断员工是否在公司
             //获取签到的日期
             //获取签到的时间
             //
-            Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account)); 
+            Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
             Company company = _ctx.Company.SingleOrDefault(c => c.Id == compId && c.Address.Contains(address));
-            var result = new object();
+            Result result = new Result();
             if (company != null)
             {
                 DateTime dt = DateTime.Now;
                 string clockDay = dt.ToString("yyyy-MM-dd");
-                string clockTime = dt.ToLongTimeString().ToString();
+                result = ClockIn(worker.Id, dt, clockDay);
             }
             else
-                result = new
-                {
-                    isSuccess = false,
-                    message = "您当前定位不在公司附近！"
-                };
+            {
+                result.IsSuccess = false;
+                result.Message = "您当前定位不在公司附近！";
+            }
             return result;
         }
         //上班打卡
-        public void ClockIn(int workerId, DateTime dateTime)
+        private Result ClockIn(int workerId, DateTime dateTime,string clockDay)
         {
-            //判断是否迟到 签到时间大于9.30 迟到,迟到超过30分钟按一小时计算
-            int minute = dateTime.Minute, hour = dateTime.Hour;
-            bool isLateHour = hour > 9 ? true : false;
-            bool isLate = isLateHour && minute > 30 ? true : false;
-            int lateHour = isLate && minute - 30 > 0 ? hour - 8 : hour - 9;
-            //Clock newClock = new Clock()
-            //{
-            //    WorkId = workerId,
-            //    ClockDay = clockDay,
-            //    SrartTime = clockTime,
-            //    IsFull = false,
-            //};
-            //_ctx.Clock.Add(newClock);
-            //_ctx.SaveChanges();
+            ////判断是否迟到 签到时间大于9.30 迟到,迟到超过30分钟按一小时计算
+            //int minute = dateTime.Minute, hour = dateTime.Hour;
+            //bool isLateHour = hour > 9 ? true : false;
+            //bool isLate = isLateHour && minute > 30 ? true : false;
+            //int lateHour = isLate && minute - 30 > 0 ? hour - 8 : hour - 9;
+            Result result = new Result();
+            try
+            {
+                Clock clock = _ctx.Clock.SingleOrDefault(c => c.WorkId == workerId && c.ClockDay.Equals(clockDay));
+                if (clock != null)
+                {
+                    clock.EndTime = dateTime.ToFileTime();
+                    clock.WorkHour = GetWorkHour(clock.SrartTime, dateTime.ToFileTime());
+                    clock.IsFull = true;
+                }
+                else
+                {
+                    Clock newClock = new Clock()
+                    {
+                        WorkId = workerId,
+                        ClockDay = clockDay,
+                        SrartTime = dateTime.ToFileTime(),
+                        IsFull = false,
+                    };
+                    _ctx.Clock.Add(newClock);
+                }
+                _ctx.SaveChanges();
+                result.IsSuccess = false;
+                result.Message = "打卡成功！";
+            }
+            catch(Exception e)
+            {
+                result.IsSuccess = false;
+                result.Message = e.Message;
+            }
+            return result;
         }
-        //下班打卡
-        public void ClockOut(int workerId,DateTime dateTime)
+        private double GetWorkHour(long start,long end)
         {
-            //根据当天打卡的时间和用户id找到打卡记录
-            Clock clock = _ctx.Clock.SingleOrDefault(c => c.WorkId == workerId && c.ClockDay.Equals(dateTime.ToString("yyyy-MM-dd")));
-            //判断是否早退
-
-
+            DateTime startTime = DateTime.FromFileTime(start);
+            DateTime endTime = DateTime.FromFileTime(end);
+            TimeSpan timeSpan = endTime - startTime;
+            return timeSpan.TotalMinutes / 60;
         }
     }
 }

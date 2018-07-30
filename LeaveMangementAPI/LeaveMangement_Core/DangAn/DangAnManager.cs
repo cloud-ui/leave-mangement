@@ -565,11 +565,10 @@ namespace LeaveMangement_Core.DangAn
             Deparment odeparment = _ctx.Deparment.Find(worker.DepartmentId);
             if (worker.DepartmentId != transferWorkerDto.DeparmentId)
             {
-                odeparment.WorkerCount = odeparment.WorkerCount - 1 <= 0 ? 0 : odeparment.WorkerCount - 1;
+                //选择换部门，原本部门-1，新部门+1
                 Deparment ndeparment = _ctx.Deparment.Find(transferWorkerDto.DeparmentId);
                 ndeparment.WorkerCount = ndeparment.WorkerCount + 1;
-                worker.PositionId = transferWorkerDto.PositionId;
-                worker.StateId = transferWorkerDto.StateId;
+                odeparment.WorkerCount = odeparment.WorkerCount - 1 <= 0 ? 0 : odeparment.WorkerCount - 1;
                 _ctx.SaveChanges();
             }
            Result result = ChangeWorkerPosition(worker, manager, odeparment, transferWorkerDto);
