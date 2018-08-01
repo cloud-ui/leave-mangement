@@ -199,7 +199,8 @@ namespace LeaveMangement_Core.DangAn
                 {
                     if (ChangeWorkerPosition(deparment.ManagerId, "员工"))
                     {
-                        _ctx.Company.Find(deparment.CompanyId).DeparmentCount--;
+                        Company company = _ctx.Company.Find(deparment.CompanyId);
+                        company.DeparmentCount = company.DeparmentCount - 1;
                         _ctx.Deparment.Remove(deparment);
                         _ctx.SaveChanges();
                         result = new

@@ -13,5 +13,9 @@ namespace LeaveMangement_Application.Attendance
         {
             return _attendanceManager.Clock(address, account, compId);
         }
+        public object GetAttendanceData(string account, int companyId)
+        {
+            return _attendanceManager.GetAttendanceData(account, companyId);
+        }
     }
 }

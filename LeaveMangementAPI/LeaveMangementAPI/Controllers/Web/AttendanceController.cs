@@ -32,7 +32,11 @@ namespace LeaveMangementAPI.Controllers.Web
             _configuration = configuration;
             _attendanceAppService = attendanceAppService;
         }
-
+        /// <summary>
+        /// 打卡签到
+        /// </summary>
+        /// <param name="address"></param>
+        /// <returns></returns>
         [HttpPost]
         [Authorize]
         public async Task<Result> Clock(string address)
@@ -41,6 +45,19 @@ namespace LeaveMangementAPI.Controllers.Web
             string account = await _jwtUtil.GetMessageByToken(context);
             int companyId = _commonAppService.GetUserCompId(account);
             return _attendanceAppService.Clock(address, account, companyId);
+        }
+        /// <summary>
+        /// 首页获取图表的出勤统计数据
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> GetAttendanceData()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            int companyId = _commonAppService.GetUserCompId(account);
+            return _attendanceAppService.GetAttendanceData(account, companyId);
         }
     }
 }

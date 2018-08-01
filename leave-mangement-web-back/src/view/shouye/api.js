@@ -8,4 +8,11 @@ export class ShouyeApi {
   static noticeList(data={}){
       return server.connection('POST','api/Notice/NoticeList',data)
   }
+  static getAttendanceData(){
+    return server.connection('GET','api/Attendance/GetAttendanceData')
+  }
+  // 获取公司信息
+  static getCompany () {
+    return server.connection('GET', 'api/File/GetCompanyInfo')
+  }
 }

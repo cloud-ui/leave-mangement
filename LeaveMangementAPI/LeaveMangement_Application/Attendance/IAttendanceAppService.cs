@@ -8,5 +8,6 @@ namespace LeaveMangement_Application.Attendance
     public interface IAttendanceAppService
     {
         Result Clock(string address, string account, int compId);
+        object GetAttendanceData(string account, int companyId);
     }
 }

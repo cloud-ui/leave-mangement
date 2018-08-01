@@ -6,11 +6,11 @@
         <div class="index-body index-body1">
             <div class="index-body-menu">
                 <el-menu :default-active="applyType" class="el-menu-vertical-demo">
-                    <el-menu-item index="apply1">
+                    <el-menu-item index="correction ">
                         <i class="el-icon-tickets"></i>
                         <span slot="title">转正申请</span>
                     </el-menu-item>
-                    <el-menu-item index="apply2">
+                    <el-menu-item index="separation">
                         <i class="el-icon-document"></i>
                         <span slot="title">离职申请</span>
                     </el-menu-item>

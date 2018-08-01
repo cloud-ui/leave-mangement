@@ -1,19 +1,20 @@
 <template>
 <div>
-    <comp-count></comp-count>
     <div class="kq-home-body">
         <div class="kq-home-body-left">
-            <comp-card borderColor="#409eff" style="width:100%;">
+            <comp-card borderColor="#67c23a" style="width:100%;height:200px;">
                 <div slot="header">
-                    <i style="padding-right:5px" class="iconfont icon-icon1"></i><span>出勤情况</span>
+                    <i style="padding-right:5px" class="iconfont icon-ziliao"></i><span>公司资料</span>
                 </div>
                 <div>
-                    <comp-line-chart :xData="xData" :data="data"></comp-line-chart>
-                </div>            
+                    <ul>
+                        <li><p class="company-message">公司名称：<span>{{company.name}}</span></p></li>
+                        <li><p class="company-message">联系电话：<span>{{company.cellphoneNumber}}</span></p></li>
+                        <li><p class="company-message">公司地址：<span>{{company.address}}</span></p></li>
+                    </ul>
+                </div>
             </comp-card>
-        </div>
-        <div class="kq-home-body-right">
-            <comp-card borderColor="#00a65a" style="width:100%;height:300px;">
+            <comp-card borderColor="#00a65a" style="width:100%;height:300px;margin-top: 20px;">
                 <div slot="header">
                     <i style="padding-right:5px" class="iconfont icon-gonggao"></i><span>公告栏</span>
                 </div>
@@ -25,6 +26,17 @@
                 </div>            
             </comp-card>
         </div>
+        <div class="kq-home-body-right">
+            <comp-count :workerCount="company.deparmentCount" :deparmentCount="company.wokerCount"></comp-count>
+            <comp-card borderColor="#409eff" style="width:100%;height:500px;">
+                <div slot="header">
+                    <i style="padding-right:5px" class="iconfont icon-icon1"></i><span>出勤情况</span>
+                </div>
+                <div>
+                    <comp-line-chart></comp-line-chart>
+                </div>            
+            </comp-card>
+        </div>
     </div>
     <el-dialog width="408px" :title="noticeItem.title" :visible.sync="dialogVisible" :before-close="handleClose">
          <comp-view @closeForm='handleClose' @close='closeForm' :notice="noticeItem" ref="compView"></comp-view>
@@ -33,7 +45,7 @@
 </template>
 <script>
 import CompCount from './count'
-import CompLineChart from '../../packages/components/lineChart'
+import CompLineChart from './lineChart'
 import CompCard from '../../packages/components/card'
 import CompView from '../../packages/components/noticeview'
 import {ShouyeApi} from './api.js'
@@ -47,17 +59,12 @@ export default{
     },
     data(){
         return{
-            xData:['周一', '周二', '周三', '周四', '周五', '周六', '周7'],
-            data:[{
-                name:'实际人数',
-                data:[10,20,30,40,50,60,70]
-            },{
-                name:'出勤人数',
-                data:[5,10,15,20,25,30,35]
-            }],
+            xData:[],
+            data:[],
             noticeData:[],
             noticeItem:{},
-            dialogVisible:false
+            dialogVisible:false,
+            company:{},
         }
     },
     mounted(){
@@ -66,6 +73,7 @@ export default{
     methods:{
        loadData(){
            this.loadNoticeData()
+           this.loadCompany()
        },
        loadNoticeData(){
            const params = {
@@ -75,6 +83,11 @@ export default{
            }
            ShouyeApi.noticeList(params).then(res=>{
                this.noticeData = res.data.data
+           })
+       },
+       loadCompany(){
+           ShouyeApi.getCompany().then(res=>{
+               this.company={...res.data}
            })
        },
        handleLookNotice(val){

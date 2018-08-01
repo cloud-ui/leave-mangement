@@ -2,11 +2,11 @@
     display: flex;
     justify-content: flex-start;
     &-left{
-        width: 55%;
+        width: 36%;
         padding-right: 30px;
     }
     &-right{
-        width: 42%;
+        width: 62%;
     }
 }
 .notice-item{
@@ -21,6 +21,13 @@
     >p{
         font-size: 14px;
         padding: 0px;
+    }
+}
+.company-message{
+    font-size: 14px;
+    padding: 5px 0px;
+    >span{
+        font-weight: 600;
     }
 }
 .notice-item:hover{
