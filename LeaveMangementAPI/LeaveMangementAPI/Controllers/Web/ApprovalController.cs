@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using LeaveMangement_Application.Approval;
 using LeaveMangement_Application.Common;
+using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.Approval;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authorization;
@@ -189,6 +190,20 @@ namespace LeaveMangementAPI.Controllers.Web
             var context = HttpContext;
             string account = await _jwtUtil.GetMessageByToken(context);
             return _approvalAppService.PushCheck(pushCheck, account);
+        }
+
+        /// <summary>
+        /// 添加转正申请和离职申请
+        /// </summary>
+        /// <param name="applyJobDto"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public async Task<Result> CreateApplyOfJob([FromBody]ApplyJobDto applyJobDto)
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            return _approvalAppService.CreateApplyOfJob(applyJobDto, account);
         }
     }
 }

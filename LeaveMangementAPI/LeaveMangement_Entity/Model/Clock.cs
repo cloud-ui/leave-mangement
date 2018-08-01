@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LeaveMangement_Entity.Models
+namespace LeaveMangement_Entity.Model
 {
     public partial class Clock
     {
@@ -11,6 +11,6 @@ namespace LeaveMangement_Entity.Models
         public long SrartTime { get; set; }
         public long? EndTime { get; set; }
         public bool IsFull { get; set; }
-        public double WorkHour { get; set; }
+        public double? WorkHour { get; set; }
     }
 }

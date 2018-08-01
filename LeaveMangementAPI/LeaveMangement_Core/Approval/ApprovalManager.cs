@@ -1,9 +1,10 @@
 ﻿using LeaveMangement_Entity.Dtos.Approval;
-using LeaveMangement_Entity.Models;
+using LeaveMangement_Entity.Model;
 using System.Linq;
 using System;
 using System.Collections.Generic;
 using LeaveMangement_Core.Common;
+using LeaveMangement_Entity.Dtos;
 
 namespace LeaveMangement_Core.Approval
 {
@@ -89,7 +90,6 @@ namespace LeaveMangement_Core.Approval
                 workerId = _ctx.Worker.SingleOrDefault(w => w.PositionId == positionId).Id;
             }
             //找出上级职位编号
-
             //添加通知
             Inform inform = new Inform()
             {
@@ -430,5 +430,26 @@ namespace LeaveMangement_Core.Approval
             _ctx.SaveChanges();
         }
 
+        public Result CreateApplyOfJob(ApplyJobDto applyJobDto, string account)
+        {
+            Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
+            ApplyFoJob apply = new ApplyFoJob()
+            {
+                Content = applyJobDto.Content,
+                Type = applyJobDto.Type,
+                CreateTime = DateTime.Now.ToFileTime(),
+                WorkerId = worker.Id,
+                DeparmentId = worker.DepartmentId,
+                CompanyId = worker.CompanyId,
+            };
+            _ctx.ApplyFoJob.Add(apply);
+            _ctx.SaveChanges();
+            Result result = new Result()
+            {
+                IsSuccess = true,
+                Message = "添加成功！"
+            };
+            return result;
+        }
     }
 }

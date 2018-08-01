@@ -1,4 +1,5 @@
-﻿using LeaveMangement_Entity.Dtos.Approval;
+﻿using LeaveMangement_Entity.Dtos;
+using LeaveMangement_Entity.Dtos.Approval;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -20,5 +21,6 @@ namespace LeaveMangement_Application.Approval
         object CheckApplication(CheckDto checkDto,string account);
         object PushCheck(PushCheck pushCheck,string account);
         object RevokeApplication(int id);
+        Result CreateApplyOfJob(ApplyJobDto applyJobDto,string account);
     }
 }

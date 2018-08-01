@@ -30,6 +30,7 @@
 <script>
 import '../index.scss'
 import CompEditor from '../../packages/components/editor'
+import {ApprovalApi} from './api.js'
 export default {
     components:{
         CompEditor
@@ -37,6 +38,7 @@ export default {
     data(){
         return{
             applyType:'',
+            loading:false
         }
     },
     created() {
@@ -49,6 +51,18 @@ export default {
         fetchData(){
             const type = this.$route.params.type
             this.applyType = type
+        },
+        submitData(){
+            this.loading = true
+            var applyDetail = this.$refs["apply_editor"].getEditorContent();
+            const params ={
+                type:this.applyType,
+                content:applyDetail
+            }
+            ApprovalApi.createApplyOfJob(params).then(res=>{
+                this.loading = false
+                console.log(res)
+            })
         }
     }
 }

@@ -2,13 +2,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace LeaveMangement_Entity.Models
+namespace LeaveMangement_Entity.Model
 {
     public partial class KaoQinContext : DbContext
     {
-        public virtual DbSet<AdminUser> AdminUser { get; set; }
         public virtual DbSet<Apply> Apply { get; set; }
-        public virtual DbSet<Authorization> Authorization { get; set; }
+        public virtual DbSet<ApplyFoJob> ApplyFoJob { get; set; }
         public virtual DbSet<Clock> Clock { get; set; }
         public virtual DbSet<Company> Company { get; set; }
         public virtual DbSet<Deparment> Deparment { get; set; }
@@ -19,7 +18,6 @@ namespace LeaveMangement_Entity.Models
         public virtual DbSet<Notice> Notice { get; set; }
         public virtual DbSet<PaperType> PaperType { get; set; }
         public virtual DbSet<Position> Position { get; set; }
-        public virtual DbSet<PositionOfAuth> PositionOfAuth { get; set; }
         public virtual DbSet<State> State { get; set; }
         public virtual DbSet<Worker> Worker { get; set; }
 
@@ -27,31 +25,13 @@ namespace LeaveMangement_Entity.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning
-                //To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer(@"Server=DESKTOP-BD1U6I5;Database=KaoQin;Trusted_Connection=True;User ID=sa;Password=jxzxc1230;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<AdminUser>(entity =>
-            {
-                entity.Property(e => e.Account)
-                    .IsRequired()
-                    .HasMaxLength(20);
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(50);
-
-                entity.Property(e => e.Password).IsRequired();
-
-                entity.Property(e => e.Status)
-                    .IsRequired()
-                    .HasMaxLength(20);
-            });
-
             modelBuilder.Entity<Apply>(entity =>
             {
                 entity.Property(e => e.Account)
@@ -61,14 +41,20 @@ namespace LeaveMangement_Entity.Models
                 entity.Property(e => e.Remark).HasMaxLength(100);
             });
 
-            modelBuilder.Entity<Authorization>(entity =>
+            modelBuilder.Entity<ApplyFoJob>(entity =>
             {
-                entity.Property(e => e.Name).HasMaxLength(20);
+                entity.Property(e => e.Content).IsRequired();
+
+                entity.Property(e => e.Type)
+                    .IsRequired()
+                    .HasMaxLength(10);
             });
 
             modelBuilder.Entity<Clock>(entity =>
             {
-                entity.Property(e => e.ClockDay).HasMaxLength(15);
+                entity.Property(e => e.ClockDay)
+                    .IsRequired()
+                    .HasMaxLength(15);
             });
 
             modelBuilder.Entity<Company>(entity =>

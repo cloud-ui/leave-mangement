@@ -45,4 +45,8 @@ export class ApprovalApi {
   static getApplicationCount(){
     return server.connection('GET','api/Approval/GetApprovalCount')
   }
+  //添加转正/离职申请
+  static createApplyOfJob(data={}){
+    return server.connection('POST','api/Approval/CreateApplyOfJob',data)
+  }
 }

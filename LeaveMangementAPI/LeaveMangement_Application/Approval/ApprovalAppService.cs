@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using LeaveMangement_Core.Approval;
+using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.Approval;
 
 namespace LeaveMangement_Application.Approval
@@ -60,6 +61,10 @@ namespace LeaveMangement_Application.Approval
         public object RevokeApplication(int id)
         {
             return _approvalManager.RevokeApplication(id);
+        }
+        public Result CreateApplyOfJob(ApplyJobDto applyJobDto, string account)
+        {
+            return _approvalManager.CreateApplyOfJob(applyJobDto, account);
         }
     }
 }

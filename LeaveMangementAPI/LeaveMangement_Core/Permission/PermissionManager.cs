@@ -1,5 +1,5 @@
 ﻿using LeaveMangement_Entity.Dtos.Permission;
-using LeaveMangement_Entity.Models;
+using LeaveMangement_Entity.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

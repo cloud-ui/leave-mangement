@@ -22,17 +22,12 @@
                 </el-table-column>
                 <el-table-column align="center" prop="type" label="请假类型" width="120">
                 </el-table-column>
-                <el-table-column align="center" prop="startTime" label="开始时间">
+                <el-table-column align="center" prop="content" label="内容">
                     <template slot-scope="scope">
-                        {{scope.row.startTime | formatDate}}
+                        {{scope.row.content}}
                     </template>
                 </el-table-column>
-                <el-table-column align="center" prop="endTime" label="结束时间">
-                    <template slot-scope="scope">
-                        {{scope.row.endTime | formatDate}}
-                    </template>
-                </el-table-column>
-                <el-table-column align="center" prop="createTime" label="创建时间">
+                <el-table-column align="center" prop="createTime" label="创建时间" width="110">
                 </el-table-column>
                 <el-table-column align="center" label="操作" width="80">
                     <template slot-scope="scope">

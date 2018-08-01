@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace LeaveMangement_Entity.Models
+namespace LeaveMangement_Entity.Model
 {
     public partial class Position
     {

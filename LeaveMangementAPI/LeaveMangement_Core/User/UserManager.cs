@@ -1,4 +1,4 @@
-﻿using LeaveMangement_Entity.Models;
+﻿using LeaveMangement_Entity.Model;
 using System.Linq;
 using System;
 using System.Collections.Generic;

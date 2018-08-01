@@ -3,7 +3,7 @@ using LeaveMangement_Application.User;
 using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Dtos.User;
-using LeaveMangement_Entity.Models;
+using LeaveMangement_Entity.Model;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

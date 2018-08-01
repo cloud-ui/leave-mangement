@@ -4,7 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Net.Mail;
-using LeaveMangement_Entity.Models;
+using LeaveMangement_Entity.Model;
 
 namespace LeaveMangement_Core.User
 {
