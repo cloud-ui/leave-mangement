@@ -25,7 +25,8 @@ namespace LeaveMangement_Entity.Model
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+#warning
+                //To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
                 optionsBuilder.UseSqlServer(@"Server=DESKTOP-BD1U6I5;Database=KaoQin;Trusted_Connection=True;User ID=sa;Password=jxzxc1230;");
             }
         }
@@ -111,6 +112,7 @@ namespace LeaveMangement_Entity.Model
             modelBuilder.Entity<Inform>(entity =>
             {
                 entity.Property(e => e.Content).IsRequired();
+                entity.Property(e => e.Type).HasMaxLength(10);
             });
 
             modelBuilder.Entity<Journal>(entity =>

@@ -11,5 +11,6 @@ namespace LeaveMangement_Entity.Model
         public bool IsLook { get; set; }
         public int WorkId { get; set; }
         public int ApplicationId { get; set; }
+        public string Type { get; set; }
     }
 }

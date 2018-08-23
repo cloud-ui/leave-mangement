@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace LeaveMangementAPI.Controllers.Web
@@ -26,6 +27,7 @@ namespace LeaveMangementAPI.Controllers.Web
         private readonly ICommonAppService _commonAppService;
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
+        public FTPUtil _fTPUtil = new FTPUtil();
         public UserController(IUserAppService userAppService,IConfiguration configuration, ICommonAppService commonAppService)
         {
             _userAppService = userAppService;
@@ -78,6 +80,17 @@ namespace LeaveMangementAPI.Controllers.Web
             singleWorkerDto.CompanyId = _commonAppService.GetUserCompId(account);
             return _userAppService.AddSingleWorker(singleWorkerDto);
         }
+        [HttpGet]
+        [Authorize]
+        public FileStream DownloadFile()
+        {
+            if(_fTPUtil.FTPIsConnected("123.207.242.177", "test", "zhang1997"))
+            {
+                FileStream fileStream = _fTPUtil.FTPIsdownload("123.207.242.177", "test", "zhang1997", "/home/test/cloudy", "test.txt");
+                return fileStream;
+            }
+            return null;
+        }
         /// <summary>
         /// 批量添加员工
         /// </summary>
@@ -121,6 +134,17 @@ namespace LeaveMangementAPI.Controllers.Web
         {
             return _userAppService.EditUserMessage(editUserMessageDto);
         }
-
+        /// <summary>
+        /// 获取登录用户的出勤情况
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> AttendanceByWorker()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            return true;
+        }
     }
 }

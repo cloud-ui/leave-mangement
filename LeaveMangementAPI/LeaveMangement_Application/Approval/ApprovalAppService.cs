@@ -50,6 +50,10 @@ namespace LeaveMangement_Application.Approval
         {
             return _approvalManager.GetCheckingList(checkingDto);
         }
+        public object GetApplyJobList(CheckingDto checkingDto)
+        {
+            return _approvalManager.GetApplyJobList(checkingDto);
+        }
         public object CheckApplication(CheckDto checkDto, string account)
         {
             return _approvalManager.CheckApplication(checkDto, account);

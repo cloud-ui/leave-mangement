@@ -4,7 +4,7 @@
         部门经理若无，则选择为总经理
     </div>
     <div style="padding-top:20px">
-        <el-form style="width:60%;margin:auto;" :model="formData" ref="ruleForm2" :rules="rule" label-width="80px" class="demo-ruleForm">
+        <el-form style="width:60%;" :model="formData" ref="ruleForm2" :rules="rule" label-width="80px" class="demo-ruleForm">
         <el-form-item label="部门名称" prop="name">
             <el-input  type="text" v-model="formData.name"  auto-complete="off"></el-input>
         </el-form-item>

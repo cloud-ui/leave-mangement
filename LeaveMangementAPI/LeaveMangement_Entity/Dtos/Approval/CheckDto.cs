@@ -9,5 +9,6 @@ namespace LeaveMangement_Entity.Dtos.Approval
         public string Remark { get; set; }
         public int ApplicationId { get; set; }
         public bool IsAgree { get; set; }
+        public string Type { get; set; }
     }
 }

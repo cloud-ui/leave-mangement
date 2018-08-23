@@ -11,7 +11,7 @@
                     <p>部门：</p><span>{{data.deparment}}</span>
                 </el-col>
                 <el-col :span="10" class="approval-message-body-part">
-                    <p>请假类型：</p><span>{{data.type}}</span>
+                    <p>请假类型：</p><span>{{data.typeName}}</span>
                 </el-col>
             </div>
             <div>
@@ -47,23 +47,11 @@
 import './check.scss'
 import {CheckApi} from './api.js'
 export default {
-    props:['appId'],
+    props:['data'],
     data(){
         return{
-            data:{},
             remark:'',
         }
-    },
-    watch:{
-        appId:{
-            handler(val,oldVal){
-                this.loadData(val)
-            },
-            deep:true
-        }
-    },
-    mounted(){
-        this.loadData()
     },
     methods:{
         loadData(){
@@ -74,7 +62,8 @@ export default {
         checkApplication(val){
             const params={
                 remark:this.remark,
-                applicationId:this.appId,
+                applicationId:this.data.id,
+                type:this.data.type,
                 IsAgree:val
             }
             CheckApi.checkApplication(params).then(res=>{

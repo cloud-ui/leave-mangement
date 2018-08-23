@@ -69,24 +69,29 @@ namespace LeaveMangement_Core.Approval
                 //添加完成后添加通知
                 if (newApply.State == 1)
                 {
-                    AddInform(newApply);
+                    AddInform(newApply.Id,newApply.WorkerId,"Leave");
                 }
             }
             return result;
         }
-        private void AddInform(Apply apply)
+        private void AddInform(int applyId,int id,string type)
         {
             //找到当前提交申请员工的上级用户
-            int deparmentId = _ctx.Worker.Find(apply.WorkerId).DepartmentId;
+            int deparmentId = _ctx.Worker.Find(id).DepartmentId;
             int mangerId = _ctx.Deparment.Find(deparmentId).ManagerId;
             int workerId = 0;
             //判断经理的ID是否等于提交申请的用户的ID,不等于则直接创建通知。等于就将通知转给上级
-            if (mangerId != apply.WorkerId)
+            if (mangerId != id)
                 workerId = mangerId;
             else
             {
                 //找到公司的上级的编号
-                int positionId = _ctx.Position.SingleOrDefault(p => p.CompanyId == apply.CompanyId).ParentId;
+                //int positionId = _ctx.Position.SingleOrDefault(p => p.CompanyId == apply.CompanyId).ParentId;
+                var position = (from p in _ctx.Position
+                                  join w in _ctx.Worker on p.Id equals w.PositionId
+                                  where w.Id == mangerId
+                                  select p).First();
+                int positionId = position.ParentId == 0 ? position.Id : position.ParentId;
                 workerId = _ctx.Worker.SingleOrDefault(w => w.PositionId == positionId).Id;
             }
             //找出上级职位编号
@@ -94,10 +99,11 @@ namespace LeaveMangement_Core.Approval
             Inform inform = new Inform()
             {
                 WorkId = workerId,
-                ApplicationId = apply.Id,
+                ApplicationId = applyId,
                 IsLook = false,
                 CreateTime = DateTime.Now.ToFileTime(),
                 Content = "待审核的申请",
+                Type = type
             };
             _ctx.Inform.Add(inform);
             _ctx.SaveChanges();
@@ -212,7 +218,7 @@ namespace LeaveMangement_Core.Approval
                 application.IsSubmit = true;
                 application.State = 1;
                 _ctx.SaveChanges();
-                AddInform(application);
+                AddInform(application.Id,application.WorkerId,"Leave");
                 result = new
                 {
                     isSuccess = true,
@@ -306,10 +312,10 @@ namespace LeaveMangement_Core.Approval
         {
             //从通知表里找出该用户需要审核的条目
             int workerId = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(checkingDto.Account) && w.CompanyId == checkingDto.CompId).Id;
-            int[] applicationIds = (from info in _ctx.Inform
-                                   where info.WorkId == workerId
+            var applicationIds = (from info in _ctx.Inform
+                                   where info.WorkId == workerId && info.Type.Equals("Leave")
                                    select info.ApplicationId).ToArray();
-            //再找出申请列表
+            //再找出请假申请列表
             var applications = (from apply in _ctx.Apply
                                join worker in _ctx.Worker on apply.WorkerId equals worker.Id
                                join deparment in _ctx.Deparment on apply.DeparmentId equals deparment.Id
@@ -319,11 +325,13 @@ namespace LeaveMangement_Core.Approval
                                    id = apply.Id,
                                    workerName = worker.Name,
                                    deparment = deparment.Name,
-                                   type = _approvalService.GetApplicationType(apply.Type1, apply.Type2),
+                                   type = "Leave",
+                                   typeName = _approvalService.GetApplicationType(apply.Type1, apply.Type2),
                                    state = apply.State,
                                    stateName = _approvalService.GetStateName(apply.State),
                                    startTime = apply.StartTime,
                                    endTime = apply.EndTime,
+                                   content = apply.Account,
                                    createTime = _commonServer.ChangeTime(apply.CreateTime),
                                }).ToList();
             var result = new object();
@@ -331,6 +339,37 @@ namespace LeaveMangement_Core.Approval
             {
                 count = applications.Count(),
                 data = applications.Skip((checkingDto.CurrentPage - 1) * checkingDto.CurrentPageSize).Take(checkingDto.CurrentPageSize),
+            };
+            return result;
+        }
+        public object GetApplyJobList(CheckingDto checkingDto)
+        {
+            //从通知表里找出该用户需要审核的条目
+            int workerId = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(checkingDto.Account) && w.CompanyId == checkingDto.CompId).Id;
+            var applyIds = (from info in _ctx.Inform
+                                  where info.WorkId == workerId && info.Type.Equals("Job")
+                                  select info.ApplicationId).ToArray();
+            //再找出申请列表
+            var applys = (from apply in _ctx.ApplyFoJob
+                                join worker in _ctx.Worker on apply.WorkerId equals worker.Id
+                                join deparment in _ctx.Deparment on apply.DeparmentId equals deparment.Id
+                                where applyIds.Contains(apply.Id) && worker.Name.Contains(checkingDto.Query)
+                                select new
+                                {
+                                    id = apply.Id,
+                                    workerName = worker.Name,
+                                    deparment = deparment.Name,
+                                    type = "Job",
+                                    type1 = apply.Type,
+                                    typeName = apply.Type.Equals("correction")?"转正申请":"离职申请",
+                                    content = apply.Content,
+                                    createTime = _commonServer.ChangeTime(apply.CreateTime),
+                                }).ToList();
+            var result = new object();
+            result = new
+            {
+                count = applys.Count(),
+                data = applys.Skip((checkingDto.CurrentPage - 1) * checkingDto.CurrentPageSize).Take(checkingDto.CurrentPageSize),
             };
             return result;
 
@@ -343,16 +382,12 @@ namespace LeaveMangement_Core.Approval
                 //找出处理人的ID
                 Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
                 Inform inform = _ctx.Inform.SingleOrDefault(i => i.ApplicationId == checkDto.ApplicationId);
-                //找出申请
-                Apply apply = _ctx.Apply.Find(checkDto.ApplicationId);
-                string remark = worker.Name + "：" + checkDto.Remark + ";" + apply.Remark;
-                //更新申请的处理信息
-                apply.HandleTime = DateTime.Now.ToFileTime();
-                apply.LeaderId = worker.Id;
-                apply.Remark = remark;
-                apply.State = checkDto.IsAgree ? 2 : 3;
-                //更新员工的状态
-                UpdateUserState(apply.CompanyId, apply.WorkerId,"休假");
+                switch (checkDto.Type)
+                {
+                    case "Leave":
+                        CheckApplication(worker, checkDto);break;
+                    case "Job": CheckApply(worker,checkDto); break;
+                }
                 //删除待审核的通知记录
                 _ctx.Inform.Remove(inform);
                 _ctx.SaveChanges();
@@ -371,6 +406,31 @@ namespace LeaveMangement_Core.Approval
                 };
             }
             return result;
+        }
+        private void CheckApplication(Worker worker,CheckDto checkDto)
+        {
+            //找出申请
+            Apply apply = _ctx.Apply.Find(checkDto.ApplicationId);
+            string remark = worker.Name + "：" + checkDto.Remark + ";" + apply.Remark;
+            //更新申请的处理信息
+            apply.HandleTime = DateTime.Now.ToFileTime();
+            apply.LeaderId = worker.Id;
+            apply.Remark = remark;
+            apply.State = checkDto.IsAgree ? 2 : 3;
+            _ctx.SaveChanges();
+            //更新员工的状态
+            UpdateUserState(apply.CompanyId, apply.WorkerId, "休假");
+        }
+        private void CheckApply(Worker worker, CheckDto checkDto)
+        {
+            ApplyFoJob apply = _ctx.ApplyFoJob.Find(checkDto.ApplicationId);
+            apply.HandlerId = worker.Id;
+            apply.HandlTime = DateTime.Now.ToFileTime();
+            apply.Result = checkDto.IsAgree;
+            _ctx.SaveChanges();
+            string state = checkDto.IsAgree ? "在职" : "离职";
+            bool isDelete = checkDto.IsAgree ? false : true;
+            UpdateUserState(apply.CompanyId, apply.WorkerId,state,isDelete);
         }
         public object PushCheck(PushCheck pushCheck, string account)
         {
@@ -422,11 +482,17 @@ namespace LeaveMangement_Core.Approval
                 return "";
             }            
         }
-        public void UpdateUserState(int companyId,int workerId,string stateName)
+        public void UpdateUserState(int companyId,int workerId,string stateName,bool isDelete = false)
         {
             State state = _ctx.State.SingleOrDefault(s => s.CompanyId == companyId && s.Name.Contains(stateName));
             Worker worker = _ctx.Worker.Find(workerId);
             worker.StateId = state.Id;
+            if (isDelete)
+            {
+                Company company = _ctx.Company.Find(worker.CompanyId);
+                int workerCount = company.WokerCount - 1 <= 0 ? 0 : company.WokerCount - 1;
+                company.WokerCount = workerCount;
+            }
             _ctx.SaveChanges();
         }
 
@@ -444,6 +510,7 @@ namespace LeaveMangement_Core.Approval
             };
             _ctx.ApplyFoJob.Add(apply);
             _ctx.SaveChanges();
+            AddInform(apply.Id,apply.WorkerId, "Job");
             Result result = new Result()
             {
                 IsSuccess = true,

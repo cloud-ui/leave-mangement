@@ -5,7 +5,7 @@
     <div class="login-body">
       <div class="login-body-left">
         <h3>公司人事管理系统</h3>
-        <p>√ 是一个基于Spring Cloud、oAuth2.0开发基于Vue前后分离的开发平台</p>
+        <p>√ 是一个基于ASP.NET Core开发基于Vue前后分离的开发平台</p>
         <p>√ 是一个基于vue+vuex+vue-router快速后台管理系统，采用token交互验证方式。</p>
         <p>√ 最大程度上帮助企业节省时间成本和费用开支。</p>
       </div>

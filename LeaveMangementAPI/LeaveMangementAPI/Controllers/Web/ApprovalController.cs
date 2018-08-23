@@ -142,7 +142,7 @@ namespace LeaveMangementAPI.Controllers.Web
             return _approvalAppService.DeleteApplicationById(id);
         }
         /// <summary>
-        /// 获取到当前登录的管理员用户待审核的申请列表
+        /// 获取到当前登录的管理员用户待审核的请假申请列表
         /// </summary>
         /// <returns></returns>
         [HttpPost]
@@ -153,6 +153,19 @@ namespace LeaveMangementAPI.Controllers.Web
             checkingDto.Account = await _jwtUtil.GetMessageByToken(context);
             checkingDto.CompId = _commonAppService.GetUserCompId(checkingDto.Account);
             return _approvalAppService.GetCheckingList(checkingDto);
+        }
+        /// <summary>
+        /// 获取到当前登录的管理员用户待审核转正离职列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public async Task<object> GetApplyJobList([FromBody]CheckingDto checkingDto)
+        {
+            var context = HttpContext;
+            checkingDto.Account = await _jwtUtil.GetMessageByToken(context);
+            checkingDto.CompId = _commonAppService.GetUserCompId(checkingDto.Account);
+            return _approvalAppService.GetApplyJobList(checkingDto);
         }
         /// <summary>
         /// 经理或总经理审核请假申请                                                           

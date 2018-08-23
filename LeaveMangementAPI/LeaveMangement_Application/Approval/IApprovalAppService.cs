@@ -18,6 +18,7 @@ namespace LeaveMangement_Application.Approval
         object DeleteApplicationById(int id);
         int GetApprovalCount(string account, int compId);
         object GetCheckingList(CheckingDto checkingDto);
+        object GetApplyJobList(CheckingDto checkingDto);
         object CheckApplication(CheckDto checkDto,string account);
         object PushCheck(PushCheck pushCheck,string account);
         object RevokeApplication(int id);
