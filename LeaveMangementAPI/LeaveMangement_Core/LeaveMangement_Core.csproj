@@ -9,12 +9,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="aliyun-net-sdk-core">
-      <HintPath>D:\资料\文档资料\文档资料\资料\demo\短信\dysms_net\net\api_demo\aliyun-net-sdk-core.dll</HintPath>
-    </Reference>
-    <Reference Include="aliyun-net-sdk-dysmsapi">
-      <HintPath>D:\资料\文档资料\文档资料\资料\demo\短信\dysms_net\net\api_demo\aliyun-net-sdk-dysmsapi.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.AspNetCore.Mvc.Formatters.Json">
       <HintPath>C:\Program Files\dotnet\sdk\NuGetFallbackFolder\microsoft.aspnetcore.mvc.formatters.json\2.0.3\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.Formatters.Json.dll</HintPath>
     </Reference>

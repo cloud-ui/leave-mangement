@@ -23,4 +23,7 @@ export class CheckApi {
   static pushCheck(data={}){
       return server.connection('POST','api/Approval/PushCheck',data)
   }
+  static getApplyJobList(data={}){
+      return server.connection('POST','api/Approval/GetApplyJobList',data)
+  }
 }

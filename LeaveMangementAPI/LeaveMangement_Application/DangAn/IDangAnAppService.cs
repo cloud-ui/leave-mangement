@@ -1,6 +1,6 @@
 ﻿using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.DangAn;
-using LeaveMangement_Entity.Model;
+using LeaveMangement_Entity.Models;
 using System.Collections.Generic;
 
 namespace LeaveMangement_Application.DangAn

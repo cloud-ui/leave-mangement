@@ -92,7 +92,7 @@
                     isSubmit:'',
                     value13:[],
                 },
-                count:'',
+                count:0,
                 dateLeng:0,
                 isEdit:'',
                 loading:false,

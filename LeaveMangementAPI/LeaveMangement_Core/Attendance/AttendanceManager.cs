@@ -1,4 +1,4 @@
-﻿using LeaveMangement_Entity.Model;
+﻿using LeaveMangement_Entity.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -64,7 +64,7 @@ namespace LeaveMangement_Core.Attendance
                     _ctx.Clock.Add(newClock);
                 }
                 _ctx.SaveChanges();
-                result.IsSuccess = false;
+                result.IsSuccess = true;
                 result.Message = "打卡成功！";
             }
             catch(Exception e)

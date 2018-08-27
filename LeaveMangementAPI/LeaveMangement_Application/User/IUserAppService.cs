@@ -1,6 +1,6 @@
 ﻿using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Dtos.User;
-using LeaveMangement_Entity.Model;
+using LeaveMangement_Entity.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;

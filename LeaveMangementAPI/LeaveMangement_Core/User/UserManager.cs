@@ -1,9 +1,7 @@
-﻿using LeaveMangement_Entity.Model;
+﻿using LeaveMangement_Entity.Models;
 using System.Linq;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Mvc;
 using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Dtos.User;
 

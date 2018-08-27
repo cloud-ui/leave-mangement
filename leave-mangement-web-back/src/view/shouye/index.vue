@@ -27,7 +27,7 @@
             </comp-card>
         </div>
         <div class="kq-home-body-right">
-            <comp-count :workerCount="company.deparmentCount" :deparmentCount="company.wokerCount"></comp-count>
+            <comp-count :workerCount="company.wokerCount" :deparmentCount="company.deparmentCount"></comp-count>
             <comp-card borderColor="#409eff" style="width:100%;height:500px;">
                 <div slot="header">
                     <i style="padding-right:5px" class="iconfont icon-icon1"></i><span>出勤情况</span>

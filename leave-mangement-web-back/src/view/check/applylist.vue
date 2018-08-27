@@ -13,11 +13,11 @@
                 </el-table-column>
                 <el-table-column align="center" prop="workerName" label="员工名称" width="100">
                 </el-table-column>
-                <el-table-column align="center" prop="typeName" label="请假类型" width="120">
+                <el-table-column align="center" prop="typeName" label="申请类型" width="120">
                 </el-table-column>
                 <el-table-column align="center" prop="content" label="内容">
                     <template slot-scope="scope">
-                        {{scope.row.content}}
+                        <pre v-html="formatText(scope.row.content)"></pre>
                     </template>
                 </el-table-column>
                 <el-table-column align="center" prop="createTime" label="创建时间" width="110">
@@ -28,7 +28,7 @@
                             <i class="el-icon-menu"></i>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item>
-                                 <el-button type="text" size="small" @click="handleLook(scope.row.id)" icon="el-icon-view">查看</el-button>
+                                 <el-button type="text" size="small" @click="handleLook(scope.row)" icon="el-icon-view">查看</el-button>
                                 </el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
@@ -46,14 +46,14 @@
             :total="totalCount">
             </el-pagination>
             <el-dialog title="审核" :visible.sync="dialogVisible" :before-close="handleClose">
-                <comp-check @closeForm='handleClose' @close='closeForm' :appId="applicationId" ref="compForm"></comp-check>
+                <comp-check @closeForm='handleClose' @close='closeForm' :data="apply" ref="compForm"></comp-check>
             </el-dialog>
         </el-card>   
 </template>
 <script>
     import '../index.scss'
     import { CheckApi } from "./api.js"
-    import CompCheck from './checkapplication'
+    import CompCheck from './checkapply'
     export default {
         components:{
             CompCheck
@@ -72,7 +72,7 @@
                 query: '',
                 totalCount: 0,
                 dialogVisible: false,
-                applicationId:0,
+                apply:{},
             }
         },
         mounted(){
@@ -103,8 +103,8 @@
                 this.loadData();
             },
             //点击查看
-            handleLook(id){
-                this.applicationId = id
+            handleLook(data){
+                this.apply = data
                 this.dialogVisible = true                
             },
             //关闭弹框
@@ -115,6 +115,25 @@
                 this.loadData()
                 this.dialogVisible = val
                 
+            },
+            formatText(text){
+                let num = -1,
+                rHtml = new RegExp("\<.*?\>", "ig"), //匹配html标签元素
+                aHtml = text.match(rHtml), //存放html元素的数组
+                rNbsp = new RegExp("\&.*?\;", "ig"), //匹配&nbsp;
+                aNbsp = text.match(rNbsp); //存放&nbsp;元素的数组
+                text = text.replace(rHtml, '{~}'); //替换html标签为{~}
+                text = text.replace(rNbsp, '{&}'); //替换&nbsp;标签为{&}
+                text = text.replace(/{~}/g, function() { //恢复html标签
+                    num++;
+                    return aHtml[num];
+                });
+                num = -1;
+                text = text.replace(/{&}/g, function() { //恢复&nbsp;标签
+                    num++;
+                    return aNbsp[num];
+                });
+                return text;
             }
         },
     }

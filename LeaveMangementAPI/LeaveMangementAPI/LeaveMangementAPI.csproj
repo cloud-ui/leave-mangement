@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LeaveMangement_Application\LeaveMangement_Application.csproj" />
+    <ProjectReference Include="..\LeaveMangement_Core\LeaveMangement_Core.csproj" />
     <ProjectReference Include="..\LeaveMangement_Entity\LeaveMangement_Entity.csproj" />
   </ItemGroup>
 

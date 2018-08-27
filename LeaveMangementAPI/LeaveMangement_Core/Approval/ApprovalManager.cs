@@ -1,5 +1,5 @@
 ﻿using LeaveMangement_Entity.Dtos.Approval;
-using LeaveMangement_Entity.Model;
+using LeaveMangement_Entity.Models;
 using System.Linq;
 using System;
 using System.Collections.Generic;
@@ -423,12 +423,15 @@ namespace LeaveMangement_Core.Approval
         }
         private void CheckApply(Worker worker, CheckDto checkDto)
         {
+            string state = "";
             ApplyFoJob apply = _ctx.ApplyFoJob.Find(checkDto.ApplicationId);
+            string stateName = _ctx.State.Find(worker.StateId).Name;
             apply.HandlerId = worker.Id;
             apply.HandlTime = DateTime.Now.ToFileTime();
             apply.Result = checkDto.IsAgree;
             _ctx.SaveChanges();
-            string state = checkDto.IsAgree ? "在职" : "离职";
+            state = checkDto.IsAgree && apply.Type== "correction" ? "在职" : stateName;
+            state = checkDto.IsAgree && apply.Type == "separation" ? "离职" : stateName;
             bool isDelete = checkDto.IsAgree ? false : true;
             UpdateUserState(apply.CompanyId, apply.WorkerId,state,isDelete);
         }
