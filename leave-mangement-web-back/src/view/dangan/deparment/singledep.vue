@@ -4,26 +4,27 @@
         部门经理若无，则选择为总经理
     </div>
     <div style="padding-top:20px">
-        <el-form style="width:60%;" :model="formData" ref="ruleForm2" :rules="rule" label-width="80px" class="demo-ruleForm">
+        <el-form :inline="true"  :model="formData" ref="ruleForm2" :rules="rule" class="demo-form-inline">
         <el-form-item label="部门名称" prop="name">
             <el-input  type="text" v-model="formData.name"  auto-complete="off"></el-input>
         </el-form-item>
+        <el-form-item label="部门人数" prop="workerCount">
+            <el-input :readonly="readonly" type="text" v-model="formData.workerCount" auto-complete="off"></el-input>
+        </el-form-item>
         <el-form-item label="部门经理" prop="mangerId">
-            <el-select style="width:100%" v-model="formData.mangerId" filterable placeholder="请选择">
+            <el-select style="width:90%" v-model="formData.mangerId" filterable placeholder="请选择">
                 <el-option  v-for="item in workerList" :key="item.id" :label="item.name" :value="item.id">
                     <span>{{item.name}}</span> 
                     <span style="color: #c0c4cc;font-size: 12px;">({{item.position}})</span>
                 </el-option>
             </el-select>
         </el-form-item>
-        <el-form-item label="部门人数" prop="workerCount">
-            <el-input :readonly="readonly" type="text" v-model="formData.workerCount" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item>
+        
+    </el-form>
+    <div>
             <el-button :loading="loading" type="primary" @click="submitForm('ruleForm2')">提交</el-button>
             <el-button @click="resetForm('ruleForm2')">重置</el-button>
-        </el-form-item>
-    </el-form>
+        </div>
     </div>    
 </div>
     

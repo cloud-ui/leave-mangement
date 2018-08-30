@@ -32,6 +32,10 @@ export class FileApi {
   static addSingleDep(data={}){
     return server.connection('POST','api/File/AddSingleDpearment',data)
   }
+  //批量添加部门
+  static addMulitDeparment(data = {}, files = []){
+    return server.connection('POST','/api/File/AddMulitDeparment', data, files, 'file')
+  }
   //编辑部门资料
   static editDeparment(data={}){
     return server.connection('PUT','api/File/EditDeparment',data)
@@ -89,5 +93,10 @@ export class FileApi {
   }
   static SaveSelectMenu(data={}){
     return server.connection('POST','api/Permission/SaveSelectMenu',data)
+  }
+
+  //下载模板
+  static downloadModel(){
+    return server.connection('GET','api/User/DownloadFile')
   }
 }

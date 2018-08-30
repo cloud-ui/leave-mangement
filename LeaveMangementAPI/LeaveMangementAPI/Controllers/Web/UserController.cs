@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System.IO;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace LeaveMangementAPI.Controllers.Web
@@ -81,15 +84,13 @@ namespace LeaveMangementAPI.Controllers.Web
             return _userAppService.AddSingleWorker(singleWorkerDto);
         }
         [HttpGet]
-        [Authorize]
-        public FileStream DownloadFile()
+        //[Authorize]
+        public IActionResult DownloadFile()
         {
-            if(_fTPUtil.FTPIsConnected("123.207.242.177", "test", "zhang1997"))
-            {
-                FileStream fileStream = _fTPUtil.FTPIsdownload("123.207.242.177", "test", "zhang1997", "/home/test/cloudy", "test.txt");
-                return fileStream;
-            }
-            return null;
+            var FilePath = @"./files/test.txt";
+
+            var stream = System.IO.File.OpenRead(FilePath);
+            return File(stream, "application/vnd.android.package-archive", Path.GetFileName(FilePath));
         }
         /// <summary>
         /// 批量添加员工

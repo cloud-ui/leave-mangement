@@ -21,6 +21,7 @@ namespace LeaveMangementAPI.Controllers.Web
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
+    [Consumes("application/json", "multipart/form-data")]
     [EnableCors("any")]
     public class FileController : Controller
     {
@@ -97,11 +98,11 @@ namespace LeaveMangementAPI.Controllers.Web
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Authorize]
-        public async Task<object> AddMulitDeparment()
+        //[Authorize]
+        public object AddMulitDeparment(IFormCollection files)
         {
-            var context = HttpContext;
-            string account = await _jwtUtil.GetMessageByToken(context);
+            //var context = HttpContext;
+            //string account = await _jwtUtil.GetMessageByToken(context);
             return true;
         }
         /// <summary>

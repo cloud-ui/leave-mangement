@@ -6,7 +6,7 @@ import axios from 'axios'
 router.beforeEach((to, from, next) => {
   if(to.matched.some(record => record.meta.requireAuth)){
     /** 判断用户是否已经登录 */
-    if (store.getters.isLogin) {
+    if (!store.getters.isLogin) {
        if(to.path === '/login'){
         next();
        }else{

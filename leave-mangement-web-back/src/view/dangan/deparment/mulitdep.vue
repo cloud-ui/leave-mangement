@@ -10,7 +10,7 @@
         <div class="row-item">
             <div class="title">数据模板下载：</div>
             <div class="link">
-              <a :class="linkA" @click="downloadModel">点击下载模板</a>
+              <a :class="linkA" href="http://localhost:57503/api/User/DownloadFile">点击下载模板</a>
             </div>
         </div>
         <div class="row-item">
@@ -20,7 +20,7 @@
                 class="upload-demo"
                 ref="upload"
                 action="https://jsonplaceholder.typicode.com/posts/"
-                accept=".xls,.xlsx"
+                accept=".xlsx"
                 :on-change="handleChangeFile"
                 :file-list="fileList"
                 :show-file-list="false"
@@ -35,6 +35,7 @@
 </template>
 <script>
 import '../dangan.scss'
+import {FileApi} from '../api.js'
 export default {
     data(){
         return{
@@ -47,7 +48,10 @@ export default {
     methods:{
         //点击下载模板
         downloadModel(){
-
+            FileApi.downloadModel().then(res=>{
+                //window.open("http://"+res.data.content)
+                window.URL.revokeObjectURL(res.data);
+            })
         },
         //删除文件
         clearFile(file, fileList) {
@@ -68,12 +72,12 @@ export default {
             if(idx != -1){
                 ext = this.selectFile.substr(idx+1).toUpperCase();
                 ext = ext.toLowerCase();
-                if(ext !='xls' || ext!='xlsx'){
-                this.$message.error('请选择.xls文件或者.xlsx文件！');
+                if(ext!="xlsx"){
+                this.$message.error('请选择.xlsx文件！');
                 return;
                 }
             }else{
-                this.$message.error('请选择.xls文件或者.xlsx文件！');
+                this.$message.error('请选择.xlsx文件！');
                 return;
             }
             //上传文件部分
@@ -81,6 +85,10 @@ export default {
             this.fileList.forEach(file => {
                 files.push(file.raw);
             });
+            console.log(files)
+            FileApi.addMulitDeparment({},files).then(res=>{
+                console.log(res)
+            })
         }
     }
 }
