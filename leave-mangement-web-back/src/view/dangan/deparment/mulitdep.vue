@@ -10,7 +10,7 @@
         <div class="row-item">
             <div class="title">数据模板下载：</div>
             <div class="link">
-              <a :class="linkA" href="http://localhost:57503/api/User/DownloadFile">点击下载模板</a>
+              <a :class="linkA" href="http://localhost:57503/api/File/DownloadFile">点击下载模板</a>
             </div>
         </div>
         <div class="row-item">

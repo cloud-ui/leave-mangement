@@ -30,7 +30,6 @@ namespace LeaveMangementAPI.Controllers.Web
         private readonly ICommonAppService _commonAppService;
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
-        public FTPUtil _fTPUtil = new FTPUtil();
         public UserController(IUserAppService userAppService,IConfiguration configuration, ICommonAppService commonAppService)
         {
             _userAppService = userAppService;
@@ -87,8 +86,7 @@ namespace LeaveMangementAPI.Controllers.Web
         //[Authorize]
         public IActionResult DownloadFile()
         {
-            var FilePath = @"./files/test.txt";
-
+            var FilePath = @"./files/user.xlsx";
             var stream = System.IO.File.OpenRead(FilePath);
             return File(stream, "application/vnd.android.package-archive", Path.GetFileName(FilePath));
         }

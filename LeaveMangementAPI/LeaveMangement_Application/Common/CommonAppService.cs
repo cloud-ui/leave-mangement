@@ -12,9 +12,17 @@ namespace LeaveMangement_Application.Common
         {
             return _commonManager.GetUserCompId(account);
         }
+        public int GetCompId(string componentName)
+        {
+            return _commonManager.GetCompId(componentName);
+        }
         public int GetUserDepId(string account)
         {
             return _commonManager.GetUserDepId(account);
+        }
+        public int GetUserId(string userName)
+        {
+            return _commonManager.GetUserId(userName);
         }
     }
 }

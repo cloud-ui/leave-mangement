@@ -14,12 +14,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="EPPlus.Core" Version="1.5.4" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Cors" Version="2.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.0.3" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.3" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="2.4.0" />
-    <PackageReference Include="System.Net.FtpClient" Version="1.0.5824.34026" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using LeaveMangement_Application.Common;
 using LeaveMangement_Application.DangAn;
@@ -16,6 +18,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using OfficeOpenXml;
 
 namespace LeaveMangementAPI.Controllers.Web
 {
@@ -29,6 +32,7 @@ namespace LeaveMangementAPI.Controllers.Web
         private readonly ICommonAppService _commonAppService;
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
+        public ImportExcelUtil _importExcelUtil = new ImportExcelUtil(); 
         public FileController(IDangAnAppService dangAnAppService,IConfiguration configuration,ICommonAppService commonAppService)
         {
             _configuration = configuration;
@@ -101,10 +105,71 @@ namespace LeaveMangementAPI.Controllers.Web
         //[Authorize]
         public object AddMulitDeparment(IFormCollection files)
         {
-            //var context = HttpContext;
-            //string account = await _jwtUtil.GetMessageByToken(context);
-            return true;
-        }
+            string[] colName = new string[] { "公司名称", "部门经理", "部门名称", "员工数量", "部门代码" };
+            if (files != null && files.Files.Count > 0)
+            {
+                for (int i = 0; i < files.Files.Count; i++)
+                {
+                    var file = files.Files[i];
+                    try
+                    {
+                        object path = _importExcelUtil.SaveExcel(file);
+                        FileInfo fileInfo = new FileInfo((string)path);
+                        using (FileStream fs = new FileStream(fileInfo.ToString(), FileMode.Create))
+                        {
+                            file.CopyTo(fs);
+                            fs.Flush();
+                        }
+                        using (ExcelPackage package = new ExcelPackage(fileInfo))
+                        {
+                            StringBuilder sb = new StringBuilder();
+                            ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                            int rowCount = worksheet.Dimension.Rows;
+                            int ColCount = worksheet.Dimension.Columns;
+                            bool bHeaderRow = true;
+                            if (_importExcelUtil.JudgeCol(worksheet,colName))
+                            {
+                                List<Deparment> deparments = new List<Deparment>();
+                                for (int row = 2; row <= rowCount; row++)
+                                {
+                                    Deparment deparment = new Deparment();
+                                    for (int col = 1; col <= ColCount; col++)
+                                    {
+                                        switch (col)
+                                        {
+                                            case 1: deparment.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());break;
+                                            case 2: deparment.ManagerId = _commonAppService.GetUserId(worksheet.Cells[row, col].Value.ToString()); break;
+                                            case 3: deparment.Name = worksheet.Cells[row, col].Value.ToString();break;
+                                            case 4: deparment.WorkerCount = Convert.ToInt32( worksheet.Cells[row, col].Value); break;
+                                            case 5: deparment.Code = worksheet.Cells[row, col].Value.ToString(); break;
+                                            default:break;
+                                        };
+                                    }
+                                    deparments.Add(deparment);
+                                    
+                                }
+                            }
+
+                            //return Content(sb.ToString());
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        return ex.Message;
+                    }
+                    
+                }
+            }
+            else
+            {
+                return false;
+
+            }
+
+            return false;
+
+        
+    }
         /// <summary>
         /// 编辑部门
         /// </summary>
@@ -300,6 +365,14 @@ namespace LeaveMangementAPI.Controllers.Web
         public Result TransferWorker([FromBody]TransferWorkerDto transferWorkerDto)
         {
             return _dangAnAppService.TransferWorker(transferWorkerDto);
+        }
+        [HttpGet]
+        //[Authorize]
+        public IActionResult DownloadFile()
+        {
+            var FilePath = @"./files/deparment.xlsx";
+            var stream = System.IO.File.OpenRead(FilePath);
+            return File(stream, "application/vnd.android.package-archive", Path.GetFileName(FilePath));
         }
 
     }
