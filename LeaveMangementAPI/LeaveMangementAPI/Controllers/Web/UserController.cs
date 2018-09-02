@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using OfficeOpenXml;
+using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -22,6 +24,7 @@ namespace LeaveMangementAPI.Controllers.Web
 {
     [Produces("application/json")]
     [Route("api/[controller]/[action]")]
+    [Consumes("application/json", "multipart/form-data")]
     [EnableCors("any")]
     public class UserController : Controller
     {
@@ -30,6 +33,7 @@ namespace LeaveMangementAPI.Controllers.Web
         private readonly ICommonAppService _commonAppService;
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
+        public ImportExcelUtil _importExcelUtil = new ImportExcelUtil();
         public UserController(IUserAppService userAppService,IConfiguration configuration, ICommonAppService commonAppService)
         {
             _userAppService = userAppService;
@@ -94,13 +98,47 @@ namespace LeaveMangementAPI.Controllers.Web
         /// 批量添加员工
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
-        [Authorize]
-        public async Task<object> AddSingleWorker()
+        [HttpPost]
+        //[Authorize]
+        public object AddMulitWorker(IFormCollection files)
         {
-            var context = HttpContext;
-            string account = await _jwtUtil.GetMessageByToken(context);
-            return true;
+            string[] colName = new string[] { "职位", "部门", "公司", "姓名", "性别", "电话号码", "地址", "证件类型", "证件号码", "状态" , "入职时间" };
+            var result = new object();
+            string message = "";
+            if (files != null && files.Files.Count > 0)
+            {
+                for (int i = 0; i < files.Files.Count; i++)
+                {
+                    var file = files.Files[i];
+                    try
+                    {
+                        object path = _importExcelUtil.SaveExcel(file);
+                        FileInfo fileInfo = new FileInfo((string)path);
+                        using (FileStream fs = new FileStream(fileInfo.ToString(), FileMode.Create))
+                        {
+                            file.CopyTo(fs);
+                            fs.Flush();
+                        }
+                        using (ExcelPackage package = new ExcelPackage(fileInfo))
+                        {
+                            ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+                            if (_importExcelUtil.JudgeCol(worksheet, colName))
+                            {
+                                result = new
+                                {
+                                    data = _importExcelUtil.SaveWorkerToDB(worksheet, worksheet.Dimension.Rows, worksheet.Dimension.Columns)
+                                };
+                                System.IO.File.Delete((string)path);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        message = ex.Message;
+                    }
+                }
+            }
+            return result;
         }
         /// <summary>
         /// 获取员工详细信息

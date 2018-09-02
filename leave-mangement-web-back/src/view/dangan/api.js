@@ -84,6 +84,10 @@ export class FileApi {
   static addSingleWorker(data={}){
     return server.connection('POST','api/User/AddSingleWorker',data)
   }
+  //批量导入员工
+  static addMulitWorker(data = {}, files = []){
+    return server.connection('POST','/api/User/AddMulitWorker', data, files, 'file')
+  }
   //加载完整树
   static loadMenuTree(){
     return server.connection('GET','api/Permission/GetMenuTree')

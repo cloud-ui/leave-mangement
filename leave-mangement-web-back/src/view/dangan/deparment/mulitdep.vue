@@ -5,6 +5,8 @@
                 <li>1.批量上传文件，需下载文件模板</li>
                 <li>2.下载模板填写内容</li>
                 <li>3.上传文件</li>
+                <li>4.上传失败的数据，请修改后将失败数据重新上传</li>
+                <li>5.可能失败原因：公司不存在、经理不存在、部门已经存在</li>
             </ul>
         </div>
         <div class="row-item">
@@ -30,7 +32,53 @@
               <el-button class="import-data-button" plain @click="importData">导入数据</el-button>
               </el-upload>
             </div>
-          </div>
+        </div>
+        <div v-if="showResult" class="show-result">
+            <p class="show-result-tip">总共导入 <span>{{successCount + badCount}}</span> 条数据，
+            成功 <span class="show-result-tip-s">{{successCount}}</span> 条，失败 <span class="show-result-tip-b">{{badCount}}</span> 条
+            </p>
+            <div>
+                <el-table
+    :data="result"
+    height="250"
+    style="width: 100%">
+    <el-table-column
+      prop="company"
+      label="公司名称"
+      width="150">
+    </el-table-column>
+    <el-table-column
+      prop="manager"
+      align="center"
+      label="部门经理"
+      width="90">
+    </el-table-column>
+    <el-table-column
+      prop="name"
+      align="center"
+      label="部门名称">
+    </el-table-column>
+    <el-table-column
+      prop="workerCount"
+      align="center"
+      label="部门人数">
+    </el-table-column>
+    <el-table-column
+      prop="code"
+      align="center"
+      label="部门代码">
+    </el-table-column>
+    <el-table-column
+      prop="isSuccess"
+      align="center"
+      label="是否成功">
+      <template slot-scope="scope">
+          <i :class="scope.row.isSuccess===true?`el-icon-circle-check show-result-tip-s`:`el-icon-circle-close show-result-tip-b`"></i>
+      </template>
+    </el-table-column>
+  </el-table>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -43,6 +91,10 @@ export default {
             selectFile:'选择文件',
             clearFileIsShow:false,
             linkA:'link-click',
+            showResult :false,
+            successCount: 0,
+            badCount:0,
+            result:'',
         }
     },
     methods:{
@@ -85,73 +137,18 @@ export default {
             this.fileList.forEach(file => {
                 files.push(file.raw);
             });
-            console.log(files)
             FileApi.addMulitDeparment({},files).then(res=>{
-                console.log(res)
+                this.showResult = true
+                this.successCount = res.data.data.successCount
+                this.badCount = res.data.data.badCount
+                this.result = res.data.data.data
             })
         }
     }
 }
 </script>
 <style lang="scss" scoped>
-.row-item{
-      margin-bottom:10px;
 
-      .title,.select,.link,.upload{
-        display: inline-block;
-        vertical-align: top;
-      }
-
-      .title {
-        margin-right:20px;
-        margin-top: 6px;
-      }
-      .select{
-        margin-right:20px;
-      }
-
-      .link{
-        margin-top: 6px;
-        padding: 0px;
-        .link-click{
-          cursor:pointer;
-          color: #09f
-        }
-      }
-
-      .upload{
-        position: relative;
-      }
-
-      .select-file-button{
-        margin-right: -5px;
-        padding: 10px 16px;
-        width: 290px;
-        border-top-right-radius:0;
-        border-bottom-right-radius:0;
-        text-align: left;
-        text-overflow : ellipsis;
-        white-space : nowrap;
-        overflow : hidden;
-      }
-
-      .clear-file-button{
-        position: absolute;
-        top: 10px;
-        left: 270px;
-        color: #ccc8d1;
-      }
-
-      .clear-file-button:hover{
-        color: #99959c;
-        cursor:pointer
-      }
-
-      .import-data-button{
-        border-top-left-radius:0;
-        border-bottom-left-radius:0;
-      }
-    }
   
 </style>
 

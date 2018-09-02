@@ -1,4 +1,6 @@
-﻿using LeaveMangement_Entity.Models;
+﻿using LeaveMangement_Application.Common;
+using LeaveMangement_Entity.Dtos.DangAn;
+using LeaveMangement_Entity.Models;
 using Microsoft.AspNetCore.Http;
 using OfficeOpenXml;
 using Swashbuckle.AspNetCore.Swagger;
@@ -19,6 +21,8 @@ namespace LeaveMangementAPI.Util
     public class ImportExcelUtil
     {
         public ImportExcelUtil() { }
+        private readonly ICommonAppService _commonAppService = new CommonAppService();
+        private KaoQinContext _ctx = new KaoQinContext();
         public object SaveExcel(IFormFile file)
         {
             string completePath = "";
@@ -67,170 +71,160 @@ namespace LeaveMangementAPI.Util
             }
             return bHeaderRow;
         }
-        ///<summary>
-        /// 写入数据到数据库
-        /// </summary>
-        /// <param name="completePath">文件在项目的存放地址</param>
-        /// <returns></returns>
-        //public Object ImportPrize(string completePath)
-        //{
-        //    var ret = new object();
-        //    List<string> errors = new List<string>();
-        //    List<string> fails = new List<string>();
-        //    int succescount = 0;
-        //    int failcount = 0;
-
-        //    try
-        //    {
-        //        var a = ReadExcelToTable(completePath).Rows;
-        //        List<Deparment> list = new List<Deparment>();
-        //        if (a.Count > 1)
-        //        {
-        //            for (var i = 0; i < a.Count; i++)
-        //            {
-        //                if (i == 0)
-        //                {
-        //                    #region 判断列名
-        //                    var col_one = a[i][0].ToString();
-        //                    if (col_one != "版本")
-        //                    {
-        //                        throw new Exception("格式错误，导入文件的第一列应为【版本】！");
-        //                    }
-        //                    //var col_two = a[i][1].ToString();
-        //                    //if (col_two != "版本状态")
-        //                    //{
-        //                    //    throw new Exception("格式错误，导入文件的第一列应为【版本状态】！");
-        //                    //}
-        //                    var col_three = a[i][1].ToString();
-        //                    if (col_three != "检测机构检测项")
-        //                    {
-        //                        throw new Exception("格式错误，导入文件的第一列应为【检测机构检测项】！");
-        //                    }
-        //                    var col_five = a[i][2].ToString();
-        //                    if (col_five != "区域市场")
-        //                    {
-        //                        throw new Exception("格式错误，导入文件的第一列应为【区域市场】！");
-        //                    }
-        //                    var col_six = a[i][3].ToString();
-        //                    if (col_six != "区域市场价格")
-        //                    {
-        //                        throw new Exception("格式错误，导入文件的第一列应为【区域市场价格】！");
-        //                    }
-        //                    var col_even = a[i][4].ToString();
-        //                    if (col_even != "VIP零售价格")
-        //                    {
-        //                        throw new Exception("格式错误，导入文件的第一列应为【VIP零售价格】！");
-        //                    }
-
-        //                    #endregion
-        //                }
-        //                else
-        //                {
-        //                    //int intType2; var intTypeStr2 = a[i][1].ToString();
-        //                    //if (!int.TryParse(intTypeStr2, out intType2))
-        //                    //{
-        //                    //    throw new Exception("格式错误，【版本状态】【第" + (i + 1) + "行】应为整数类型数据！");
-        //                    //}
-        //                    int intType1; var intStr1 = a[i][1].ToString();
-        //                    if (!int.TryParse(intStr1, out intType1))
-        //                    {
-        //                        throw new Exception("格式错误，【检测机构检测项】【第" + (i + 1) + "行】应为整数类型数据！");
-        //                    }
-        //                    int intType; var intStr = a[i][2].ToString();
-        //                    if (!int.TryParse(intStr, out intType))
-        //                    {
-        //                        throw new Exception("格式错误，【区域市场】【第" + (i + 1) + "行】应为整数类型数据！");
-        //                    }
-        //                    decimal docmoney_int; var docmoney_str = a[i][3].ToString();
-        //                    if (!decimal.TryParse(docmoney_str, out docmoney_int))
-        //                    {
-        //                        throw new Exception("格式错误，【区域市场价格】【第" + (i + 1) + "行】应为数字类型数据！");
-        //                    }
-
-        //                    decimal doczmoney_int; var doczmoney_str = a[i][4].ToString();
-        //                    if (!decimal.TryParse(doczmoney_str, out doczmoney_int))
-        //                    {
-        //                        throw new Exception("格式错误，【VIP零售价格】【第" + (i + 1) + "行】应为数字类型数据！");
-        //                    }
-        //                    //list.Add(new Deparment()
-        //                    //{
-        //                    //    Version = a[i][0].ToString(),
-        //                    //    //VersionState = false,
-        //                    //    DetectionOrgDetectionItemID = intType1,
-        //                    //    AreaMarketID = intType,
-        //                    //    Price = docmoney_int,
-        //                    //    vipPrice = doczmoney_int
-        //                    //});
-        //                }
-        //            }
-
-        //            #region ListForEach
-
-        //            //using (YZS_BUSEntities context = new YZS_BUSEntities())
-        //            //{
-        //            //    foreach (var item in list)
-        //            //    {
-        //            //        var entities = context.Set<区域产品信息>().Where(n => n.检测机构检测项.Value == item.DetectionOrgDetectionItemID && n.区域市场.Value == item.AreaMarketID && n.版本状态.Value == false).ToList();
-        //            //        if (entities.Count() > 0)
-        //            //        {
-        //            //            fails.Add("检测项:" + item.DetectionOrgDetectionItemID + "区域市场:" + item.AreaMarketID);
-        //            //            failcount++;
-        //            //        }
-        //            //        else
-        //            //        {
-        //            //            context.区域产品信息.Add(new 区域产品信息()
-        //            //            {
-        //            //                版本 = item.Version,
-        //            //                版本状态 = false,
-        //            //                检测机构检测项 = item.DetectionOrgDetectionItemID,
-        //            //                区域市场 = item.AreaMarketID,
-        //            //                区域市场价格 = item.Price,
-        //            //                VIP零售价格 = item.vipPrice
-        //            //            });
-        //            //            succescount++;
-        //            //        }
-        //            //    }
-        //            //    context.SaveChanges();
-        //            //    string failRemark = "";
-        //            //    if (failcount > 0)
-        //            //    {
-        //            //        failRemark = ",失败的数据：" + string.Join(",", fails);
-        //            //    }
-        //            //    errors.Add($"成功导入{succescount}条样本信息！失败{failcount}条{failRemark}");
-        //            //}
-
-        //            //ret.isOK = true;
-        //            //ret.errorCode = 0;
-        //            //ret.msg = "";
-        //            //ret.count = succescount;
-        //            //ret.datas = errors;
-
-        //            #endregion
-        //        }
-        //        else
-        //        {
-        //            throw new Exception("所选文件格式错误，或者未匹配到有效数据！");
-        //        }
-        //    }
-        //    catch (Exception error)
-        //    {
-        //        //ret.isOK = false;
-        //        //ret.errorCode = 200;
-        //        //ret.msg = error.Message;
-        //        //ret.count = 0;
-        //        //ret.datas = errors;
-        //    }
-        //    return ret;
-        //}
-
-        //private void ReadExcelToTable(string path)
-        //{
-        //    string strConn = "Provider=Microsoft.Jet.OLEDB.4.0;Data Source='" + path + "';" +
-        //    "Extended Properties='Excel 8.0;IMEX=1'";
-        //    DataSet dsMin = new DataSet();
-        //    OleDbDataAdapter oada = new OleDbDataAdapter("select * from [Sheet1$]", strConn);
-        //    //oada.Fill(dsMin);
-        //}
-
+        public object SaveDepToDB(ExcelWorksheet worksheet)
+        {
+            int rowCount = worksheet.Dimension.Rows;
+            int ColCount = worksheet.Dimension.Columns;
+            int successCount = 0, badCount = 0;
+            List<Deparment> successDeparments = new List<Deparment>();
+            List<ExcelDep> data = new List<ExcelDep>();
+            var result = new object();
+            for (int row = 2; row <= rowCount; row++)
+            {
+                Deparment deparment = new Deparment();
+                ExcelDep excelDep = new ExcelDep();
+                for (int col = 1; col <= ColCount; col++)
+                {
+                    switch (col)
+                    {
+                        case 1:
+                            deparment.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
+                            excelDep.Company = worksheet.Cells[row, col].Value.ToString(); break;
+                        case 2: deparment.ManagerId = _commonAppService.GetUserId(worksheet.Cells[row, col].Value.ToString());
+                            excelDep.Manager = worksheet.Cells[row, col].Value.ToString(); break;
+                        case 3: deparment.Name = worksheet.Cells[row, col].Value.ToString();
+                            excelDep.Name = worksheet.Cells[row, col].Value.ToString(); break;
+                        case 4: deparment.WorkerCount = Convert.ToInt32(worksheet.Cells[row, col].Value);
+                            excelDep.WorkerCount = Convert.ToInt32(worksheet.Cells[row, col].Value); break;
+                        case 5: deparment.Code = worksheet.Cells[row, col].Value.ToString();
+                            excelDep.Code = worksheet.Cells[row, col].Value.ToString(); break;
+                        default: break;
+                    };
+                }
+                if (deparment.CompanyId != 0 && deparment.ManagerId != 0)
+                {
+                    if (!_commonAppService.IsExitDep(deparment.Name, deparment.CompanyId))
+                    {
+                        excelDep.IsSuccess = true;
+                        successDeparments.Add(deparment);
+                        successCount++;
+                    }
+                    else
+                    {
+                        excelDep.IsSuccess = false;
+                        badCount++;
+                    }
+                }
+                else
+                {
+                    excelDep.IsSuccess = false;
+                    badCount++;
+                }
+                data.Add(excelDep);
+            }
+            _ctx.Deparment.AddRange(successDeparments);
+            Company company= _ctx.Company.Find(successDeparments[0].CompanyId);
+            company.DeparmentCount = company.DeparmentCount + successCount;
+            _ctx.SaveChanges();
+            result = new
+            {
+                successCount,
+                badCount,
+                data
+            };
+            return result;
+        }
+        public object SaveWorkerToDB(ExcelWorksheet worksheet,int rowCount,int colCount)
+        {
+            int successCount = 0, badCount = 0;
+            List<Worker> successWorkers = new List<Worker>();
+            List<ExcelWorker> data = new List<ExcelWorker>();
+            var result = new object();
+            for (int row = 2; row <= rowCount; row++)
+            {
+                Worker worker = new Worker();
+                ExcelWorker excelWorker = new ExcelWorker();
+                excelWorker.Account= worker.Account = DateTime.Now.AddSeconds(10).ToFileTime().ToString();
+                worker.Password = "123456";
+                for (int col = 1; col <= colCount; col++)
+                {
+                    switch (col)
+                    {
+                        case 1: //职位
+                            worker.PositionId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
+                            excelWorker.Position = worksheet.Cells[row, col].Value.ToString(); break;
+                        case 2: //部门
+                            worker.DepartmentId = _commonAppService.GetDepId(worksheet.Cells[row, col].Value.ToString());
+                            excelWorker.Department = worksheet.Cells[row, col].Value.ToString(); break;
+                        case 3: //公司
+                            worker.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
+                            excelWorker.Company = worksheet.Cells[row, col].Value.ToString(); break;
+                        case 4:  //姓名
+                            excelWorker.Name=worker.Name = worksheet.Cells[row, col].Value.ToString(); break;
+                        case 5:  //性别
+                            worker.Sex = worksheet.Cells[row, col].Value.ToString() == "男" ? 1 : 0;
+                            excelWorker.Sex = worksheet.Cells[row, col].Value.ToString(); break;
+                        case 6: //电话号码
+                            excelWorker.PhoneNumber= worker.PhoneNumber = worksheet.Cells[row, col].Value.ToString();
+                            break;
+                        case 7:  //地址
+                            excelWorker.Address= worker.Address = worksheet.Cells[row, col].Value.ToString();
+                            break;
+                        case 8: //证件类型
+                            worker.PaperType = _commonAppService.GetPaperType(worksheet.Cells[row, col].Value.ToString());
+                            excelWorker.PaperType = worksheet.Cells[row, col].Value.ToString();
+                            break;
+                        case 9: //证件号码
+                            excelWorker.PaperNumber= worker.PaperNumber = worksheet.Cells[row, col].Value.ToString();
+                            break;
+                        case 10: //状态
+                            worker.StateId = _commonAppService.GetState(worksheet.Cells[row, col].Value.ToString(), worker.CompanyId);
+                            excelWorker.State = worksheet.Cells[row, col].Value.ToString();
+                            break;
+                        case 11: //入职时间
+                            DateTime time = Convert.ToDateTime(worksheet.Cells[row, col].Value.ToString());
+                            worker.EntryTime = time.ToFileTime();
+                            excelWorker.EntryTime = worksheet.Cells[row, col].Value.ToString();
+                            break;
+                        default: break;
+                    };
+                }
+                if (worker.CompanyId != 0 && worker.DepartmentId != 0 && worker.PositionId != 0)
+                {
+                    if (!_commonAppService.IsExitWorker(worker.PaperType,worker.PaperNumber, worker.CompanyId))
+                    {
+                        excelWorker.IsSuccess = true;
+                        successWorkers.Add(worker);
+                        successCount++;
+                    }
+                    else
+                    {
+                        excelWorker.IsSuccess = false;
+                        badCount++;
+                    }
+                }
+                else
+                {
+                    excelWorker.IsSuccess = false;
+                    badCount++;
+                }
+                data.Add(excelWorker);
+            }
+            if (successCount != 0)
+            {
+                _ctx.Worker.AddRange(successWorkers);
+                _commonAppService.ChangeDepWorkerCount(successWorkers);
+                Company company = _ctx.Company.Find(successWorkers[0].CompanyId);
+                company.WokerCount = company.WokerCount + successCount;
+                _ctx.SaveChanges();
+            }
+            result = new
+            {
+                successCount,
+                badCount,
+                data
+            };
+            return result;
+        }
     }
 }

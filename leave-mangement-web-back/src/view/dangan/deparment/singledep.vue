@@ -19,9 +19,8 @@
                 </el-option>
             </el-select>
         </el-form-item>
-        
     </el-form>
-    <div>
+    <div style="display:flex;justify-content: flex-end;">
             <el-button :loading="loading" type="primary" @click="submitForm('ruleForm2')">提交</el-button>
             <el-button @click="resetForm('ruleForm2')">重置</el-button>
         </div>

@@ -102,10 +102,12 @@ namespace LeaveMangementAPI.Controllers.Web
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         public object AddMulitDeparment(IFormCollection files)
         {
             string[] colName = new string[] { "公司名称", "部门经理", "部门名称", "员工数量", "部门代码" };
+            var result = new object();
+            string message = "";
             if (files != null && files.Files.Count > 0)
             {
                 for (int i = 0; i < files.Files.Count; i++)
@@ -122,53 +124,24 @@ namespace LeaveMangementAPI.Controllers.Web
                         }
                         using (ExcelPackage package = new ExcelPackage(fileInfo))
                         {
-                            StringBuilder sb = new StringBuilder();
                             ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                            int rowCount = worksheet.Dimension.Rows;
-                            int ColCount = worksheet.Dimension.Columns;
-                            bool bHeaderRow = true;
                             if (_importExcelUtil.JudgeCol(worksheet,colName))
                             {
-                                List<Deparment> deparments = new List<Deparment>();
-                                for (int row = 2; row <= rowCount; row++)
+                                result = new
                                 {
-                                    Deparment deparment = new Deparment();
-                                    for (int col = 1; col <= ColCount; col++)
-                                    {
-                                        switch (col)
-                                        {
-                                            case 1: deparment.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());break;
-                                            case 2: deparment.ManagerId = _commonAppService.GetUserId(worksheet.Cells[row, col].Value.ToString()); break;
-                                            case 3: deparment.Name = worksheet.Cells[row, col].Value.ToString();break;
-                                            case 4: deparment.WorkerCount = Convert.ToInt32( worksheet.Cells[row, col].Value); break;
-                                            case 5: deparment.Code = worksheet.Cells[row, col].Value.ToString(); break;
-                                            default:break;
-                                        };
-                                    }
-                                    deparments.Add(deparment);
-                                    
-                                }
+                                    data = _importExcelUtil.SaveDepToDB(worksheet)
+                                };
+                                System.IO.File.Delete((string)path);
                             }
-
-                            //return Content(sb.ToString());
                         }
                     }
                     catch (Exception ex)
                     {
-                        return ex.Message;
+                        message= ex.Message;
                     }
-                    
                 }
             }
-            else
-            {
-                return false;
-
-            }
-
-            return false;
-
-        
+            return result;
     }
         /// <summary>
         /// 编辑部门
