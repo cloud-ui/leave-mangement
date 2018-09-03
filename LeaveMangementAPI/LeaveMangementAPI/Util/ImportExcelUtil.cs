@@ -144,21 +144,21 @@ namespace LeaveMangementAPI.Util
             {
                 Worker worker = new Worker();
                 ExcelWorker excelWorker = new ExcelWorker();
-                excelWorker.Account= worker.Account = DateTime.Now.AddSeconds(10).ToFileTime().ToString();
+                excelWorker.Account= worker.Account = (DateTime.Now.AddSeconds(10).ToFileTime().ToString()).Substring(6);
                 worker.Password = "123456";
                 for (int col = 1; col <= colCount; col++)
                 {
                     switch (col)
                     {
-                        case 1: //职位
-                            worker.PositionId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
-                            excelWorker.Position = worksheet.Cells[row, col].Value.ToString(); break;
+                        case 1: //公司
+                            worker.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
+                            excelWorker.Company = worksheet.Cells[row, col].Value.ToString(); break;
                         case 2: //部门
                             worker.DepartmentId = _commonAppService.GetDepId(worksheet.Cells[row, col].Value.ToString());
                             excelWorker.Department = worksheet.Cells[row, col].Value.ToString(); break;
-                        case 3: //公司
-                            worker.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
-                            excelWorker.Company = worksheet.Cells[row, col].Value.ToString(); break;
+                        case 3: //职位
+                            worker.PositionId = _commonAppService.GetPosition(worksheet.Cells[row, col].Value.ToString(),worker.CompanyId);
+                            excelWorker.Position = worksheet.Cells[row, col].Value.ToString(); break;
                         case 4:  //姓名
                             excelWorker.Name=worker.Name = worksheet.Cells[row, col].Value.ToString(); break;
                         case 5:  //性别

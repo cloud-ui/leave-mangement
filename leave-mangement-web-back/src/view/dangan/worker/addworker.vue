@@ -65,7 +65,7 @@
                         <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" accept=".xlsx" :on-change="handleChangeFile" :file-list="fileList" :show-file-list="false" :auto-upload="false">
                             <el-button class="select-file-button" slot="trigger" plain>{{selectFile}}</el-button>
                             <i class="el-icon-circle-close clear-file-button" v-show="clearFileIsShow" @click="clearFile"></i>
-                            <el-button class="import-data-button" plain @click="importData">导入数据</el-button>
+                            <el-button :loading="loadingMulit" class="import-data-button" plain @click="importData">导入数据</el-button>
                         </el-upload>
                     </div>
                 </div>
@@ -87,6 +87,9 @@
                             <el-table-column prop="state" align="center" label="职位状态">
                             </el-table-column>
                             <el-table-column prop="entryTime" align="center" label="入职时间">
+                                <template slot-scope="scope">
+                                    {{scope.row.entryTime.substr(0,10)}}
+                                </template>
                             </el-table-column>
                             <el-table-column prop="sex" align="center" label="性别">
                             </el-table-column>
@@ -145,6 +148,7 @@
                 positionData: [],
                 stateData: [],
                 //批量添加需要的内容
+                loadingMulit:false,
                 fileList: [],
                 selectFile: '选择文件',
                 clearFileIsShow: false,
@@ -190,6 +194,8 @@
                 console.log(tab, event);
             },
             closeForm() {
+                this.loadingMulit = false
+                this.showResult = false
                 this.$emit("close", false);
             },
             //批量添加
@@ -225,10 +231,11 @@
                 this.fileList.forEach(file => {
                     files.push(file.raw);
                 });
-                console.log(files)
+                this.loadingMulit=true
                 FileApi.addMulitWorker({}, files).then(res => {
                     console.log(res)
                     this.showResult = true
+                    this.loadingMulit = false
                     this.successCount = res.data.data.successCount
                     this.badCount = res.data.data.badCount
                     this.result = res.data.data.data

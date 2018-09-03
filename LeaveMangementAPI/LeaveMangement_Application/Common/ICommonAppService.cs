@@ -17,5 +17,6 @@ namespace LeaveMangement_Application.Common
         int GetPaperType(string paperType);
         int GetState(string name, int compId);
         void ChangeDepWorkerCount(List<Worker> workers);
+        int GetPosition(string positionName, int compId);
     }
 }

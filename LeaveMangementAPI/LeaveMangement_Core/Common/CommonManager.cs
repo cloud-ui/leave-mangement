@@ -42,6 +42,11 @@ namespace LeaveMangement_Core.Common
             State state = _ctx.State.SingleOrDefault(s => s.Name.Equals(name) && s.CompanyId == compId);
             return state != null ? state.Id : 0;
         }
+        public int GetPosition(string positionName,int compId)
+        {
+            Position position = _ctx.Position.SingleOrDefault(p => p.CompanyId == compId && p.Name.Equals(positionName));
+            return position != null ? position.Id : 0;
+        }
         public void ChangeDepWorkerCount(List<Worker> workers)
         {
             var result = (from worker in workers

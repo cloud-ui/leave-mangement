@@ -340,7 +340,7 @@ namespace LeaveMangementAPI.Controllers.Web
             return _dangAnAppService.TransferWorker(transferWorkerDto);
         }
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         public IActionResult DownloadFile()
         {
             var FilePath = @"./files/deparment.xlsx";

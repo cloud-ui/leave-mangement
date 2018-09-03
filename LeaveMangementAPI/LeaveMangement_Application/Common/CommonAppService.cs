@@ -37,6 +37,10 @@ namespace LeaveMangement_Application.Common
         {
             return _commonManager.GetState(name, compId);
         }
+        public int GetPosition(string positionName, int compId)
+        {
+            return _commonManager.GetPosition(positionName, compId);
+        }
         public void ChangeDepWorkerCount(List<Worker> workers)
         {
             _commonManager.ChangeDepWorkerCount(workers);
