@@ -2,7 +2,7 @@
 <div>
     <div class="kq-home-body">
         <div class="kq-home-body-left">
-            <comp-card borderColor="#67c23a" style="width:100%;height:200px;">
+            <comp-card borderColor="#fff" style="width:100%;height:200px;">
                 <div slot="header">
                     <i style="padding-right:5px" class="iconfont icon-ziliao"></i><span>公司资料</span>
                 </div>
@@ -14,7 +14,7 @@
                     </ul>
                 </div>
             </comp-card>
-            <comp-card borderColor="#00a65a" style="width:100%;height:300px;margin-top: 20px;">
+            <comp-card borderColor="#fff" style="width:100%;height:300px;margin-top: 20px;">
                 <div slot="header">
                     <i style="padding-right:5px" class="iconfont icon-gonggao"></i><span>公告栏</span>
                 </div>

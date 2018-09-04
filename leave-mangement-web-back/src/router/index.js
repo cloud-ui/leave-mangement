@@ -23,66 +23,66 @@ export default new Router({
       children: [
         {
           path: '/home',
-          name: 'home',
+          name: '系统主页',
           meta: {requireAuth: true},
           component: () => import('../view/shouye/index')
         },
         {
           path: '/company',
-          name: 'company',
+          name: '公司管理',
           meta: {requireAuth: true},
           component: () => import('../view/dangan/company/index')
         },
         {
           path: '/deparment',
-          name: 'deparment',
+          name: '部门管理',
           meta: {requireAuth: true},
           component: () => import('../view/dangan/deparment/index')
         },
         {
           path: '/worker/:depId',
-          name: 'worker/:depId',
+          name: '员工管理',
           meta: {requireAuth: true},
           component: () => import('../view/dangan/worker/index')
         },
         {
           path:'/leave/addApplication/:id',
-          name:'addApplication/:id',
+          name:'编辑请假',
           meta: {requireAuth: true},
           component:()=>import('../view/approval/leave/addApplication')
         },{
           path:'/leave/unApplicationList',
-          name:'unApplicationList',
+          name:'未提交申请',
           meta: {requireAuth: true},
           component:()=>import('../view/approval/leave/unApplicationList')
         },{
           path:'/addapply/:type',
-          name:'addapply/:type',
+          name:'编辑职位申请',
           meta: {requireAuth: true},
           component:()=>import('../view/approval/addapply')
         },{
           path:'/leave/applicationList',
-          name:'applicationList',
+          name:'已提交请假',
           meta: {requireAuth: true},
           component:()=>import('../view/approval/leave/applicationList')
         },{
           path:'/userpage',
-          name:'userpage',
+          name:'个人中心',
           meta: {requireAuth: true},
           component:()=>import('../view/userpage/index')
         },{
           path:'/check',
-          name:'check',
+          name:'审核列表',
           meta: {requireAuth: true},
           component:()=>import('../view/check/index')
         },{
           path:'/notice',
-          name:'notice',
+          name:'公告管理',
           meta: {requireAuth: true},
           component:()=>import('../view/notice/index'),
         },{
           path:'/notice/add',
-          name:'add',
+          name:'编辑公告',
           meta: {requireAuth: true},
           component:()=>import('../view/notice/addnotice')
         }

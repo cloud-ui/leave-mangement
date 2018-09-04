@@ -87,7 +87,7 @@ namespace LeaveMangementAPI.Controllers.Web
             return _userAppService.AddSingleWorker(singleWorkerDto);
         }
         [HttpGet]
-        //[Authorize]
+        [Authorize]
         public IActionResult DownloadFile()
         {
             var FilePath = @"./files/user.xlsx";
@@ -99,7 +99,7 @@ namespace LeaveMangementAPI.Controllers.Web
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        //[Authorize]
+        [Authorize]
         public object AddMulitWorker(IFormCollection files)
         {
             string[] colName = new string[] { "公司", "部门", "职位", "姓名", "性别", "电话号码", "地址", "证件类型", "证件号码", "状态" , "入职时间" };

@@ -239,7 +239,9 @@
                     this.successCount = res.data.data.successCount
                     this.badCount = res.data.data.badCount
                     this.result = res.data.data.data
-                })
+                }).cath(err=>{
+                    this.$message.error(err)
+                });
             }
         }
     };

@@ -3,7 +3,7 @@ export default{
     state:{
         token: Auth.getToken()|| {},
         userInfo: Auth.getUserInfo() || {},
-        isLogin: Auth.getLogin() || false,
+        isLogin: Auth.getLogin() || true,
         menu:Auth.getMenu() || {},
         inform:Auth.getInform() || {}
     },

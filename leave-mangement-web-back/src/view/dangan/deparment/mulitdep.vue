@@ -29,7 +29,7 @@
                 :auto-upload="false">
                 <el-button class="select-file-button" slot="trigger" plain >{{selectFile}}</el-button>
                 <i class="el-icon-circle-close clear-file-button" v-show="clearFileIsShow" @click="clearFile"></i>
-              <el-button class="import-data-button" plain @click="importData">导入数据</el-button>
+              <el-button :loading="loading" class="import-data-button" plain @click="importData">导入数据</el-button>
               </el-upload>
             </div>
         </div>
@@ -91,6 +91,7 @@ export default {
             selectFile:'选择文件',
             clearFileIsShow:false,
             linkA:'link-click',
+            loading:false,
             showResult :false,
             successCount: 0,
             badCount:0,
@@ -142,7 +143,21 @@ export default {
                 this.successCount = res.data.data.successCount
                 this.badCount = res.data.data.badCount
                 this.result = res.data.data.data
-            })
+            }).cath(err=>{
+                    this.$message.error(err)
+            });
+        },
+        //关闭弹框
+        closeForm(){
+            this.$emit('close',false)
+        },
+        //清空表单
+        resetForm(form){
+            this.loading = false
+            this.showResult = false
+            this.$refs.upload.clearFiles();
+            this.selectFile = "选择文件"
+            this.clearFileIsShow = false
         }
     }
 }
