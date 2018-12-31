@@ -74,6 +74,11 @@
                     </p>
                     <div>
                         <el-table :data="result" height="250" style="width: 100%">
+                            <el-table-column prop="isSuccess" align="center" label="是否成功">
+                                <template slot-scope="scope">
+                                    <i :class="scope.row.isSuccess===true?`el-icon-circle-check show-result-tip-s`:`el-icon-circle-close show-result-tip-b`"></i>
+                                </template>
+                            </el-table-column>
                             <el-table-column prop="name" label="姓名" width="80">
                             </el-table-column>
                             <el-table-column prop="account" label="账号" width="170">
@@ -100,11 +105,6 @@
                             <el-table-column prop="paperType" align="center" label="证件类型" width="110">
                             </el-table-column>
                             <el-table-column prop="paperNumber" align="center" label="证件号码" width="200">
-                            </el-table-column>
-                            <el-table-column prop="isSuccess" align="center" label="是否成功">
-                                <template slot-scope="scope">
-                                    <i :class="scope.row.isSuccess===true?`el-icon-circle-check show-result-tip-s`:`el-icon-circle-close show-result-tip-b`"></i>
-                                </template>
                             </el-table-column>
                         </el-table>
                     </div>
@@ -133,7 +133,7 @@
                     sex: "",
                     paperType: "",
                     paperNumber: "",
-                    entryTime: "",
+                    entryTime: null,
                     state: ""
                 },
                 paperTypes: [{
@@ -196,6 +196,7 @@
             closeForm() {
                 this.loadingMulit = false
                 this.showResult = false
+                this.data = {}
                 this.$emit("close", false);
             },
             //批量添加
@@ -239,8 +240,6 @@
                     this.successCount = res.data.data.successCount
                     this.badCount = res.data.data.badCount
                     this.result = res.data.data.data
-                }).cath(err=>{
-                    this.$message.error(err)
                 });
             }
         }

@@ -42,7 +42,6 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <summary>
         /// 获取登录用户所在的公司信息
         /// </summary>
-        /// <param name="compId"></param>
         /// <returns></returns>
         [HttpGet]
         [Authorize]
@@ -145,6 +144,7 @@ namespace LeaveMangementAPI.Controllers.Web
     }
         /// <summary>
         /// 编辑部门
+        /// 
         /// </summary>
         /// <param name="addSingleDeparmentDto"></param>
         /// <returns></returns>
@@ -245,7 +245,7 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <summary>
         /// 删除职位
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">职位编号</param>
         /// <returns></returns>
         [HttpDelete]
         [Authorize]
@@ -340,7 +340,6 @@ namespace LeaveMangementAPI.Controllers.Web
             return _dangAnAppService.TransferWorker(transferWorkerDto);
         }
         [HttpGet]
-        [Authorize]
         public IActionResult DownloadFile()
         {
             var FilePath = @"./files/deparment.xlsx";

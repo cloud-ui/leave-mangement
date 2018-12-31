@@ -6,6 +6,7 @@ using LeaveMangement_Application.Notice;
 using LeaveMangement_Application.Permission;
 using LeaveMangement_Application.User;
 using LeaveMangementAPI.Authorization;
+using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -102,6 +103,9 @@ namespace LeaveMangementAPI
                 c.OperationFilter<HttpHeaderOperation>(); // 添加httpHeader参数
             });
             #endregion
+            //配置signalr
+            services.AddSignalR();
+            
             //配置跨域处理
             services.AddCors(options =>
             {
@@ -114,8 +118,8 @@ namespace LeaveMangementAPI
                 });
             });
 
+           
             
-
             //依赖注入
             services.AddTransient<IDangAnAppService, DangAnAppService>();
             services.AddTransient<IUserAppService, UserAppService>();
@@ -124,6 +128,8 @@ namespace LeaveMangementAPI
             services.AddTransient<IPermissionAppService, PermissionAppServer>();
             services.AddTransient<INoticeAppService, NoticeAppService>();
             services.AddTransient<IAttendanceAppService, AttendanceAppService>();
+
+            services.AddSingleton<IServiceProvider, ServiceProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -143,10 +149,14 @@ namespace LeaveMangementAPI
 
             //session
             app.UseSession();
-
             //use the authentication  
             app.UseAuthentication();
-
+            //signalr
+            //app.UseSignalR(routes =>
+            //{
+            //    routes.MapHub<SignalrHubs>("signalrHubs");
+            //});
+            app.UseWebSockets();
             app.UseMvc();
         }
     }

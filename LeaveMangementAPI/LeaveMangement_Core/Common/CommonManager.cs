@@ -47,16 +47,28 @@ namespace LeaveMangement_Core.Common
             Position position = _ctx.Position.SingleOrDefault(p => p.CompanyId == compId && p.Name.Equals(positionName));
             return position != null ? position.Id : 0;
         }
+        /// <summary>
+        /// 批量添加部门时，修改部门人数
+        /// 1:根据部门编号分组
+        /// 2：对分组进行遍历
+        /// 3：对每个分组的员工的职位进行判断，如果是经理，就讲部门经理进行修改
+        /// </summary>
+        /// <param name="workers"></param>
         public void ChangeDepWorkerCount(List<Worker> workers)
         {
             var result = (from worker in workers
-                          group worker by worker.DepartmentId).ToList();
+                          group worker by worker.DepartmentId).ToList();  
             Deparment deparment;
             foreach(var item in result)
             {
                 deparment = _ctx.Deparment.Find(item.Key);
                 int i = item.Count();
                 deparment.WorkerCount = deparment.WorkerCount + item.Count();
+                foreach(Worker worker in item)
+                {
+                    if (_ctx.Position.Find(worker.PositionId).Name.Contains("部门经理"))
+                        deparment.ManagerId = worker.Id;
+                }
                 _ctx.SaveChanges();
             }
         }

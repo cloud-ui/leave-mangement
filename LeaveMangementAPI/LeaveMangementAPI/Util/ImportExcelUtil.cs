@@ -1,4 +1,5 @@
 ﻿using LeaveMangement_Application.Common;
+using LeaveMangement_Core.User;
 using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Models;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +23,7 @@ namespace LeaveMangementAPI.Util
     {
         public ImportExcelUtil() { }
         private readonly ICommonAppService _commonAppService = new CommonAppService();
+        private UserService _userService = new UserService();
         private KaoQinContext _ctx = new KaoQinContext();
         public object SaveExcel(IFormFile file)
         {
@@ -194,6 +196,8 @@ namespace LeaveMangementAPI.Util
                     if (!_commonAppService.IsExitWorker(worker.PaperType,worker.PaperNumber, worker.CompanyId))
                     {
                         excelWorker.IsSuccess = true;
+                        worker.Age = _userService.GetAgeFromIdCard(worker.PaperNumber);
+                        worker.Brith = _userService.GetBirthdayFromIdCard(worker.PaperNumber);
                         successWorkers.Add(worker);
                         successCount++;
                     }

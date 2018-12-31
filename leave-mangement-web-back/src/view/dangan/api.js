@@ -99,6 +99,11 @@ export class FileApi {
     return server.connection('POST','api/Permission/SaveSelectMenu',data)
   }
 
+  //员工人事调动
+  static TransferOfPersonnel(data={}){
+    return server.connection('POST','api/File/TransferWorker',data)
+  }
+
   //下载模板
   static downloadModel(){
     return server.connection('GET','api/User/DownloadFile')

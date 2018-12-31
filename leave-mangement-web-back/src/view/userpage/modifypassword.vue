@@ -4,10 +4,10 @@
             <el-input type="password" v-model="formData.password"></el-input>
         </el-form-item>
         <el-form-item prop="newPassword" label="新密码：">
-            <el-input v-model="formData.newPassword"></el-input>
+            <el-input type="password" v-model="formData.newPassword"></el-input>
         </el-form-item>
         <el-form-item prop="reNewPassword" label="重复新密码：">
-            <el-input v-model="formData.reNewPassword"></el-input>
+            <el-input type="password" v-model="formData.reNewPassword"></el-input>
         </el-form-item>
         <el-form-item style="display:flex;justify-content: flex-end;">
             <el-button @click="handleClose">取消</el-button>

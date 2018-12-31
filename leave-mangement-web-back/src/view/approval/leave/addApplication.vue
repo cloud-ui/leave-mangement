@@ -129,6 +129,10 @@
                     })
                 }else{
                     this.isEdit = true
+                    this.form.name = this.userInfo.name
+                    ApprovalApi.getDeparment(this.userInfo.departmentId).then(res=>{
+                        this.form.deparmentName = res.data.name
+                    })
                     ApprovalApi.getApplication(id).then(res=>{
                         this.form = {...res.data}
                         this.form.value13[0] = this.formatDate(res.data.startTime)
@@ -170,7 +174,7 @@
                                 message:res.data.message
                             })
                             this.loading = false
-                            const path = this.form.isSubmit?'/applicationList':'/unApplicationList'
+                            const path = this.form.isSubmit?'/leave/applicationList':'/leave/unApplicationList'
                             this.$router.push({ path: path})
                         })
                         }else{
@@ -181,7 +185,7 @@
                                     message:res.data.message
                                 })
                                 this.loading = false
-                                const path = this.form.isSubmit?'/applicationList':'/unApplicationList'
+                                const path = this.form.isSubmit?'/leave/applicationList':'/leave/unApplicationList'
                                 this.$router.push({ path: path})
                             })
                         }

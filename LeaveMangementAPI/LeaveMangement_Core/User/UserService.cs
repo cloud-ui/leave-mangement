@@ -25,6 +25,46 @@ namespace LeaveMangement_Core.User
             } while (_ctx.Worker.SingleOrDefault(u => u.Account.Equals(account)) != null);            
             return account;
         }
+        /// <summary>
+        /// 根据身份证获取年龄
+        /// </summary>
+        /// <param name="idCard"></param>
+        /// <returns></returns>
+        public int GetAgeFromIdCard(string idCard)
+        {
+            int age = 0;
+            if (!string.IsNullOrWhiteSpace(idCard))
+            {
+                var subStr = string.Empty;
+                if (idCard.Length == 18)
+                {
+                    subStr = idCard.Substring(6, 8).Insert(4, "-").Insert(7, "-");
+                }
+                else if (idCard.Length == 15)
+                {
+                    subStr = ("19" + idCard.Substring(6, 6)).Insert(4, "-").Insert(7, "-");
+                }
+                TimeSpan ts = DateTime.Now.Subtract(Convert.ToDateTime(subStr));
+                age = ts.Days / 365;
+            }
+            return age;
+        }
+        public long GetBirthdayFromIdCard(string idCard)
+        {
+            string birthday = "";
+            if (idCard.Length == 18)
+            {
+                birthday = idCard.Substring(6, 4) + "-" + idCard.Substring(10, 2) + "-" + idCard.Substring(12, 2);
+
+            }
+
+    //处理15位的身份证号码从号码中得到生日
+            if (idCard.Length == 15)
+            {
+                birthday = "19" + idCard.Substring(6, 2) + "-" + idCard.Substring(8, 2) + "-" + idCard.Substring(10, 2);
+            }
+            return DateTime.Parse(birthday).ToFileTime();
+        }
 
         public bool SendEMail(string mailAddress, Worker user)
         {

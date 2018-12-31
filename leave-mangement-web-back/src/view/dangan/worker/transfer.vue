@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div><span class="worker-name">{{data.name}}</span>将被调整为：</div>
+        <div><span class="worker-name">{{userName}}</span>将被调整为：</div>
         <div class="teansfer-body">
             <el-form :model="data" :inline="true" class="demo-form-inline" label-width="90px">
                 <el-form-item label="部门：">
@@ -10,7 +10,7 @@
                     <comp-option-select v-model="data.positionId" @change="changeOption"></comp-option-select>
                 </el-form-item>
                 <el-form-item label="职位状态：">
-                    <comp-state-select v-model="data.stateId" @change="changeState"></comp-state-select>
+                    <comp-state-select :stateId="data.stateId" v-model="data.stateId" @change="changeState"></comp-state-select>
                 </el-form-item>
                 <el-form-item class="btn">
                     <el-button>取消</el-button>
@@ -40,6 +40,7 @@ export default {
                 positionId:'',
                 workerId:this.id
             },
+            userName:'',
             loading:false
         }
     },
@@ -58,14 +59,22 @@ export default {
     methods:{
         loadData(id){
             FileApi.getWorkerMessage(id).then(res=>{
-                this.data = {
-                    deparmentId:res.data.deparmentId,
-                    stateId:res.data.stateId,
-                    positionId:res.data.positionId}
+                this.userName = res.data.name
+                this.data.deparmentId=res.data.deparmentId
+                this.data.stateId=res.data.stateId
+                this.data.positionId=res.data.positionId
+                console.log(res.data)
             })
+            console.log(this.userName)
         },
         submitForm(){
+            console.log(this.data)
             this.loading = true
+            FileApi.TransferOfPersonnel(this.data).then(res=>{
+                this.loading = false
+                const type1 = res.data.isSuccess?'success':'error'
+                this.$message({ type: type1,message: res.data.message});
+            })
         },
         changeDep(id){
             this.data.deparmentId = id

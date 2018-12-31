@@ -149,7 +149,7 @@
             //点击编辑
             handleEdit(id) {
                 this.$router.push({
-                    path: "/addApplication/" + id
+                    path: "/leave/addApplication/" + id
                 });
             },
             handleDelete(id) {

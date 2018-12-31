@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Dtos.User;
+using LeaveMangement_Core.Common;
 
 namespace LeaveMangement_Core.User
 {
@@ -11,6 +12,7 @@ namespace LeaveMangement_Core.User
     {
         private KaoQinContext _ctx = new KaoQinContext();
         private UserService _userService = new UserService();
+        private CommonServer _commonServer = new CommonServer();
         public Worker Login(string account, string password)
         {
             Worker worker = _ctx.Worker.SingleOrDefault(u => u.Account.Equals(account) && u.Password.Equals(password));
@@ -32,6 +34,12 @@ namespace LeaveMangement_Core.User
             _ctx.SaveChanges();
             return _userService.SendEMail(company.Email, user);
         }
+        /// <summary>
+        /// 单个添加员工
+        /// 如果添加员工的职位为部门经理，则将对应部门的经理改为员工编号
+        /// </summary>
+        /// <param name="singleWorkerDto"></param>
+        /// <returns></returns>
         public object AddSingleWorker(SingleWorkerDto singleWorkerDto)
         {
             var worker = _ctx.Worker.SingleOrDefault(w => w.PaperType.Equals(singleWorkerDto.PaperType) &&
@@ -57,13 +65,19 @@ namespace LeaveMangement_Core.User
                     Sex = singleWorkerDto.Sex,
                     PaperType = singleWorkerDto.PaperType,
                     PaperNumber = singleWorkerDto.PaperNumber,
-                    EntryTime = singleWorkerDto.EntryTime,
+                    EntryTime = _commonServer.ConvertTime( (long)singleWorkerDto.EntryTime),
                     StateId = singleWorkerDto.State,
                     IsAuth = UserHelper.DEFAULT_IS_AUTH,
+                    Age = _userService.GetAgeFromIdCard(singleWorkerDto.PaperNumber),
+                    Brith = _userService.GetBirthdayFromIdCard(singleWorkerDto.PaperNumber)
                 };
                 _ctx.Worker.Add(newWorker);
+                _ctx.SaveChanges();
                 _ctx.Company.Find(singleWorkerDto.CompanyId).WokerCount++;
-                _ctx.Deparment.Find(singleWorkerDto.DepartmentId).WorkerCount++;
+                var dep = _ctx.Deparment.Find(singleWorkerDto.DepartmentId);
+                if (_ctx.Position.SingleOrDefault(p => p.Id == singleWorkerDto.PositionId).Name.Contains("部门经理"))
+                    dep.ManagerId = newWorker.Id;
+                dep.WorkerCount++;
                 _ctx.SaveChanges();
                 result = new
                 {
@@ -95,15 +109,15 @@ namespace LeaveMangement_Core.User
                             address = worker.Address,
                             phoneNumber = worker.PhoneNumber,
                             sex = worker.Sex == 0 ? "女" : "男",
-                            entryTime = worker.EntryTime,
-                            birth = worker.Brith,
+                            entryTime = _commonServer.MilliTimeStamp( (long)worker.EntryTime),
+                            birth =  _commonServer.MilliTimeStamp( (long)worker.Brith),
                             paperType = paperType.Name,
                             paperNumber = worker.PaperNumber,
                             stateId = state.Id,
                             state = state.Name,
                             isAuth = worker.IsAuth,
-                        }).ToList();
-            return user[0];
+                        }).Single();
+            return user;
         }
         public object ModifyPassword(ModifyPasswordDto modifyPasswordDto)
         {

@@ -1,7 +1,7 @@
 <template>
     <el-form ref="addForm" :model="form" :rules="rule" label-width="80px">
         <el-form-item v-if="this.formInfo.state === 'position'" label="上级：">
-            <el-select v-model="form.parmentId">
+            <el-select v-model="form.parentId">
                 <el-option
                     v-for="item in SelectData"
                     :key="item.id"
@@ -62,7 +62,7 @@ export default {
                     if(this.formInfo.state === 'position'){
                         switch(this.formInfo.type){
                             case 'edit':
-                            FileApi.editPosition(this.form).then(res=>{
+                            FileApi.editPosition(params).then(res=>{
                                 this.closeForm()
                                 this.$message({
                                     type: 'success',
@@ -71,7 +71,7 @@ export default {
                             })
                             break;
                             case 'add':
-                            FileApi.addPosition(this.form).then(res=>{
+                            FileApi.addPosition(params).then(res=>{
                                 this.closeForm()
                                 this.$message({
                                     type: 'success',

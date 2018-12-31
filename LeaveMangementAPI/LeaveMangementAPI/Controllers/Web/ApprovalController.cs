@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 
 namespace LeaveMangementAPI.Controllers.Web
@@ -31,7 +32,9 @@ namespace LeaveMangementAPI.Controllers.Web
         private readonly ICommonAppService _commonAppService;
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
-        public ApprovalController(IApprovalAppService approvalAppService,IConfiguration configuration,ICommonAppService commonAppService)
+        //signalr
+        private IHubContext<SignalrHubs> _hubContext;
+        public ApprovalController(IServiceProvider service,IApprovalAppService approvalAppService,IConfiguration configuration,ICommonAppService commonAppService)
         {
             _approvalAppService = approvalAppService;
             _commonAppService = commonAppService;
@@ -60,6 +63,8 @@ namespace LeaveMangementAPI.Controllers.Web
             string account = await _jwtUtil.GetMessageByToken(context);
             addApplicationDto.CompId = _commonAppService.GetUserCompId(account);
             addApplicationDto.DeparmentId = _commonAppService.GetUserDepId(account);
+            //signal
+            //_hubContext.Clients.Client("1").getInform("您有新的消息");
             return _approvalAppService.AddApplication(addApplicationDto);
         }
         /// <summary>

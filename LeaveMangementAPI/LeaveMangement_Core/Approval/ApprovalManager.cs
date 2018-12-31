@@ -34,8 +34,6 @@ namespace LeaveMangement_Core.Approval
             var result = new object();
             var application = _ctx.Apply.SingleOrDefault(a => a.WorkerId == addApplicationDto.WorkerId &&
             a.StartTime <= addApplicationDto.StartTime && a.EndTime >= addApplicationDto.EndTime);
-            //状态
-            int state = addApplicationDto.IsSubmit ? ApprovalHelper.DEFAULT_APPROVAL_STATE : 0;
             if (application != null)
                 result = new
                 {
@@ -67,7 +65,7 @@ namespace LeaveMangement_Core.Approval
                     message = "申请已保存！"
                 };
                 //添加完成后添加通知
-                if (newApply.State == 1)
+                if (newApply.State == 1&&newApply.IsSubmit)
                 {
                     AddInform(newApply.Id,newApply.WorkerId,"Leave");
                 }
@@ -78,7 +76,9 @@ namespace LeaveMangement_Core.Approval
         {
             //找到当前提交申请员工的上级用户
             int deparmentId = _ctx.Worker.Find(id).DepartmentId;
-            int mangerId = _ctx.Deparment.Find(deparmentId).ManagerId;
+            if (_ctx.Deparment.Find(deparmentId).ManagerId == null)
+                throw new Exception("部门没有部门经理");
+            int mangerId = (int)_ctx.Deparment.Find(deparmentId).ManagerId;
             int workerId = 0;
             //判断经理的ID是否等于提交申请的用户的ID,不等于则直接创建通知。等于就将通知转给上级
             if (mangerId != id)
@@ -98,7 +98,7 @@ namespace LeaveMangement_Core.Approval
             //添加通知
             Inform inform = new Inform()
             {
-                WorkId = workerId,
+                WorkId = (int)workerId,
                 ApplicationId = applyId,
                 IsLook = false,
                 CreateTime = DateTime.Now.ToFileTime(),

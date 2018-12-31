@@ -1,7 +1,9 @@
 <template>
 <div>
     <div class="add-tip">
-        部门经理若无，则选择为总经理
+        <ul>
+            <li>1:不能跨部门选择部门经理</li>
+        </ul>
     </div>
     <div style="padding-top:20px">
         <el-form :inline="true"  :model="formData" ref="ruleForm2" :rules="rule" class="demo-form-inline">
@@ -15,7 +17,7 @@
             <el-select style="width:90%" v-model="formData.mangerId" filterable placeholder="请选择">
                 <el-option  v-for="item in workerList" :key="item.id" :label="item.name" :value="item.id">
                     <span>{{item.name}}</span> 
-                    <span style="color: #c0c4cc;font-size: 12px;">({{item.position}})</span>
+                    <span style="color: #c0c4cc;font-size: 12px;">({{item.deparment}}-{{item.position}})</span>
                 </el-option>
             </el-select>
         </el-form-item>
@@ -41,7 +43,6 @@ export default {
             workerList:{},
             rule:{
                 name:[{required: true, message: '请输入名称', trigger: 'blur'}],
-                mangerId:[{required: true, message: '请选择部门经理', trigger: 'blur'}]
             }
         }
     },

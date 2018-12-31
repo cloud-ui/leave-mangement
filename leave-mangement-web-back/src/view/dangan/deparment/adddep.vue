@@ -19,7 +19,7 @@ export default {
                 type:'add',
                 formData:{
                 name:'',
-                mangerId:'0',
+                mangerId:null,
                 workerCount:0,
             },
             }            

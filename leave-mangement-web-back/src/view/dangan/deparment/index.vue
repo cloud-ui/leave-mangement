@@ -66,7 +66,6 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="currentPage"
-            :page-sizes="[100, 200, 300, 400]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="totalCount">
@@ -91,7 +90,7 @@ export default {
             totalCount:0,
             query:'',
             currentPage:1,
-            pageSize:20,
+            pageSize:9,
             dialogVisible:false,
             headerCellStyle: {
                 backgroundColor: '#f2f2f2',

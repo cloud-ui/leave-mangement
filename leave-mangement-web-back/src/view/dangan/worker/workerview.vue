@@ -32,7 +32,7 @@
                 <p>出生日期：</p><span>{{data.birth | formatDate}}</span>
             </el-col>
             <el-col :span="8" class="worker-message-box-part">
-                <p>入职时间：</p><span>{{data.entryTime}}</span>
+                <p>入职时间：</p><span>{{data.entryTime | formatDate}}</span>
             </el-col>
         </div>
         <div>

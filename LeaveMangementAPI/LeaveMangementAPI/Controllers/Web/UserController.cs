@@ -44,7 +44,6 @@ namespace LeaveMangementAPI.Controllers.Web
         /// 后台管理登录（公司管理层员工）
         /// </summary>
         /// <param name="user.account">账号</param>
-        /// <param name="user.password"></param>
         [HttpPost]
         public object Login([FromBody]UserDto user)
         {
@@ -87,7 +86,6 @@ namespace LeaveMangementAPI.Controllers.Web
             return _userAppService.AddSingleWorker(singleWorkerDto);
         }
         [HttpGet]
-        [Authorize]
         public IActionResult DownloadFile()
         {
             var FilePath = @"./files/user.xlsx";
