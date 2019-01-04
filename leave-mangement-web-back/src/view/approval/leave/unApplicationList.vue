@@ -59,7 +59,6 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="currentPage"
-            :page-sizes="[100, 200, 300, 400]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="totalCount">
@@ -88,7 +87,7 @@
                     fontWeight: 400
                 },
                 currentPage: 1,
-                pageSize: 20,
+                pageSize: 9,
                 query: '',
                 totalCount: 0,
                 dialogVisible: false,
@@ -137,7 +136,7 @@
                                 type: type1,
                                 message: res.data.message
                             });
-                            if(res.data.isSuccess){this.$router.push({ path: '/applicationList'})}                       
+                            if(res.data.isSuccess){this.$router.push({ path: '/leave/applicationList'})}                       
                         })
                     }).catch(() => {
                         this.$message({

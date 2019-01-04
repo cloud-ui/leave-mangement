@@ -75,7 +75,9 @@
                 </div>
             </el-col>
             <el-col :span="4">
-                <i class="el-icon-picture userinfo-userimg"></i>
+                <div class="userinfo-userimg">
+                    <comp-upload-img></comp-upload-img>
+                </div>
                 <div class="userinfo-btn">
                     <ul>
                         <li><el-button @click="handleCompleteMessage()" type="primary" size="mini">完善资料</el-button></li>
@@ -93,10 +95,12 @@ import {mapGetters} from 'vuex'
 import { UserPageApi } from "./api.js";
 import CompPassword from './modifypassword'
 import CompMessage from './workermessage'
+import CompUploadImg from '@/packages/components/upload-file'
 export default {
     components:{
         CompPassword,
-        CompMessage
+        CompMessage,
+        CompUploadImg
     },
     data(){
         return{

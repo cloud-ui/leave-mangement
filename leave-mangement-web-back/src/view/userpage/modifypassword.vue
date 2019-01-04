@@ -1,5 +1,5 @@
 <template>
-    <el-form ref="password" label-width="120px" :rules="rule" :model="formData">
+    <el-form :inline="true" class="demo-form-inline" ref="password" label-width="120px" :rules="rule" :model="formData">
         <el-form-item prop="password" label="原始密码：">
             <el-input type="password" v-model="formData.password"></el-input>
         </el-form-item>

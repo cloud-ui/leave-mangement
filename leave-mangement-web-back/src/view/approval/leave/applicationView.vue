@@ -25,7 +25,7 @@
                     <p>申请时间：</p><span>{{data.createTime}}</span>
                 </el-col>
                 <el-col :span="10" class="approval-message-body-part">
-                    <p>起止时间：</p><span>{{data.startTime}} - {{data.endTime}}</span>
+                    <p>起止时间：</p><span>{{data.startTime|formatDate}} - {{data.endTime|formatDate}}</span>
                 </el-col>
             </div>
             <div>
@@ -82,7 +82,18 @@ export default {
                 this.data = res.data
             })
         }
-    }
+    },
+    filters: {
+            formatDate: function (value) {
+                let date = new Date(value);
+                let y = date.getFullYear();
+                let MM = date.getMonth() + 1;
+                MM = MM < 10 ? ('0' + MM) : MM;
+                let d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                return y + '-' + MM + '-' + d;
+                }
+            }
 }
 </script>
 

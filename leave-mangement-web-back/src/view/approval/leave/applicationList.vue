@@ -69,7 +69,6 @@
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
             :current-page="currentPage"
-            :page-sizes="[100, 200, 300, 400]"
             :page-size="pageSize"
             layout="total, sizes, prev, pager, next, jumper"
             :total="totalCount">
@@ -99,7 +98,7 @@
                     fontWeight: 400
                 },
                 currentPage: 1,
-                pageSize: 20,
+                pageSize: 9,
                 query: '',
                 totalCount: 0,
                 dialogVisible: false,
@@ -131,6 +130,7 @@
                 this.currentPage = val;
                 this.loadData();
             },
+            //只有申请的假期已经结束，才能销假
             getIsEnd(endTime){
                 if(endTime > this.nowData){
                     return false

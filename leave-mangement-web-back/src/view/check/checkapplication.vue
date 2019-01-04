@@ -24,7 +24,7 @@
             </div>
             <div>
                 <el-col :span="24" class="approval-message-body-part">
-                    <p>请假理由：</p><span>{{data.account}}</span>
+                    <p>请假理由：</p><span>{{data.content}}</span>
                 </el-col>
             </div>
         </div>
@@ -52,6 +52,10 @@ export default {
         return{
             remark:'',
         }
+    },
+    mounted() {
+        console.log("333")
+        console.log(this.data)
     },
     methods:{
         loadData(){
