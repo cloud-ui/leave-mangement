@@ -4,7 +4,7 @@
             <p>公司员工</p>
         </div>
         <div class="index-body">
-            <div class="index-body-title">
+             <div class="index-body-title">
                 <div style="display:flex;">
                     <p>共 <span>{{totalCount}}</span> 名员工</p>
                     <el-button style="padding:0px 0px 0px 10px;" @click="handleAdd()" type="text" icon="el-icon-plus">添加员工</el-button>
@@ -60,7 +60,9 @@
         <el-dialog :title="formTitle" :visible.sync="dialogVisible" :before-close="handleClose">
          <comp-view @closeForm='handleClose' @close='closeForm' :workerId="workerId" :type="type" ref="compForm"></comp-view>
         </el-dialog>
+    
     </div>
+   
 </template>
 <script>
     import '../dangan.scss'

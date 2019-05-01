@@ -181,5 +181,18 @@ namespace LeaveMangementAPI.Controllers.Web
             string account = await _jwtUtil.GetMessageByToken(context);
             return true;
         }
+        /// <summary>
+        /// 上传用户照片
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        public async Task<object> UpdateUserImg(IFormCollection files)
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            return true;
+        }
     }
 }

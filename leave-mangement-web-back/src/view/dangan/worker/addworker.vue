@@ -62,7 +62,8 @@
                 <div class="row-item">
                     <div class="title">选择数据文件：</div>
                     <div class="upload">
-                        <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" accept=".xlsx" :on-change="handleChangeFile" :file-list="fileList" :show-file-list="false" :auto-upload="false">
+                        <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" accept=".xlsx" 
+                        :on-change="handleChangeFile" :file-list="fileList" :show-file-list="false" :auto-upload="false">
                             <el-button class="select-file-button" slot="trigger" plain>{{selectFile}}</el-button>
                             <i class="el-icon-circle-close clear-file-button" v-show="clearFileIsShow" @click="clearFile"></i>
                             <el-button :loading="loadingMulit" class="import-data-button" plain @click="importData">导入数据</el-button>

@@ -62,6 +62,7 @@ import {ShouyeApi} from './api.js'
             },
             LoadAttendanceData(){
                 ShouyeApi.getAttendanceData().then(res=>{
+                    debugger
                     res.data.xData.map(val=>{
                         this.xData.push(val)
                     })
@@ -78,6 +79,8 @@ import {ShouyeApi} from './api.js'
                             data: value.data
                     })
                     this.legendData.push(value.name)
+                    console.log("9999")
+                    console.log(this.legendData)
                 })
             }
         }

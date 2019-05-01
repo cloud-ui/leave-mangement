@@ -28,7 +28,17 @@
         </div>
         <div class="kq-home-body-right">
             <comp-count :workerCount="company.wokerCount" :deparmentCount="company.deparmentCount"></comp-count>
-            <comp-card borderColor="#409eff" style="width:100%;height:500px;">
+            <comp-card borderColor="#00a65a" style="height:110px;width:100%;">
+                <div slot="header">
+                    <i style="padding-right:5px" class="iconfont icon-steps"></i><span>申请流程</span>
+                </div>
+                <el-steps>
+                    <el-step title="提交申请"></el-step>
+                    <el-step title="审核"></el-step>
+                    <el-step title="查看结果"></el-step>
+                </el-steps>
+            </comp-card>
+            <comp-card borderColor="#409eff" style="width:100%;height:450px;margin-top: 20px;">
                 <div slot="header">
                     <i style="padding-right:5px" class="iconfont icon-icon1"></i><span>出勤情况</span>
                 </div>
@@ -45,7 +55,7 @@
 </template>
 <script>
 import CompCount from './count'
-import CompLineChart from './lineChart'
+import CompLineChart from './lineCharts'
 import CompCard from '../../packages/components/card'
 import CompView from '../../packages/components/noticeview'
 import {ShouyeApi} from './api.js'

@@ -99,7 +99,7 @@
                     query: this.query,
                 }
                 NoticeApi.noticeList(params).then(res => {
-                    this.totalCount = res.data.count
+                    this.totalCount = res.data.totalCount
                     this.tableData = res.data.data
                 })
             },

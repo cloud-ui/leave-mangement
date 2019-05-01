@@ -11,7 +11,7 @@
             background-color: #ffffff;
             font-size: 10px;
             position: relative;
-            top:-18px;
+            top:-10px;
             margin-left: 10px;
         }
     }
@@ -59,4 +59,30 @@
 .auth{
     padding-left: 5px;
     font-size: 10px;
+}
+
+.attence{
+    &-box{
+        display: flex;
+        justify-content:space-between;
+    }
+    // 日历
+    &-calendar-box{
+        display: flex;
+        justify-content: flex-start;
+    }
+    &-calendar-item{
+        padding: 5px;
+    }
+    &-tip{
+        display: flex;
+        justify-content: flex-start;
+        >li{
+            padding: 5px;
+            align-items: center;
+            >span{
+                padding:0px 8px;
+            }
+        }
+    }
 }

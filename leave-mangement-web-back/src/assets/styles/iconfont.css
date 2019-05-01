@@ -1,10 +1,11 @@
 @font-face {
   font-family: 'iconfont';  /* project id 730049 */
-  src: url('//at.alicdn.com/t/font_730049_w7hujsy31vn.eot');
-  src: url('//at.alicdn.com/t/font_730049_w7hujsy31vn.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_730049_w7hujsy31vn.woff') format('woff'),
-  url('//at.alicdn.com/t/font_730049_w7hujsy31vn.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_730049_w7hujsy31vn.svg#iconfont') format('svg');
+  src: url('//at.alicdn.com/t/font_730049_a63ksage284.eot');
+  src: url('//at.alicdn.com/t/font_730049_a63ksage284.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_730049_a63ksage284.woff2') format('woff2'),
+  url('//at.alicdn.com/t/font_730049_a63ksage284.woff') format('woff'),
+  url('//at.alicdn.com/t/font_730049_a63ksage284.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_730049_a63ksage284.svg#iconfont') format('svg');
 }
 
 .iconfont {
@@ -44,3 +45,9 @@
 .icon-gonggao:before { content: "\e612"; }
 
 .icon-ziliao:before { content: "\e641"; }
+
+.icon-git-copy:before{content: "\e600";}
+
+.icon-copyright:before{content: "\e9d0";}
+
+.icon-steps:before{content: "\e775";}
