@@ -184,15 +184,17 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <summary>
         /// 上传用户照片
         /// </summary>
-        /// <param name="files"></param>
+        /// <param name="base64"></param>
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public async Task<object> UpdateUserImg(IFormCollection files)
+        public async Task<object> UpdateUserImg(string base64)
         {
             var context = HttpContext;
             string account = await _jwtUtil.GetMessageByToken(context);
-            return true;
+            var result = new object();
+            result = _userAppService.UploadImg(base64, account);
+            return result;
         }
     }
 }

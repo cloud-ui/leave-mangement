@@ -15,5 +15,7 @@ namespace LeaveMangement_Application.User
         object ModifyPassword(ModifyPasswordDto modifyPasswordDto);
         List<Menus> GetMenu(int positionId, int parentId = 0);
         object EditUserMessage(EditUserMessageDto editUserMessageDto);
+
+        object UploadImg(string base64Str, string account);
     }
 }

@@ -35,5 +35,10 @@ namespace LeaveMangement_Application.User
         {
             return _userManager.EditUserMessage(editUserMessageDto);
         }
+
+        public object UploadImg(string base64Str, string account)
+        {
+            return _userManager.UploadImg(base64Str, account);
+        }
     }
 }

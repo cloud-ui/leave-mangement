@@ -75,7 +75,7 @@
                 </div>
             </el-col>
             <el-col :span="4">
-                <div class="userinfo-userimg">
+                <div>
                     <comp-upload-img></comp-upload-img>
                 </div>
                 <div class="userinfo-btn">

@@ -191,9 +191,7 @@ namespace LeaveMangement_Core.User
             {
                 Worker worker = _ctx.Worker.Find(editUserMessageDto.Id);
                 worker.PhoneNumber = editUserMessageDto.PhoneNumber;
-                worker.Age = editUserMessageDto.Age;
                 worker.Address = editUserMessageDto.Address;
-                worker.Brith = editUserMessageDto.Birth;
                 worker.IsAuth = true;
                 _ctx.SaveChanges();
                 result = new
@@ -208,6 +206,47 @@ namespace LeaveMangement_Core.User
                 {
                     isSuccess = false,
                     message = "完善资料失败！"
+                };
+            }
+            return result;
+        }
+
+        public object UploadImg(string base64Str, string account)
+        {
+            var result = new object();
+            int workerId = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account)).Id;
+            Image img = new Image()
+            {
+                WorkId = workerId,
+                OwnerId = workerId,
+                OwnerType = "员工",
+                Type = "头像",
+                Content = base64Str,
+            };
+            try
+            {
+                var imgObj = _ctx.Image.Where(i => i.OwnerId == workerId).SingleOrDefault();
+                if (imgObj == null) {
+                    _ctx.Image.Add(img);
+                }
+                else
+                {
+                    imgObj = img;
+                }
+                _ctx.SaveChanges();
+                result = new
+                {
+                    isSuccess = true,
+                    message = "上传员工头像成功",
+                    data=base64Str
+                };
+            }
+            catch
+            {
+                result = new
+                {
+                    isSuccess = false,
+                    message = "上传员工头像失败！"
                 };
             }
             return result;

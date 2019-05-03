@@ -16,4 +16,9 @@ export class UserPageApi {
   static editUserMessage(data={}){
     return server.connection('PUT','api/User/EditUserMessage',data)
   }
+
+  //上传头像
+  static uploadImg(base64){
+    return server.connection('POST',`api/User/UpdateUserImg?base64=`+obj)
+  }
 }
