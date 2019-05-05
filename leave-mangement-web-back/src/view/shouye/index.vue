@@ -32,7 +32,7 @@
                 <div slot="header">
                     <i style="padding-right:5px" class="iconfont icon-steps"></i><span>申请流程</span>
                 </div>
-                <el-steps>
+                <el-steps >
                     <el-step title="提交申请"></el-step>
                     <el-step title="审核"></el-step>
                     <el-step title="查看结果"></el-step>

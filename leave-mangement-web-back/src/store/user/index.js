@@ -9,8 +9,9 @@ export default{
     },
     mutations:{
         ACCOUNT_SET(state,data={}){
+            let cName = data.compName
             Auth.setToken(data.token)
-            Auth.setUserInfo(data.user);
+            Auth.setUserInfo({...data.user,cName});
             Auth.setMenu(data.menu);
             Auth.setLogin();
         },

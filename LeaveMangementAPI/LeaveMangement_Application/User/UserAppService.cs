@@ -27,6 +27,7 @@ namespace LeaveMangement_Application.User
         {
             return _userManager.GetWorkerById(userId);
         }
+       
         public object ModifyPassword(ModifyPasswordDto modifyPasswordDto)
         {
             return _userManager.ModifyPassword(modifyPasswordDto);
@@ -39,6 +40,11 @@ namespace LeaveMangement_Application.User
         public object UploadImg(string base64Str, string account)
         {
             return _userManager.UploadImg(base64Str, account);
+        }
+
+        public object EnterPersonCenter(string account)
+        {
+            throw new NotImplementedException();
         }
     }
 }

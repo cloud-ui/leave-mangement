@@ -89,35 +89,58 @@ namespace LeaveMangement_Core.User
         }
         public object GetWorkerById(int userId)
         {
-            var user = (from worker in _ctx.Worker
-                        join comp in _ctx.Company on worker.CompanyId equals comp.Id
-                        join dep in _ctx.Deparment on worker.DepartmentId equals dep.Id
-                        join position in _ctx.Position on worker.PositionId equals position.Id
-                        join paperType in _ctx.PaperType on worker.PaperType equals paperType.Id
-                        join state in _ctx.State on worker.StateId equals state.Id
-                        where worker.Id == userId
-                        select new
-                        {
-                            name = worker.Name,
-                            account = worker.Account,
-                            company = comp.Name,
-                            deparment = dep.Name,
-                            deparmentId = worker.DepartmentId,
-                            positionId = position.Id,
-                            position = position.Name,
-                            age = worker.Age,
-                            address = worker.Address,
-                            phoneNumber = worker.PhoneNumber,
-                            sex = worker.Sex == 0 ? "女" : "男",
-                            entryTime = _commonServer.MilliTimeStamp( (long)worker.EntryTime),
-                            birth =  _commonServer.MilliTimeStamp( (long)worker.Brith),
-                            paperType = paperType.Name,
-                            paperNumber = worker.PaperNumber,
-                            stateId = state.Id,
-                            state = state.Name,
-                            isAuth = worker.IsAuth,
-                        }).Single();
-            return user;
+            if (!CanEnterCenter(userId))
+            {
+                return false;
+            }
+            else
+            {
+                var user = (from worker in _ctx.Worker
+                            join comp in _ctx.Company on worker.CompanyId equals comp.Id
+                            join dep in _ctx.Deparment on worker.DepartmentId equals dep.Id
+                            join position in _ctx.Position on worker.PositionId equals position.Id
+                            join paperType in _ctx.PaperType on worker.PaperType equals paperType.Id
+                            join state in _ctx.State on worker.StateId equals state.Id
+                            join imgs in _ctx.Image on worker.Id equals imgs.OwnerId into workerimg
+                            from result in workerimg.DefaultIfEmpty()
+                            where worker.Id == userId
+                            select new
+                            {
+                                name = worker.Name,
+                                account = worker.Account,
+                                company = comp.Name,
+                                deparment = dep.Name,
+                                deparmentId = worker.DepartmentId,
+                                positionId = position.Id,
+                                position = position.Name,
+                                age = worker.Age,
+                                address = worker.Address,
+                                phoneNumber = worker.PhoneNumber,
+                                sex = worker.Sex == 0 ? "女" : "男",
+                                entryTime = _commonServer.MilliTimeStamp((long)worker.EntryTime),
+                                birth = _commonServer.MilliTimeStamp((long)worker.Brith),
+                                paperType = paperType.Name,
+                                paperNumber = worker.PaperNumber,
+                                stateId = state.Id,
+                                state = state.Name,
+                                isAuth = worker.IsAuth,
+                                imgUrl = result.Content
+                            }).Single();
+                return user;
+            }
+        }
+
+        public bool CanEnterCenter(int userId)
+        {
+            Worker worker = _ctx.Worker.Find(userId);
+            if (worker.DepartmentId == 0 && worker.PositionId == 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
         public object ModifyPassword(ModifyPasswordDto modifyPasswordDto)
         {
@@ -231,7 +254,7 @@ namespace LeaveMangement_Core.User
                 }
                 else
                 {
-                    imgObj = img;
+                    imgObj.Content = base64Str;
                 }
                 _ctx.SaveChanges();
                 result = new
@@ -252,5 +275,6 @@ namespace LeaveMangement_Core.User
             return result;
             
         }
+
     }
 }

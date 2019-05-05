@@ -53,5 +53,10 @@ namespace LeaveMangement_Application.Common
         {
             return _commonManager.IsExitWorker(paperType, paperNumber, compId);
         }
+
+        public string GetCompName(int compId)
+        {
+            return _commonManager.GetCompName(compId);
+        }
     }
 }

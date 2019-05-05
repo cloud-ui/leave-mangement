@@ -47,29 +47,33 @@ namespace LeaveMangementAPI.Controllers.Web
         [HttpPost]
         public object Login([FromBody]UserDto user)
         {
-            Worker userResult = _userAppService.Login(user.Account, user.Password);
+            var userResult = _userAppService.Login(user.Account, user.Password);
             var result = new object();
-            if(userResult != null)
+            if (userResult != null)
             {
                 //set序列化,加入值
                 //HttpContext.Session.SetString("currentUser", JsonConvert.SerializeObject(userResult));
                 JWTUtil _jwtUtil = new JWTUtil();
-                var token = _jwtUtil.GetJwt(userResult.Account,_configuration);
+                var token = _jwtUtil.GetJwt(userResult.Account, _configuration);
+                string compName = _commonAppService.GetCompName(userResult.CompanyId);
                 result = new
                 {
                     isSuccess = true,
                     message = "登录成功！",
                     user = userResult,
+                    compName,
                     menu = _userAppService.GetMenu(userResult.PositionId),
                     token
                 };
             }
             else
+            {
                 result = new
                 {
                     isSuccess = true,
                     message = "登录失败！"
                 };
+            }
             return result;
         }
         /// <summary>
@@ -149,6 +153,15 @@ namespace LeaveMangementAPI.Controllers.Web
         {
             return _userAppService.GetWorkerById(userId);
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<object> EnterPersonCenter()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            return _userAppService.EnterPersonCenter(account);
+        }
         /// <summary>
         /// 修改密码
         /// </summary>
@@ -184,16 +197,16 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <summary>
         /// 上传用户照片
         /// </summary>
-        /// <param name="base64"></param>
+        /// <param name="userImgDto.Base64"></param>
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public async Task<object> UpdateUserImg(string base64)
+        public async Task<object> UpdateUserImg([FromBody]UserImgDto userImgDto)
         {
             var context = HttpContext;
             string account = await _jwtUtil.GetMessageByToken(context);
             var result = new object();
-            result = _userAppService.UploadImg(base64, account);
+            result = _userAppService.UploadImg(userImgDto.Base64, account);
             return result;
         }
     }

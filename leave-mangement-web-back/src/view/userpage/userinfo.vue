@@ -76,7 +76,7 @@
             </el-col>
             <el-col :span="4">
                 <div>
-                    <comp-upload-img></comp-upload-img>
+                    <comp-upload-img :imgUrl="data.imgUrl"></comp-upload-img>
                 </div>
                 <div class="userinfo-btn">
                     <ul>
@@ -115,13 +115,19 @@ export default {
                 'userInfo'
             ])
         },
-    mounted(){
+    created(){
         this.loadUserinfo()
     },
     methods:{
         loadUserinfo(){
             UserPageApi.getWorkerMessage(this.userInfo.id).then(res=>{
-                this.data = res.data
+                if(res.data===false){
+                    this.$message({type:'info',message:'当前登录用户为平台提供的超级账号不能进入个人中心'})
+                    this.$router.push('/home');
+                }else{
+                    this.data = res.data
+                }
+                
             })
         },
         //点击完善信息

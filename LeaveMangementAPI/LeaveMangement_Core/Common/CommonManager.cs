@@ -82,6 +82,11 @@ namespace LeaveMangement_Core.Common
             Worker worker = _ctx.Worker.SingleOrDefault(w => w.CompanyId == compId && w.PaperType == paperType && w.PaperNumber.Equals(paperNumber));
             return worker != null ? true : false;
         }
+        public string GetCompName(int compId)
+        {
+            string result = _ctx.Company.Find(compId).Name;
+            return result;
+        }
 
     }
 }

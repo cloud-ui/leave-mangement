@@ -18,7 +18,7 @@ export class UserPageApi {
   }
 
   //上传头像
-  static uploadImg(base64){
-    return server.connection('POST',`api/User/UpdateUserImg?base64=`+obj)
+  static uploadImg(base64={}){
+    return server.connection('POST',`api/User/UpdateUserImg`,base64)
   }
 }

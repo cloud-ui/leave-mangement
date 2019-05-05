@@ -9,6 +9,7 @@ namespace LeaveMangement_Application.Common
     {
         int GetUserCompId(string account);
         int GetCompId(string componentName);
+        string GetCompName(int compId);
         int GetUserDepId(string account);
         int GetUserId(string userName);
         bool IsExitDep(string depName, int companyId);
