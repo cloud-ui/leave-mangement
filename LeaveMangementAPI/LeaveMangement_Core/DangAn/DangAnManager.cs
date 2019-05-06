@@ -45,6 +45,8 @@ namespace LeaveMangement_Core.DangAn
                     Address = company.Address,
                     WokerCount = company.WokerCount,
                     DeparmentCount = company.DeparmentCount,
+                    Lng = company.Lng,
+                    Lat = company.Lat,
                 };
                 _ctx.Company.Add(newComp);
                 _ctx.SaveChanges();

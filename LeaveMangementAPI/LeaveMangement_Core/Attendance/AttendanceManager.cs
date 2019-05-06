@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using LeaveMangement_Entity.Dtos;
+using LeaveMangement_Entity.Dtos.User;
 
 namespace LeaveMangement_Core.Attendance
 {
@@ -11,7 +12,7 @@ namespace LeaveMangement_Core.Attendance
     {
         private KaoQinContext _ctx = new KaoQinContext();
         //根据当前登录用户的地理位置打卡
-        public Result Clock(string address, string account, int compId)
+        public Result Clock(ClockDto address, string account, int compId)
         {
             //找到公司员工
             //根据地址判断员工是否在公司
@@ -19,9 +20,9 @@ namespace LeaveMangement_Core.Attendance
             //获取签到的时间
             //
             Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
-            Company company = _ctx.Company.SingleOrDefault(c => c.Id == compId && c.Address.Contains(address));
+            Company company = _ctx.Company.SingleOrDefault(c => c.Id == compId);
             Result result = new Result();
-            if (company != null)
+            if (CheckLocation(company,address))
             {
                 DateTime dt = DateTime.Now;
                 string clockDay = dt.ToString("yyyy-MM-dd");
@@ -33,6 +34,19 @@ namespace LeaveMangement_Core.Attendance
                 result.Message = "您当前定位不在公司附近！";
             }
             return result;
+        }
+        private bool CheckLocation(Company company,ClockDto clockDto)
+        {
+            double lng= Math.Abs(company.Lng - clockDto.Lng);
+            double lat = Math.Abs(company.Lat - clockDto.Lat);
+            if (lng <= 1 && lat <= 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
         //上班打卡
         private Result ClockIn(int workerId, DateTime dateTime,string clockDay)
@@ -96,13 +110,14 @@ namespace LeaveMangement_Core.Attendance
         }
         private List<int> GetDepClockCount(List<Deparment> deparments)
         {
-            DateTime now = new DateTime();
+            DateTime now = DateTime.Now;
+            string day = now.ToString("yyyy-MM-dd");
             List<int> counts = new List<int>();
             foreach (Deparment deparment in deparments)
             {
                 var clocks = (from clock in _ctx.Clock
                               join worker in _ctx.Worker on clock.WorkId equals worker.Id
-                              where worker.DepartmentId == deparment.Id && clock.ClockDay.Equals(now.ToString("yyyy-MM-dd"))
+                              where worker.DepartmentId == deparment.Id && clock.ClockDay.Equals(day)
                               select clock).ToList();
                 counts.Add(clocks.Count());
             }

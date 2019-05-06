@@ -12,11 +12,15 @@ import './assets/styles/iconfont.css'
 import 'element-ui/lib/theme-chalk/index.css'
 import './permission'
 import Toast from 'vue-toast-component'
+import BaiduMap from 'vue-baidu-map'
 
 Vue.config.productionTip = false
 window.jQuery = window.$ = $;
 Vue.use(ElementUI, {
   size: 'medium',
+});
+Vue.use(BaiduMap, {
+  ak: 'pIFAC8QgGzxDLRT4hFThQG5DUuiTCSf2'
 });
 Vue.use(Toast)
 Vue.prototype.$echarts = Echarts 

@@ -28,7 +28,7 @@
     "sass-loader": "^7.0.1",
     "signalr": "^2.3.0",
     "vue": "^2.5.2",
-    "vue-baidu-map": "^0.21.11",
+    "vue-baidu-map": "^0.21.20",
     "vue-calendar-component": "^2.8.2",
     "vue-router": "^3.0.1",
     "vue-toast-component": "^2.0.0",

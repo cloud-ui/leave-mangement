@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using LeaveMangement_Application.Attendance;
 using LeaveMangement_Application.Common;
 using LeaveMangement_Entity.Dtos;
+using LeaveMangement_Entity.Dtos.User;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -39,7 +40,7 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public async Task<Result> Clock(string address)
+        public async Task<Result> Clock([FromBody]ClockDto address)
         {
             var context = HttpContext;
             string account = await _jwtUtil.GetMessageByToken(context);

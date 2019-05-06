@@ -13,10 +13,27 @@
 }
 .add-body{
     width:100%;
-    height: 581px;
+    height: 560px;
     background-color: #F9F9F9;
     padding-top: 30px;
 }
+.add-footer{
+    padding: 15px;
+    font-size: 13px;
+    text-align: center;
+    color: rgba(0,0,0,.45);
+    >p{
+      align-items: center;
+      >i{
+        font-size: 13px;
+        padding: 0 5px;
+      }
+      >a{
+        text-decoration: none;
+        color: rgba(0,0,0,.45);
+      }
+    }
+  }
 .head-container,.body-container{
     width: 990px;
     height: 100%;
@@ -27,7 +44,7 @@
     font-weight: 400;
     font-size: 25px;
     border-right: 2px solid gray;
-    width: 190px;
+    width: 220px;
     height: 40px;
     float: left;
 }
