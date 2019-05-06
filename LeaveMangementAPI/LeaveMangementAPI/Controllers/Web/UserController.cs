@@ -182,18 +182,7 @@ namespace LeaveMangementAPI.Controllers.Web
         {
             return _userAppService.EditUserMessage(editUserMessageDto);
         }
-        /// <summary>
-        /// 获取登录用户的出勤情况
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [Authorize]
-        public async Task<object> AttendanceByWorker()
-        {
-            var context = HttpContext;
-            string account = await _jwtUtil.GetMessageByToken(context);
-            return true;
-        }
+        
         /// <summary>
         /// 上传用户照片
         /// </summary>

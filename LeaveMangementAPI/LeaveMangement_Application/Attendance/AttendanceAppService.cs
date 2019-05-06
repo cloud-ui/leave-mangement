@@ -10,6 +10,12 @@ namespace LeaveMangement_Application.Attendance
     public class AttendanceAppService : IAttendanceAppService
     {
         private readonly AttendanceManager _attendanceManager = new AttendanceManager();
+
+        public object AttendanceByWorker(string account)
+        {
+            return _attendanceManager.AttendanceByWorker(account);
+        }
+
         public Result Clock(ClockDto address, string account, int compId)
         {
             return _attendanceManager.Clock(address, account, compId);

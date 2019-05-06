@@ -5,12 +5,14 @@ using System.Text;
 using System.Linq;
 using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.User;
+using LeaveMangement_Core.Common;
 
 namespace LeaveMangement_Core.Attendance
 {
     public class AttendanceManager
     {
         private KaoQinContext _ctx = new KaoQinContext();
+        private CommonManager _commonManager = new CommonManager();
         //根据当前登录用户的地理位置打卡
         public Result Clock(ClockDto address, string account, int compId)
         {
@@ -22,7 +24,7 @@ namespace LeaveMangement_Core.Attendance
             Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
             Company company = _ctx.Company.SingleOrDefault(c => c.Id == compId);
             Result result = new Result();
-            if (CheckLocation(company,address))
+            if (CheckLocation(company, address))
             {
                 DateTime dt = DateTime.Now;
                 string clockDay = dt.ToString("yyyy-MM-dd");
@@ -35,9 +37,9 @@ namespace LeaveMangement_Core.Attendance
             }
             return result;
         }
-        private bool CheckLocation(Company company,ClockDto clockDto)
+        private bool CheckLocation(Company company, ClockDto clockDto)
         {
-            double lng= Math.Abs(company.Lng - clockDto.Lng);
+            double lng = Math.Abs(company.Lng - clockDto.Lng);
             double lat = Math.Abs(company.Lat - clockDto.Lat);
             if (lng <= 1 && lat <= 1)
             {
@@ -49,7 +51,7 @@ namespace LeaveMangement_Core.Attendance
             }
         }
         //上班打卡
-        private Result ClockIn(int workerId, DateTime dateTime,string clockDay)
+        private Result ClockIn(int workerId, DateTime dateTime, string clockDay)
         {
             ////判断是否迟到 签到时间大于9.30 迟到,迟到超过30分钟按一小时计算
             //int minute = dateTime.Minute, hour = dateTime.Hour;
@@ -81,7 +83,7 @@ namespace LeaveMangement_Core.Attendance
                 result.IsSuccess = true;
                 result.Message = "打卡成功！";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 result.IsSuccess = false;
                 result.Message = e.Message;
@@ -97,12 +99,12 @@ namespace LeaveMangement_Core.Attendance
                 xData = GetDepName(deparments),
                 totalData = new
                 {
-                    name="总人数",
-                    data=GetDepWorkerCount(deparments)
+                    name = "总人数",
+                    data = GetDepWorkerCount(deparments)
                 },
                 clockData = new
                 {
-                    name="打卡人数",
+                    name = "打卡人数",
                     data = GetDepClockCount(deparments)
                 }
             };
@@ -135,18 +137,53 @@ namespace LeaveMangement_Core.Attendance
         private List<string> GetDepName(List<Deparment> deparments)
         {
             List<string> names = new List<string>();
-            foreach(Deparment deparment in deparments)
+            foreach (Deparment deparment in deparments)
             {
                 names.Add(deparment.Name);
             }
             return names;
         }
-        private double GetWorkHour(long start,long end)
+        private double GetWorkHour(long start, long end)
         {
             DateTime startTime = DateTime.FromFileTime(start);
             DateTime endTime = DateTime.FromFileTime(end);
             TimeSpan timeSpan = endTime - startTime;
             return timeSpan.TotalMinutes / 60;
+        }
+
+        /// <summary>
+        /// 获取员工的出勤情况
+        /// 月份-打卡天数-请假次数
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        public object AttendanceByWorker(string account)
+        {
+            List<object> resultList = new List<object>();
+            Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
+            var clockList = (from clock in _ctx.Clock
+                             let day = clock.ClockDay
+                             let month = day.Substring(0, day.LastIndexOf('-'))
+                             group clock by month into temp
+                             select temp).ToList();
+            foreach (var item in clockList)
+            {
+                int count = item.Count();
+                var temp = new
+                {
+                    month = item.Key,
+                    clockCount = count,
+                    leaveCount = _commonManager.GetLeaveCount(account, worker.CompanyId)
+                };
+                resultList.Add(temp);
+            }
+            var result = new
+            {
+                count = clockList.Count,
+                data = resultList
+            };
+
+            return result;
         }
     }
 }

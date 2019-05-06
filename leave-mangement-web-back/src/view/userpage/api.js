@@ -21,4 +21,9 @@ export class UserPageApi {
   static uploadImg(base64={}){
     return server.connection('POST',`api/User/UpdateUserImg`,base64)
   }
+
+  //获取员工的出勤统计
+  static getAttence(){
+    return server.connection('GET','api/Attendance/AttendanceByWorker')
+  }
 }

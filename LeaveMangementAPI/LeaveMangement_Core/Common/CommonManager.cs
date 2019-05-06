@@ -87,6 +87,27 @@ namespace LeaveMangement_Core.Common
             string result = _ctx.Company.Find(compId).Name;
             return result;
         }
+        /// <summary>
+        /// 获取当月请假次数
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="compid"></param>
+        /// <returns></returns>
+        public int GetLeaveCount(string account, int compid)
+        {
+            int count = 0;
+            int workerId = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account) && w.CompanyId == compid).Id;
+            DateTime now = DateTime.Now;
+            int nowYear = now.Year;
+            int nowMonth = now.Month;
+            var result = _ctx.Apply.Where(a => a.WorkerId == workerId).ToList();
+            foreach (var item in result)
+            {
+                if (DateTime.FromFileTime(item.StartTime).Year == nowYear && DateTime.FromFileTime(item.StartTime).Month == nowMonth)
+                    count++;
+            }
+            return count;
+        }
 
     }
 }

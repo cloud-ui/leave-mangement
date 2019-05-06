@@ -60,5 +60,19 @@ namespace LeaveMangementAPI.Controllers.Web
             int companyId = _commonAppService.GetUserCompId(account);
             return _attendanceAppService.GetAttendanceData(account, companyId);
         }
+
+        /// <summary>
+        /// 获取登录用户的出勤情况
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> AttendanceByWorker()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            var result = _attendanceAppService.AttendanceByWorker(account);
+            return result;
+        }
     }
 }

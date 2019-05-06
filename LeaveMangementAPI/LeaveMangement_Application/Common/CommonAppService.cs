@@ -58,5 +58,10 @@ namespace LeaveMangement_Application.Common
         {
             return _commonManager.GetCompName(compId);
         }
+
+        public int GetLeaveCount(string account, int compid)
+        {
+            return _commonManager.GetLeaveCount(account, compid);
+        }
     }
 }

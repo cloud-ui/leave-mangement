@@ -19,5 +19,6 @@ namespace LeaveMangement_Application.Common
         int GetState(string name, int compId);
         void ChangeDepWorkerCount(List<Worker> workers);
         int GetPosition(string positionName, int compId);
+        int GetLeaveCount(string account, int compid);
     }
 }

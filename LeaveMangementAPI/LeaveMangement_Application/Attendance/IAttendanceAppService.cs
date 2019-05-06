@@ -10,5 +10,7 @@ namespace LeaveMangement_Application.Attendance
     {
         Result Clock(ClockDto address, string account, int compId);
         object GetAttendanceData(string account, int companyId);
+
+        object AttendanceByWorker(string account);
     }
 }

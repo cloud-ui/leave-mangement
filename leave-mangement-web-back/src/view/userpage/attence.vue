@@ -2,8 +2,13 @@
     <el-card style="width:82%;" class="box-card">
         <div class="attence-box">
             <div>
-                <comp-table :tableData="tableData" :tableHeader="tableHeader" :tableAttr="tableAttr" :headerCellStyle="headerCellStyle" 
-                className="tableClassName"></comp-table>
+                <comp-table :tableData="tableData" :tableHeader="tableHeader" :tableAttr="tableAttr" :headerCellStyle="headerCellStyle" className="tableClassName"></comp-table>
+                <el-pagination style="padding-top:10px" 
+                @size-change="handleSizeChange" 
+                :current-page="currentPage" 
+                :page-size="pageSize" 
+                layout="total, prev, pager, next" :total="totalCount">
+                </el-pagination>
             </div>
             <div>
                 <ul class="attence-tip">
@@ -16,28 +21,34 @@
                 </div>
             </div>
         </div>
-            
     </el-card>
 </template>
 <script>
-import calendarComp from '@/packages/components/calendar.vue'
-import CompTable from '@/packages/components/table'
-export default {
-    components: {
-        calendarComp,
-        CompTable
-    },
-    data(){
-        return{
-            tableAttr: {},
+    import calendarComp from '@/packages/components/calendar.vue'
+    import CompTable from '@/packages/components/table'
+    import {
+        UserPageApi
+    } from "./api.js";
+    export default {
+        components: {
+            calendarComp,
+            CompTable
+        },
+        data() {
+            return {
+                currentPage: 1,
+                pageSize: 15,
+                totalCount: 0,
+
+                tableAttr: {},
                 tableHeader: [{
-                    prop: 'yearMonth',
+                    prop: 'month',
                     label: '日期',
                     width: 180,
                 }, {
-                    prop: 'workCount',
+                    prop: 'clockCount',
                     label: '出勤数（天）',
-                    width:120
+                    width: 120
                 }, {
                     prop: 'leaveCount',
                     label: '请假数（次）',
@@ -51,7 +62,27 @@ export default {
                     fontWeight: 400
                 },
                 value: new Date()
-        }
+            }
+        },
+        mounted() {
+            this.loadData()
+        },
+        methods: {
+            loadData() {
+                UserPageApi.getAttence().then(data => {
+                    console.log(data.data)
+                    this.tableData = data.data.data
+                    this.totalCount = data.data.count
+                })
+            },
+             handleSizeChange(val) {
+                this.pageSize = val;
+                this.loadData();
+            },
+            handleCurrentChange(val) {
+                this.currentPage = val;
+                this.loadData();
+            },
+        },
     }
-}
 </script>

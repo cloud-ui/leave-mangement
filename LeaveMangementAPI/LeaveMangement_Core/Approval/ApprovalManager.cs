@@ -13,21 +13,23 @@ namespace LeaveMangement_Core.Approval
         private KaoQinContext _ctx = new KaoQinContext();
         private ApprovalService _approvalService = new ApprovalService();
         private CommonServer _commonServer = new CommonServer();
+        private CommonManager _commonManager = new CommonManager();
 
         public int GetApprovalCount(string account, int compid)
         {
-            int count = 0;
-            int workerId = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account) && w.CompanyId == compid).Id;
-            DateTime now = DateTime.Now;
-            int nowYear = now.Year;
-            int nowMonth = now.Month;
-            var result = _ctx.Apply.Where(a => a.WorkerId == workerId).ToList();
-            foreach(var item in result)
-            {
-                if(DateTime.FromFileTime(item.StartTime).Year == nowYear && DateTime.FromFileTime(item.StartTime).Month == nowMonth)
-                    count++;
-            }
-            return count;
+            return _commonManager.GetLeaveCount(account, compid);
+            //int count = 0;
+            //int workerId = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account) && w.CompanyId == compid).Id;
+            //DateTime now = DateTime.Now;
+            //int nowYear = now.Year;
+            //int nowMonth = now.Month;
+            //var result = _ctx.Apply.Where(a => a.WorkerId == workerId).ToList();
+            //foreach(var item in result)
+            //{
+            //    if(DateTime.FromFileTime(item.StartTime).Year == nowYear && DateTime.FromFileTime(item.StartTime).Month == nowMonth)
+            //        count++;
+            //}
+            //return count;
         }
         public object AddApplication(AddApplicationDto addApplicationDto)
         {
