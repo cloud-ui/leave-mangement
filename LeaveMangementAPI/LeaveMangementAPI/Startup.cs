@@ -73,8 +73,6 @@ namespace LeaveMangementAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<KaoQinContext>(options =>
-            //   options.UseSqlServer(@"Server=DESKTOP-BD1U6I5;Database=KaoQin;Integrated Security=True;"));
 
             //session
             services.AddSession();
@@ -103,6 +101,8 @@ namespace LeaveMangementAPI
                 c.OperationFilter<HttpHeaderOperation>(); // 添加httpHeader参数
             });
             #endregion
+
+
             //配置signalr
             services.AddSignalR();
             
@@ -149,13 +149,17 @@ namespace LeaveMangementAPI
 
             //session
             app.UseSession();
+
             //use the authentication  
             app.UseAuthentication();
+
             //signalr
-            //app.UseSignalR(routes =>
-            //{
-            //    routes.MapHub<SignalrHubs>("signalrHubs");
-            //});
+            app.UseSignalR(routes =>
+            {
+               routes.MapHub<SignalrHubs>("/signalrHubs");
+            });
+
+
             app.UseWebSockets();
             app.UseMvc();
         }

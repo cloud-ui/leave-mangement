@@ -36,7 +36,7 @@ export class BaseApi {
           case 403:
             router.replace({
               path: '/forbidden',
-
+              // query: {redirect: router.currentRoute.fullPath}
             })
             break;
           default:
