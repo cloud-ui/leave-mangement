@@ -109,5 +109,20 @@ namespace LeaveMangement_Core.Common
             return count;
         }
 
+        //判断当前登录的用户是否有权限进入指定的界面
+        public bool JudgeAuth(string account, string path)
+        {
+            Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account == account);
+            var menus = _ctx.Menu.SingleOrDefault(m => m.Url.Contains(path));
+            if (menus.PositionId.Contains(worker.PositionId.ToString()))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }

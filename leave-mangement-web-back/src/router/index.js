@@ -85,6 +85,16 @@ export default new Router({
           name:'编辑公告',
           meta: {requireAuth: true},
           component:()=>import('../view/notice/addnotice')
+        },{
+          path:'/forbidden',
+          name:'禁止访问',
+          meta: {requireAuth: true},
+          component:()=>import('@/packages/pages/forbidden')
+        },{
+          path:'/wangluofanmang',
+          name:'网络繁忙',
+          meta:{requireAuth:true},
+          component:()=>import('@/packages/pages/wangluofanmang')
         }
       ]
     }

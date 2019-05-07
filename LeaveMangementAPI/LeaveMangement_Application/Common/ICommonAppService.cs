@@ -20,5 +20,7 @@ namespace LeaveMangement_Application.Common
         void ChangeDepWorkerCount(List<Worker> workers);
         int GetPosition(string positionName, int compId);
         int GetLeaveCount(string account, int compid);
+
+        bool JudgeAuth(string account, string path);
     }
 }

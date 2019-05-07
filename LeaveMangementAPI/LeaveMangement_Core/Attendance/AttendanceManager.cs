@@ -185,5 +185,94 @@ namespace LeaveMangement_Core.Attendance
 
             return result;
         }
+
+        /// <summary>
+        /// 获取登录用户选择月份的出勤情况
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="attendanceDto"></param>
+        /// <returns></returns>
+        public object AttendanceByMonth(string account, AttendanceDto attendanceDto)
+        {
+            Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account == account);
+            //获取到打卡的日期数组
+            var clockDays = (from clock in _ctx.Clock
+                             let day = clock.ClockDay
+                             let month = day.Substring(0, day.LastIndexOf('-'))
+                             where month == attendanceDto.Month && clock.WorkId == worker.Id
+                             select clock.ClockDay).ToArray();
+            //获取请假的日期数组
+            var applys = (from apply in _ctx.Apply
+                          //let date = DateTime.FromFileTime(apply.StartTime).ToString("yyyy-MM-dd")
+                          //let month = date.Substring(0, date.LastIndexOf('-'))
+                          where apply.WorkerId == worker.Id 
+                          select new
+                          {
+                              apply.StartTime,
+                              apply.EndTime
+                          }).ToList();
+            foreach(var item in applys)
+            {
+                Console.WriteLine(DateTime.FromFileTime(item.StartTime).ToString("yyyy-MM-dd"));
+            }
+
+            return true;
+        }
+
+        private object GetWorkDay(long startTime,long endTime)
+        {
+            DateTime start = DateTime.FromFileTime(startTime);
+            DateTime end = DateTime.FromFileTime(endTime);
+            TimeSpan span = end - start;
+            //int totleDay=span.Days;
+            //DateTime spanNu = DateTime.Now.Subtract(span);
+            int AllDays = Convert.ToInt32(span.TotalDays) + 1;//差距的所有天数
+            int totleWeek = AllDays / 7;//差别多少周
+            int yuDay = AllDays % 7; //除了整个星期的天数
+            int lastDay = 0;
+            if (yuDay == 0) //正好整个周
+            {
+                lastDay = AllDays - (totleWeek * 2);
+            }
+            else
+            {
+                int weekDay = 0;
+                int endWeekDay = 0; //多余的天数有几天是周六或者周日
+                switch (start.DayOfWeek)
+                {
+                    case DayOfWeek.Monday:
+                        weekDay = 1;
+                        break;
+                    case DayOfWeek.Tuesday:
+                        weekDay = 2;
+                        break;
+                    case DayOfWeek.Wednesday:
+                        weekDay = 3;
+                        break;
+                    case DayOfWeek.Thursday:
+                        weekDay = 4;
+                        break;
+                    case DayOfWeek.Friday:
+                        weekDay = 5;
+                        break;
+                    case DayOfWeek.Saturday:
+                        weekDay = 6;
+                        break;
+                    case DayOfWeek.Sunday:
+                        weekDay = 7;
+                        break;
+                }
+                if ((weekDay == 6 && yuDay >= 2) || (weekDay == 7 && yuDay >= 1) || (weekDay == 5 && yuDay >= 3) || (weekDay == 4 && yuDay >= 4) || (weekDay == 3 && yuDay >= 5) || (weekDay == 2 && yuDay >= 6) || (weekDay == 1 && yuDay >= 7))
+                {
+                    endWeekDay = 2;
+                }
+                if ((weekDay == 6 && yuDay < 1) || (weekDay == 7 && yuDay < 5) || (weekDay == 5 && yuDay < 2) || (weekDay == 4 && yuDay < 3) || (weekDay == 3 && yuDay < 4) || (weekDay == 2 && yuDay < 5) || (weekDay == 1 && yuDay < 6))
+                {
+                    endWeekDay = 1;
+                }
+                lastDay = AllDays - (totleWeek * 2) - endWeekDay;
+            }
+            return true;
+        }
     }
 }

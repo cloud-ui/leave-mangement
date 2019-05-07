@@ -12,5 +12,7 @@ namespace LeaveMangement_Application.Attendance
         object GetAttendanceData(string account, int companyId);
 
         object AttendanceByWorker(string account);
+
+        object AttendanceByMonth(string account, AttendanceDto attendanceDto);
     }
 }

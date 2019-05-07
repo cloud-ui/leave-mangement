@@ -13,6 +13,6 @@ export class ShouyeApi {
   }
   // 获取公司信息
   static getCompany () {
-    return server.connection('GET', 'api/File/GetCompanyInfo')
+    return server.connection('GET', 'api/File/GetCompany')
   }
 }

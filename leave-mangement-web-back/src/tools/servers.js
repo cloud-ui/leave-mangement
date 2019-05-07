@@ -1,6 +1,8 @@
 import axios from 'axios'
 import qs from 'qs'
-import {store} from '../store'
+import { store } from '../store'
+import router from '../router'
+import { Msg } from 'element-ui'
 
 /**
  * 请求类
@@ -28,6 +30,25 @@ export class BaseApi {
     this.servers.interceptors.response.use(function (response) {
       return response
     }, function (error) {
+      let msg = '';
+      if (error.response) {
+        switch (error.response.status) {
+          case 403:
+            router.replace({
+              path: '/forbidden',
+
+            })
+            break;
+          default:
+            router.replace({
+              path: '/wangluofanmang'
+            })
+        }
+      } else {
+        router.replace({
+          path: '/wangluofanmang'
+        })
+      }
       return Promise.reject(error.response || '网络繁忙，请稍候再试！');
     })
   }
@@ -46,13 +67,13 @@ export class BaseApi {
     if (typeof body !== 'object') body = {};
     method = method.toLocaleLowerCase();
     if (fileList && (fileList instanceof Array)) {
-      let headers = {'Content-Type': 'multipart/form-data'};
+      let headers = { 'Content-Type': 'multipart/form-data' };
       const param = new window.FormData();
       for (const key in body) {
         if (Object.prototype.hasOwnProperty.call(body, key)) param.append(key, body[key]);
       }
       fileList.forEach(file => param.append(fileKey, file));
-      return Promise.resolve(this.servers[method](url, param, {headers}))
+      return Promise.resolve(this.servers[method](url, param, { headers }))
     }
     if (method === 'get') {
       url = `${url}?${qs.stringify(body)}`;
@@ -66,7 +87,7 @@ export class BaseApi {
    * @param isLogin
    * @param token
    */
-  setToken({isLogin, token}) {
+  setToken({ isLogin, token }) {
     if (isLogin) {
       this.servers.defaults.headers.common['Authorization'] = token;
     }
@@ -77,8 +98,8 @@ export class BaseApi {
    * @returns {{isLogin: string, token: string}}
    */
   getStatusToken() {
-    const {isLogin, token} = store.getters;
-    this.setToken({isLogin, token})
+    const { isLogin, token } = store.getters;
+    this.setToken({ isLogin, token })
   }
 }
 

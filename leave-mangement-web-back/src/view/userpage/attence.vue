@@ -2,7 +2,7 @@
     <el-card style="width:82%;" class="box-card">
         <div class="attence-box">
             <div>
-                <comp-table :tableData="tableData" :tableHeader="tableHeader" :tableAttr="tableAttr" :headerCellStyle="headerCellStyle" className="tableClassName"></comp-table>
+                <comp-table :tableData="tableData" :tableHeader="tableHeader" :tableAttr="tableAttr" :headerCellStyle="headerCellStyle" @tableOtherClick="tableOtherClick" className="tableClassName"></comp-table>
                 <el-pagination style="padding-top:10px" 
                 @size-change="handleSizeChange" 
                 :current-page="currentPage" 
@@ -17,7 +17,7 @@
                     <li><span style="background:#50bfff"></span> ：今天</li>
                 </ul>
                 <div class="attence-calendar-box">
-                    <calendar-comp class="attence-calendar-item"></calendar-comp>
+                    <calendar-comp ref='calendar' class="attence-calendar-item"></calendar-comp>
                 </div>
             </div>
         </div>
@@ -40,7 +40,17 @@
                 pageSize: 15,
                 totalCount: 0,
 
-                tableAttr: {},
+                tableAttr: {
+                    noIndex: false,
+                    other: [{
+                            name: '查看',
+                            style: 'text',
+                            type: 'look',
+                            icon: 'el-icon-view',
+                            color: '#409eff'
+                        }
+                    ]
+                },
                 tableHeader: [{
                     prop: 'month',
                     label: '日期',
@@ -82,6 +92,11 @@
             handleCurrentChange(val) {
                 this.currentPage = val;
                 this.loadData();
+            },
+            tableOtherClick(row, type, index) {
+                if (type === 'look') {
+                    this.$refs.calendar.transfromMonth(row.month+'-01')
+                }
             },
         },
     }

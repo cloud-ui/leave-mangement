@@ -63,5 +63,10 @@ namespace LeaveMangement_Application.Common
         {
             return _commonManager.GetLeaveCount(account, compid);
         }
+
+        public bool JudgeAuth(string account, string path)
+        {
+            return _commonManager.JudgeAuth(account, path);
+        }
     }
 }

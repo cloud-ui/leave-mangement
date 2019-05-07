@@ -10,6 +10,7 @@ using LeaveMangement_Application.DangAn;
 using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.DangAn;
 using LeaveMangement_Entity.Models;
+using LeaveMangementAPI.Authorization;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -38,13 +39,29 @@ namespace LeaveMangementAPI.Controllers.Web
             _configuration = configuration;
             _dangAnAppService = dangAnAppService;
             _commonAppService = commonAppService;
-        }        
+        }
+
+        /// <summary>
+        /// 获取登录用户所在的公司信息(主页)
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> GetCompany()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            int compId = _commonAppService.GetUserCompId(account);
+            return _dangAnAppService.GetCompanyById(compId);
+        }
+
         /// <summary>
         /// 获取登录用户所在的公司信息
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         [Authorize]
+        [SportFilter("/company")]
         public async Task<object> GetCompanyInfo()
         {
             var context = HttpContext;
@@ -182,6 +199,7 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <returns></returns>
         [HttpPost]
         [Authorize]
+        [SportFilter("/deparment")]
         public async Task<object> GetDeparmentList([FromBody]DepartmentDto query)
         {
             var context = HttpContext;
@@ -196,6 +214,7 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <returns></returns>
         [HttpGet]
         [Authorize]
+        
         public async Task<object> GetWorkerList()
         {
             var context = HttpContext;
@@ -209,6 +228,7 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <returns></returns>
         [HttpPost]
         [Authorize]
+        [SportFilter("/worker/")]
         public async Task<object> GetWorkList([FromBody]WorkDto query)
         {
             var context = HttpContext;

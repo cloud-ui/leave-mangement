@@ -11,6 +11,11 @@ namespace LeaveMangement_Application.Attendance
     {
         private readonly AttendanceManager _attendanceManager = new AttendanceManager();
 
+        public object AttendanceByMonth(string account, AttendanceDto attendanceDto)
+        {
+            return _attendanceManager.AttendanceByMonth(account, attendanceDto);
+        }
+
         public object AttendanceByWorker(string account)
         {
             return _attendanceManager.AttendanceByWorker(account);

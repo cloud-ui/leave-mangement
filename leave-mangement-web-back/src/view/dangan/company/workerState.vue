@@ -79,7 +79,6 @@
                 })
             },
             tableOtherClick(row, type, index) {
-                console.log(row)
                 if (type === 'edit') {
                     this.formTitle = "编辑状态"
                     this.formInfo.type = "edit"

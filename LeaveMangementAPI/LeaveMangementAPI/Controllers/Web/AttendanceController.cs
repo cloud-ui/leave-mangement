@@ -6,6 +6,7 @@ using LeaveMangement_Application.Attendance;
 using LeaveMangement_Application.Common;
 using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.User;
+using LeaveMangementAPI.Authorization;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -73,6 +74,20 @@ namespace LeaveMangementAPI.Controllers.Web
             string account = await _jwtUtil.GetMessageByToken(context);
             var result = _attendanceAppService.AttendanceByWorker(account);
             return result;
+        }
+
+        /// <summary>
+        /// 获取登录用户所选择月份的出勤情况
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> AttendanceByMonth( AttendanceDto attendanceDto)
+        {
+            //var context = HttpContext;
+            //string account = await _jwtUtil.GetMessageByToken(context);
+            var result = _attendanceAppService.AttendanceByMonth("6288081682", attendanceDto);
+            return true;
         }
     }
 }
