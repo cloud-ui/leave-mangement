@@ -9,7 +9,7 @@ namespace LeaveMangement_Application.Approval
     public interface IApprovalAppService
     {
         object GetInform(string account);
-        object AddApplication(AddApplicationDto addApplicationDto);
+        Result AddApplication(AddApplicationDto addApplicationDto);
         object GetApplicationList(GetApplicationListDto getApplicationListDto);
         object GetUnApplicationList(GetApplicationListDto getApplicationListDto);
         object GetApplicationById(int id);

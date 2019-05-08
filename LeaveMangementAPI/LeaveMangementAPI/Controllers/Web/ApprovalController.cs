@@ -6,6 +6,7 @@ using LeaveMangement_Application.Approval;
 using LeaveMangement_Application.Common;
 using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.Approval;
+using LeaveMangementAPI.Authorization;
 using LeaveMangementAPI.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
@@ -33,12 +34,13 @@ namespace LeaveMangementAPI.Controllers.Web
         public IConfiguration _configuration;
         public JWTUtil _jwtUtil = new JWTUtil();
         //signalr
-        private IHubContext<SignalrHubs> _hubContext;
-        public ApprovalController(IServiceProvider service,IApprovalAppService approvalAppService,IConfiguration configuration,ICommonAppService commonAppService)
+        private ISignalrHubs _signalrHubs;
+        public ApprovalController(ISignalrHubs signalrHubs, IServiceProvider service,IApprovalAppService approvalAppService,IConfiguration configuration,ICommonAppService commonAppService)
         {
             _approvalAppService = approvalAppService;
             _commonAppService = commonAppService;
             _configuration = configuration;
+            _signalrHubs = signalrHubs;
         }
 
         //获取当前登录用户的通知数目和内容
@@ -63,9 +65,11 @@ namespace LeaveMangementAPI.Controllers.Web
             string account = await _jwtUtil.GetMessageByToken(context);
             addApplicationDto.CompId = _commonAppService.GetUserCompId(account);
             addApplicationDto.DeparmentId = _commonAppService.GetUserDepId(account);
+            Result result = _approvalAppService.AddApplication(addApplicationDto);
+            await _signalrHubs.Send(result.Id.ToString(), "您有新的消息");
             //signal
             //_hubContext.Clients.Client("1").getInform("您有新的消息");
-            return _approvalAppService.AddApplication(addApplicationDto);
+            return true;
         }
         /// <summary>
         /// 获取已提交的请假列表

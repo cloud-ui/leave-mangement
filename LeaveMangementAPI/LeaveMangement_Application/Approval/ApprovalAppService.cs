@@ -14,7 +14,7 @@ namespace LeaveMangement_Application.Approval
         {
             return _approvalManager.GetInform(account);
         }
-        public object AddApplication(AddApplicationDto addApplicationDto)
+        public Result AddApplication(AddApplicationDto addApplicationDto)
         {
             return _approvalManager.AddApplication(addApplicationDto);
         }

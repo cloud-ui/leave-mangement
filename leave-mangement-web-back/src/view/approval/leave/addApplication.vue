@@ -174,7 +174,7 @@
                                 message:res.data.message
                             })
                             this.loading = false
-                            const path = this.form.isSubmit?'/leave/applicationList':'/leave/unApplicationList'
+                            const path = isSubmit?'/leave/applicationList':'/leave/unApplicationList'
                             this.$router.push({ path: path})
                         })
                         }else{
@@ -185,7 +185,7 @@
                                     message:res.data.message
                                 })
                                 this.loading = false
-                                const path = this.form.isSubmit?'/leave/applicationList':'/leave/unApplicationList'
+                                const path = isSubmit?'/leave/applicationList':'/leave/unApplicationList'
                                 this.$router.push({ path: path})
                             })
                         }

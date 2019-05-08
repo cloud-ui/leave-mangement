@@ -39,6 +39,10 @@ export class BaseApi {
               // query: {redirect: router.currentRoute.fullPath}
             })
             break;
+          case 401:
+            router.replace({
+              path: '/login'
+            })
           default:
             router.replace({
               path: '/wangluofanmang'

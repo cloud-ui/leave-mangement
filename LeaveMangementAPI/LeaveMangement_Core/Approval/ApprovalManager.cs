@@ -31,17 +31,18 @@ namespace LeaveMangement_Core.Approval
             //}
             //return count;
         }
-        public object AddApplication(AddApplicationDto addApplicationDto)
+        public Result AddApplication(AddApplicationDto addApplicationDto)
         {
-            var result = new object();
+            var result = new Result();
             var application = _ctx.Apply.SingleOrDefault(a => a.WorkerId == addApplicationDto.WorkerId &&
             a.StartTime <= addApplicationDto.StartTime && a.EndTime >= addApplicationDto.EndTime);
+            int informId = 0;
             if (application != null)
-                result = new
-                {
-                    isSuccess = false,
-                    message = "您已有该时间段的假期！"
-                };
+            {
+                result.IsSuccess = false;
+                result.Message = "您已有该时间段的假期！";
+                result.Id = informId;
+            }
             else
             {
                 Apply newApply = new Apply()
@@ -61,20 +62,18 @@ namespace LeaveMangement_Core.Approval
                 };
                 _ctx.Apply.Add(newApply);
                 _ctx.SaveChanges();
-                result = new
-                {
-                    isSuccess = true,
-                    message = "申请已保存！"
-                };
                 //添加完成后添加通知
-                if (newApply.State == 1&&newApply.IsSubmit)
+                if (newApply.State == 1 && newApply.IsSubmit)
                 {
-                    AddInform(newApply.Id,newApply.WorkerId,"Leave");
+                    informId = AddInform(newApply.Id, newApply.WorkerId, "Leave");
+                    result.IsSuccess = true;
+                    result.Message = "申请已保存！";
+                    result.Id = informId;
                 }
             }
             return result;
         }
-        private void AddInform(int applyId,int id,string type)
+        private int AddInform(int applyId,int id,string type)
         {
             //找到当前提交申请员工的上级用户
             int deparmentId = _ctx.Worker.Find(id).DepartmentId;
@@ -109,6 +108,7 @@ namespace LeaveMangement_Core.Approval
             };
             _ctx.Inform.Add(inform);
             _ctx.SaveChanges();
+            return workerId;
         }
         //获取提交申请列表
         public object GetApplicationList(GetApplicationListDto getApplicationListDto)
@@ -214,17 +214,19 @@ namespace LeaveMangement_Core.Approval
         public object SubmitApplication(int id)
         {
             var result = new object();
+            int informId = 0;
             try
             {
                 var application = _ctx.Apply.Find(id);
                 application.IsSubmit = true;
                 application.State = 1;
                 _ctx.SaveChanges();
-                AddInform(application.Id,application.WorkerId,"Leave");
+                informId= AddInform(application.Id,application.WorkerId,"Leave");
                 result = new
                 {
                     isSuccess = true,
                     message = "提交申请成功！",
+                    informId
                 };                
             }
             catch
@@ -233,6 +235,7 @@ namespace LeaveMangement_Core.Approval
                 {
                     isSuccess = false,
                     message = "提交申请失败！",
+                    informId
                 };
             }
             return result;
@@ -504,6 +507,7 @@ namespace LeaveMangement_Core.Approval
         public Result CreateApplyOfJob(ApplyJobDto applyJobDto, string account)
         {
             Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
+            int informId = 0;
             ApplyFoJob apply = new ApplyFoJob()
             {
                 Content = applyJobDto.Content,
@@ -515,11 +519,11 @@ namespace LeaveMangement_Core.Approval
             };
             _ctx.ApplyFoJob.Add(apply);
             _ctx.SaveChanges();
-            AddInform(apply.Id,apply.WorkerId, "Job");
+            informId = AddInform(apply.Id,apply.WorkerId, "Job");
             Result result = new Result()
             {
                 IsSuccess = true,
-                Message = "添加成功！"
+                Message = "添加成功！",
             };
             return result;
         }

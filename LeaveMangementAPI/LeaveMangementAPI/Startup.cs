@@ -105,7 +105,7 @@ namespace LeaveMangementAPI
 
             //配置signalr
             services.AddSignalR();
-            
+
             //配置跨域处理
             services.AddCors(options =>
             {
@@ -118,8 +118,7 @@ namespace LeaveMangementAPI
                 });
             });
 
-           
-            
+
             //依赖注入
             services.AddTransient<IDangAnAppService, DangAnAppService>();
             services.AddTransient<IUserAppService, UserAppService>();
@@ -128,6 +127,9 @@ namespace LeaveMangementAPI
             services.AddTransient<IPermissionAppService, PermissionAppServer>();
             services.AddTransient<INoticeAppService, NoticeAppService>();
             services.AddTransient<IAttendanceAppService, AttendanceAppService>();
+
+            // Services
+            services.AddScoped<ISignalrHubs, SignalrHubs>();
 
             services.AddSingleton<IServiceProvider, ServiceProvider>();
         }
@@ -152,6 +154,8 @@ namespace LeaveMangementAPI
 
             //use the authentication  
             app.UseAuthentication();
+
+            app.UseCors("any");
 
             //signalr
             app.UseSignalR(routes =>
