@@ -69,7 +69,7 @@ namespace LeaveMangementAPI.Controllers.Web
             await _signalrHubs.Send(result.Id.ToString(), "您有新的消息");
             //signal
             //_hubContext.Clients.Client("1").getInform("您有新的消息");
-            return true;
+            return result;
         }
         /// <summary>
         /// 获取已提交的请假列表

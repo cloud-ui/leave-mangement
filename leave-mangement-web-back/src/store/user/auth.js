@@ -18,7 +18,7 @@ export class Auth {
   static getMenu(){
     return JSON.parse(sessionStorage.getItem('user.menu'))
   }
-  static setInform(value={}){
+  static setInform(value){
     return sessionStorage.setItem('user.info', JSON.stringify(value));
   }
   static getInform(){

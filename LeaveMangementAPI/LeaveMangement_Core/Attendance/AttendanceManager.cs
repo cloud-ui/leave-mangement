@@ -164,6 +164,7 @@ namespace LeaveMangement_Core.Attendance
             var clockList = (from clock in _ctx.Clock
                              let day = clock.ClockDay
                              let month = day.Substring(0, day.LastIndexOf('-'))
+                             where clock.WorkId==worker.Id
                              group clock by month into temp
                              select temp).ToList();
             foreach (var item in clockList)
