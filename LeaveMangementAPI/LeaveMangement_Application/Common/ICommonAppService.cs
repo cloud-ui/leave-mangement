@@ -7,6 +7,7 @@ namespace LeaveMangement_Application.Common
 {
     public interface ICommonAppService
     {
+        string GetUserAccount(int id);
         int GetUserCompId(string account);
         int GetCompId(string componentName);
         string GetCompName(int compId);

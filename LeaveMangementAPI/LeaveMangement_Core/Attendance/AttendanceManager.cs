@@ -196,34 +196,56 @@ namespace LeaveMangement_Core.Attendance
         public object AttendanceByMonth(string account, AttendanceDto attendanceDto)
         {
             Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account == account);
+            var result = new object();
+            List<string> leaveDays = new List<string>();
             //获取到打卡的日期数组
             var clockDays = (from clock in _ctx.Clock
                              let day = clock.ClockDay
                              let month = day.Substring(0, day.LastIndexOf('-'))
                              where month == attendanceDto.Month && clock.WorkId == worker.Id
                              select clock.ClockDay).ToArray();
-            //获取请假的日期数组
+            ////获取请假的日期数组
             var applys = (from apply in _ctx.Apply
-                          //let date = DateTime.FromFileTime(apply.StartTime).ToString("yyyy-MM-dd")
-                          //let month = date.Substring(0, date.LastIndexOf('-'))
-                          where apply.WorkerId == worker.Id 
+                              //let date = DateTime.FromFileTime(apply.StartTime).ToString("yyyy-MM-dd")
+                              //let month = date.Substring(0, date.LastIndexOf('-'))
+                          where apply.WorkerId == worker.Id
                           select new
                           {
                               apply.StartTime,
                               apply.EndTime
                           }).ToList();
-            foreach(var item in applys)
+            foreach (var item in applys)
             {
-                Console.WriteLine(DateTime.FromFileTime(item.StartTime).ToString("yyyy-MM-dd"));
+                DateTime start= new DateTime(1970, 1, 1, 8, 0, 0).AddMilliseconds(item.StartTime);
+                DateTime end = new DateTime(1970, 1, 1, 8, 0, 0).AddMilliseconds(item.EndTime);
+                leaveDays.AddRange(GetWorkDays(start, end));
             }
-
-            return true;
+            result = new {
+                attendanceDto.Month,
+                clockDays,
+                leaveDays
+            };
+            return result;
         }
 
-        private object GetWorkDay(long startTime,long endTime)
+        private List<string> GetWorkDays(DateTime start,DateTime end)
         {
-            DateTime start = DateTime.FromFileTime(startTime);
-            DateTime end = DateTime.FromFileTime(endTime);
+            List<string> result = new List<string>();
+            while (start < end && start<=DateTime.Now)
+            {
+                //求出非周末日期，插入数据库
+                if (start.DayOfWeek != DayOfWeek.Saturday && start.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    result.Add(start.ToString("yyyy-MM-dd"));
+                    
+                }
+                start = start.AddDays(1);
+            }
+            return result;
+        }
+
+        private object GetWorkDay(DateTime start,DateTime end)
+        {
             TimeSpan span = end - start;
             //int totleDay=span.Days;
             //DateTime spanNu = DateTime.Now.Subtract(span);

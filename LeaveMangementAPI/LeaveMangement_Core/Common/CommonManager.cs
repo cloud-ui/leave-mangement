@@ -103,7 +103,7 @@ namespace LeaveMangement_Core.Common
             var result = _ctx.Apply.Where(a => a.WorkerId == workerId).ToList();
             foreach (var item in result)
             {
-                if (DateTime.FromFileTime(item.StartTime).Year == nowYear && DateTime.FromFileTime(item.StartTime).Month == nowMonth)
+                if (DateTime.FromFileTime(item.CreateTime).Year == nowYear && DateTime.FromFileTime(item.CreateTime).Month == nowMonth)
                     count++;
             }
             return count;
@@ -122,6 +122,11 @@ namespace LeaveMangement_Core.Common
             {
                 return false;
             }
+        }
+
+        public string GetUserAccount(int id)
+        {
+            return _ctx.Worker.Find(id).Account;
         }
 
     }

@@ -1,4 +1,6 @@
-﻿using LeaveMangementAPI.Authorization;
+﻿using LeaveMangement_Application.Approval;
+using LeaveMangement_Application.Common;
+using LeaveMangementAPI.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -11,14 +13,21 @@ namespace LeaveMangementAPI.Util
     {
         static readonly Dictionary<string, string> Users = new Dictionary<string, string>();
         private readonly IHubContext<SignalrHubs> hubContext;
+        private readonly IApprovalAppService approvalAppService = new ApprovalAppService();
+        private readonly ICommonAppService commonAppService = new CommonAppService();
 
         public SignalrHubs(IHubContext<SignalrHubs> hubContext)
         {
             this.hubContext = hubContext;
         }
-        public void SendMessage(string user)
+        public async void SendMessage(string user)
         {
             Users[user] = Context.ConnectionId;
+            string account = commonAppService.GetUserAccount(int.Parse(user));
+            if(approvalAppService.GetInform(account).Count != 0)
+            {
+                await hubContext.Clients.Client(Context.ConnectionId).SendAsync("ReceiveMessage", "您有新的消息");
+            }
         }
         ///// <summary>
         ///// 建立连接时触发
@@ -38,7 +47,7 @@ namespace LeaveMangementAPI.Util
         //{
         //    //await Clients.All.SendAsync("ReceiveMessage", $"{Context.ConnectionId} left");
         //}
-        
+
         /// <summary>
         /// 向指定Id推送消息
         /// </summary>

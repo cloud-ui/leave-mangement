@@ -55,8 +55,8 @@
                     </el-form-item>
                     <el-form-item style="display: flex;justify-content: flex-end;">
                         <el-button @click="resetForm()">重置</el-button>
-                        <el-button type="primary" @click="onSubmit(false)">保存</el-button>
-                        <el-button type="primary" :loading="loading" @click="onSubmit(true)">提交</el-button>
+                        <el-button type="primary" :loading="saveLoading" @click="onSubmit(false)">保存</el-button>
+                        <el-button type="primary" :loading="submitLoading" @click="onSubmit(true)">提交</el-button>
                         
                     </el-form-item>
                 </el-form>
@@ -95,7 +95,8 @@
                 count:0,
                 dateLeng:0,
                 isEdit:'',
-                loading:false,
+                submitLoading:false,
+                saveLoading:false,
                 rules:{
                     type2:[{required: true,message: '请假类型为必选项',trigger: 'blur'}],
                     account:[{required: true,message: '请假理由为必填项',trigger: 'blur'}],
@@ -156,7 +157,7 @@
             onSubmit(isSubmit){
                 this.$refs['form'].validate(valid=>{
                     if(valid){
-                        this.loading = true
+                        isSubmit===true?this.submitLoading=true:this.saveLoading = true
                         const params={
                             workerId:this.userInfo.id,
                             type1 : this.form.type1,
@@ -173,7 +174,7 @@
                                 type:type1,
                                 message:res.data.message
                             })
-                            this.loading = false
+                            isSubmit===true?this.submitLoading=false:this.saveLoading = false
                             const path = isSubmit?'/leave/applicationList':'/leave/unApplicationList'
                             this.$router.push({ path: path})
                         })
@@ -184,7 +185,7 @@
                                     type:type1,
                                     message:res.data.message
                                 })
-                                this.loading = false
+                                isSubmit===true?this.submitLoading=false:this.saveLoading = false
                                 const path = isSubmit?'/leave/applicationList':'/leave/unApplicationList'
                                 this.$router.push({ path: path})
                             })

@@ -84,10 +84,10 @@ namespace LeaveMangementAPI.Controllers.Web
         [Authorize]
         public async Task<object> AttendanceByMonth( AttendanceDto attendanceDto)
         {
-            //var context = HttpContext;
-            //string account = await _jwtUtil.GetMessageByToken(context);
-            var result = _attendanceAppService.AttendanceByMonth("6288081682", attendanceDto);
-            return true;
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            var result = _attendanceAppService.AttendanceByMonth(account, attendanceDto);
+            return result;
         }
     }
 }

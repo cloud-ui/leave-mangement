@@ -3,11 +3,7 @@
         <div class="attence-box">
             <div>
                 <comp-table :tableData="tableData" :tableHeader="tableHeader" :tableAttr="tableAttr" :headerCellStyle="headerCellStyle" @tableOtherClick="tableOtherClick" className="tableClassName"></comp-table>
-                <el-pagination style="padding-top:10px" 
-                @size-change="handleSizeChange" 
-                :current-page="currentPage" 
-                :page-size="pageSize" 
-                layout="total, prev, pager, next" :total="totalCount">
+                <el-pagination style="padding-top:10px" @size-change="handleSizeChange" :current-page="currentPage" :page-size="pageSize" layout="total, prev, pager, next" :total="totalCount">
                 </el-pagination>
             </div>
             <div>
@@ -39,17 +35,15 @@
                 currentPage: 1,
                 pageSize: 15,
                 totalCount: 0,
-
                 tableAttr: {
                     noIndex: false,
                     other: [{
-                            name: '查看',
-                            style: 'text',
-                            type: 'look',
-                            icon: 'el-icon-view',
-                            color: '#409eff'
-                        }
-                    ]
+                        name: '查看',
+                        style: 'text',
+                        type: 'look',
+                        icon: 'el-icon-view',
+                        color: '#409eff'
+                    }]
                 },
                 tableHeader: [{
                     prop: 'month',
@@ -83,9 +77,10 @@
                     console.log(data.data)
                     this.tableData = data.data.data
                     this.totalCount = data.data.count
+                    this.createCalender(data.data.data[0].month)
                 })
             },
-             handleSizeChange(val) {
+            handleSizeChange(val) {
                 this.pageSize = val;
                 this.loadData();
             },
@@ -93,9 +88,27 @@
                 this.currentPage = val;
                 this.loadData();
             },
+            createCalender(month) {
+                UserPageApi.getAttenceInfo({month: month}).then(res => {
+                    res.data.clockDays.map(item => {
+                        this.$refs.calendar.arr.push({
+                            date: item,
+                            className: 'mark1'
+                        })
+                    })
+                    res.data.leaveDays.map(item=>{
+                        this.$refs.calendar.arr.push({
+                            date: item,
+                            className: 'mark2'
+                        })
+                    })
+                    console.log(res.data)
+                    this.$refs.calendar.transfromMonth(month + '-01')
+                })
+            },
             tableOtherClick(row, type, index) {
                 if (type === 'look') {
-                    this.$refs.calendar.transfromMonth(row.month+'-01')
+                    this.createCalender(row.month)
                 }
             },
         },

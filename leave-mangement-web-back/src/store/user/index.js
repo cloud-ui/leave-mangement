@@ -14,6 +14,10 @@ export default{
             Auth.setUserInfo({...data.user,cName});
             Auth.setMenu(data.menu);
             Auth.setLogin();
+            state.isLogin = true;
+            state.userInfo = {...data.user,cName};
+            state.token = data.token;
+            state.menu = data.menu;
         },
         ACCOUNT_LOGOUT_FAILURE(state) {
             state.token = null;

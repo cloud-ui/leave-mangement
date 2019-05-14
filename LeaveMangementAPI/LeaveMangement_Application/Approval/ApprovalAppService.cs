@@ -4,13 +4,14 @@ using System.Text;
 using LeaveMangement_Core.Approval;
 using LeaveMangement_Entity.Dtos;
 using LeaveMangement_Entity.Dtos.Approval;
+using LeaveMangement_Entity.Models;
 
 namespace LeaveMangement_Application.Approval
 {
     public class ApprovalAppService : IApprovalAppService
     {
         private ApprovalManager _approvalManager = new ApprovalManager();
-        public object GetInform(string account)
+        public List<Inform> GetInform(string account)
         {
             return _approvalManager.GetInform(account);
         }
@@ -30,7 +31,7 @@ namespace LeaveMangement_Application.Approval
         {
             return _approvalManager.GetApplicationById(id);
         }
-        public object SubmitApplication(int id)
+        public Result SubmitApplication(int id)
         {
             return _approvalManager.SubmitApplication(id);
         }
@@ -58,7 +59,7 @@ namespace LeaveMangement_Application.Approval
         {
             return _approvalManager.CheckApplication(checkDto, account);
         }
-        public object PushCheck(PushCheck pushCheck, string account)
+        public Result PushCheck(PushCheck pushCheck, string account)
         {
             return _approvalManager.PushCheck(pushCheck, account);
         }

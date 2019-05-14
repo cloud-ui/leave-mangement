@@ -4,14 +4,14 @@
     </div> -->
     <div class="login-body">
       <div class="login-body-left">
-        <h3>公司人事管理系统</h3>
+        <h3>人事综合管理平台</h3>
         <p>√ 是一个基于ASP.NET Core开发基于Vue前后分离的开发平台</p>
         <p>√ 是一个基于vue+vuex+vue-router快速后台管理系统，采用token交互验证方式。</p>
         <p>√ 最大程度上帮助企业节省时间成本和费用开支。</p>
       </div>
       <div class="login-body-right postion">
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-position="left" label-width="0px" class="demo-ruleForm login-container">
-          <p class="login-title">公司人事管理系统登录</p>
+          <p class="login-title">人事综合管理平台登录</p>
           <el-form-item style="padding-top:15px" prop="loginStr">
             <el-input type="text" v-model="ruleForm.loginStr" ref="adminAccount" auto-complete="off" placeholder="请输入用户名">
             </el-input>

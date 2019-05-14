@@ -68,5 +68,10 @@ namespace LeaveMangement_Application.Common
         {
             return _commonManager.JudgeAuth(account, path);
         }
+
+        public string GetUserAccount(int id)
+        {
+            return _commonManager.GetUserAccount(id);
+        }
     }
 }

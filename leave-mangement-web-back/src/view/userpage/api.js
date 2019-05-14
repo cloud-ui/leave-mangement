@@ -26,4 +26,8 @@ export class UserPageApi {
   static getAttence(){
     return server.connection('GET','api/Attendance/AttendanceByWorker')
   }
+
+  static getAttenceInfo(data={}){
+    return server.connection('GET','api/Attendance/AttendanceByMonth',data)
+  }
 }

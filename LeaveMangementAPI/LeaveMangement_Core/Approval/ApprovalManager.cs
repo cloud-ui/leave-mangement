@@ -66,10 +66,10 @@ namespace LeaveMangement_Core.Approval
                 if (newApply.State == 1 && newApply.IsSubmit)
                 {
                     informId = AddInform(newApply.Id, newApply.WorkerId, "Leave");
-                    result.IsSuccess = true;
-                    result.Message = "申请已保存！";
-                    result.Id = informId;
                 }
+                result.IsSuccess = true;
+                result.Message = "申请已保存！";
+                result.Id = informId;
             }
             return result;
         }
@@ -211,9 +211,9 @@ namespace LeaveMangement_Core.Approval
             };
             return result;
         }
-        public object SubmitApplication(int id)
+        public Result SubmitApplication(int id)
         {
-            var result = new object();
+            Result result;
             int informId = 0;
             try
             {
@@ -222,20 +222,20 @@ namespace LeaveMangement_Core.Approval
                 application.State = 1;
                 _ctx.SaveChanges();
                 informId= AddInform(application.Id,application.WorkerId,"Leave");
-                result = new
+                result = new Result
                 {
-                    isSuccess = true,
-                    message = "提交申请成功！",
-                    informId
+                    IsSuccess = true,
+                    Message = "提交申请成功！",
+                    Id = informId
                 };                
             }
             catch
             {
-                result = new
+                result = new Result
                 {
-                    isSuccess = false,
-                    message = "提交申请失败！",
-                    informId
+                    IsSuccess = true,
+                    Message = "提交申请成功！",
+                    Id = informId
                 };
             }
             return result;
@@ -308,7 +308,7 @@ namespace LeaveMangement_Core.Approval
             return result;
         }
 
-        public object GetInform(string account)
+        public List<Inform> GetInform(string account)
         {
             int workerId = _ctx.Worker.SingleOrDefault(w=>w.Account.Equals(account)).Id;
             return _ctx.Inform.Where(i => i.WorkId == workerId).ToList();
@@ -440,9 +440,9 @@ namespace LeaveMangement_Core.Approval
             bool isDelete = checkDto.IsAgree ? false : true;
             UpdateUserState(apply.CompanyId, apply.WorkerId,state,isDelete);
         }
-        public object PushCheck(PushCheck pushCheck, string account)
+        public Result PushCheck(PushCheck pushCheck, string account)
         {
-            var result = new object();
+            Result result;
             Apply apply = _ctx.Apply.Find(pushCheck.ApplicationId);
             //找出当前用户的职位编号
             Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
@@ -451,10 +451,11 @@ namespace LeaveMangement_Core.Approval
             string remark = worker.Name + "：" + pushCheck.Remark + ";" + apply.Remark;
             apply.Remark = remark;
             if (position.ParentId == 0)
-                result = new
+                result = new Result
                 {
-                    isSuccess = false,
-                    message = "提交失败，您目前没有上级管理！",
+                    IsSuccess = false,
+                    Message = "提交失败，您目前没有上级管理！",
+                    Id = 0
                 };
             else
             {
@@ -470,10 +471,11 @@ namespace LeaveMangement_Core.Approval
                 _ctx.Inform.Remove(oldInfo);
                 _ctx.Inform.Add(inform);
                 _ctx.SaveChanges();
-                result = new
+                result = new Result
                 {
-                    isSuccess = true,
-                    message = "提交成功！",
+                    IsSuccess = true,
+                    Message = "提交成功！",
+                    Id = inform.WorkId
                 };
             }
             return result;
@@ -524,6 +526,7 @@ namespace LeaveMangement_Core.Approval
             {
                 IsSuccess = true,
                 Message = "添加成功！",
+                Id = informId
             };
             return result;
         }

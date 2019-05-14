@@ -66,9 +66,9 @@ namespace LeaveMangementAPI.Controllers.Web
             addApplicationDto.CompId = _commonAppService.GetUserCompId(account);
             addApplicationDto.DeparmentId = _commonAppService.GetUserDepId(account);
             Result result = _approvalAppService.AddApplication(addApplicationDto);
-            await _signalrHubs.Send(result.Id.ToString(), "您有新的消息");
-            //signal
-            //_hubContext.Clients.Client("1").getInform("您有新的消息");
+            if (result.Id != 0) {
+                await _signalrHubs.Send(result.Id.ToString(), "您有新的消息");
+            }
             return result;
         }
         /// <summary>
@@ -124,9 +124,14 @@ namespace LeaveMangementAPI.Controllers.Web
         /// <returns></returns>
         [HttpPost]
         [Authorize]
-        public object SubmitApplication(int id)
+        public async Task<object> SubmitApplication(int id)
         {
-            return _approvalAppService.SubmitApplication(id);
+            Result result = _approvalAppService.SubmitApplication(id);
+            if (result.Id != 0)
+            {
+                await _signalrHubs.Send(result.Id.ToString(), "您有新的消息");
+            }
+            return result;
         }
         /// <summary>
         /// 编辑未提交的申请
@@ -225,7 +230,12 @@ namespace LeaveMangementAPI.Controllers.Web
         {
             var context = HttpContext;
             string account = await _jwtUtil.GetMessageByToken(context);
-            return _approvalAppService.CreateApplyOfJob(applyJobDto, account);
+            Result result = _approvalAppService.CreateApplyOfJob(applyJobDto, account);
+            if (result.Id != 0)
+            {
+                await _signalrHubs.Send(result.Id.ToString(), "您有新的消息");
+            }
+            return result;
         }
     }
 }
