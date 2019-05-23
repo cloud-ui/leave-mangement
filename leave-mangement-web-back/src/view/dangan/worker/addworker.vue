@@ -62,8 +62,7 @@
                 <div class="row-item">
                     <div class="title">选择数据文件：</div>
                     <div class="upload">
-                        <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" accept=".xlsx" 
-                        :on-change="handleChangeFile" :file-list="fileList" :show-file-list="false" :auto-upload="false">
+                        <el-upload class="upload-demo" ref="upload" action="https://jsonplaceholder.typicode.com/posts/" accept=".xlsx" :on-change="handleChangeFile" :file-list="fileList" :show-file-list="false" :auto-upload="false">
                             <el-button class="select-file-button" slot="trigger" plain>{{selectFile}}</el-button>
                             <i class="el-icon-circle-close clear-file-button" v-show="clearFileIsShow" @click="clearFile"></i>
                             <el-button :loading="loadingMulit" class="import-data-button" plain @click="importData">导入数据</el-button>
@@ -77,8 +76,8 @@
                         <el-table :data="result" height="250" style="width: 100%">
                             <el-table-column prop="isSuccess" align="center" label="是否成功">
                                 <template slot-scope="scope">
-                                    <i :class="scope.row.isSuccess===true?`el-icon-circle-check show-result-tip-s`:`el-icon-circle-close show-result-tip-b`"></i>
-                                </template>
+                                        <i :class="scope.row.isSuccess===true?`el-icon-circle-check show-result-tip-s`:`el-icon-circle-close show-result-tip-b`"></i>
+</template>
                             </el-table-column>
                             <el-table-column prop="name" label="姓名" width="80">
                             </el-table-column>
@@ -93,9 +92,9 @@
                             <el-table-column prop="state" align="center" label="职位状态">
                             </el-table-column>
                             <el-table-column prop="entryTime" align="center" label="入职时间">
-                                <template slot-scope="scope">
-                                    {{scope.row.entryTime.substr(0,10)}}
-                                </template>
+<template slot-scope="scope">
+     {{scope.row.entryTime.substr(0,10)}}
+</template>
                             </el-table-column>
                             <el-table-column prop="sex" align="center" label="性别">
                             </el-table-column>
@@ -149,7 +148,7 @@
                 positionData: [],
                 stateData: [],
                 //批量添加需要的内容
-                loadingMulit:false,
+                loadingMulit: false,
                 fileList: [],
                 selectFile: '选择文件',
                 clearFileIsShow: false,
@@ -233,14 +232,17 @@
                 this.fileList.forEach(file => {
                     files.push(file.raw);
                 });
-                this.loadingMulit=true
+                this.loadingMulit = true
                 FileApi.addMulitWorker({}, files).then(res => {
-                    console.log(res)
-                    this.showResult = true
                     this.loadingMulit = false
-                    this.successCount = res.data.data.successCount
-                    this.badCount = res.data.data.badCount
-                    this.result = res.data.data.data
+                    if (res.data.hasOwnProperty('fileError')) {
+                        this.$message.error(res.data.data)
+                    } else {
+                        this.showResult = true
+                        this.successCount = res.data.data.successCount
+                        this.badCount = res.data.data.badCount
+                        this.result = res.data.data.data
+                    }
                 });
             }
         }

@@ -167,7 +167,8 @@ namespace LeaveMangementAPI.Controllers.Web
                     {
                         result = new
                         {
-                            data = ex
+                            data = ex.Message,
+                            fileError=true
                         };
                     }
                 }

@@ -130,27 +130,40 @@ namespace LeaveMangementAPI.Util
                     }
                     data.Add(excelDep);
                 }
-                _ctx.Deparment.AddRange(successDeparments);
-                Company company = _ctx.Company.Find(successDeparments[0].CompanyId);
-                company.DeparmentCount = company.DeparmentCount + successCount;
-                _ctx.SaveChanges();
+                if (successCount != 0)
+                {
+                    _ctx.Deparment.AddRange(successDeparments);
+                    Company company = _ctx.Company.Find(successDeparments[0].CompanyId);
+                    company.DeparmentCount = company.DeparmentCount + successCount;
+                    _ctx.SaveChanges();
+                }
                 result = new
                 {
                     successCount,
                     badCount,
                     data
                 };
-                
-            }catch(NullReferenceException ex)
-            {
-                result = new
-                {
-                    successCount,
-                    badCount,
-                    data
-                };
+                return result;
+
             }
-            return result;
+            catch(Exception ex)
+            {
+                if (successCount != 0)
+                {
+                    _ctx.Deparment.AddRange(successDeparments);
+                    Company company = _ctx.Company.Find(successDeparments[0].CompanyId);
+                    company.DeparmentCount = company.DeparmentCount + successCount;
+                    _ctx.SaveChanges();
+                }
+                result = new
+                {
+                    successCount,
+                    badCount = rowCount - 1 - successCount,
+                    data = GetFileData(worksheet, rowCount, ColCount, successDeparments)
+                };
+                return result;
+            }
+            
         }
         public object SaveWorkerToDB(ExcelWorksheet worksheet,int rowCount,int colCount)
         {
@@ -158,94 +171,221 @@ namespace LeaveMangementAPI.Util
             List<Worker> successWorkers = new List<Worker>();
             List<ExcelWorker> data = new List<ExcelWorker>();
             var result = new object();
-            for (int row = 2; row <= rowCount; row++)
+            try
             {
-                Worker worker = new Worker();
-                ExcelWorker excelWorker = new ExcelWorker();
-                excelWorker.Account= worker.Account = (DateTime.Now.AddSeconds(10).ToFileTime().ToString()).Substring(6);
-                worker.Password = "123456";
-                for (int col = 1; col <= colCount; col++)
+                for (int row = 2; row <= rowCount; row++)
                 {
-                    switch (col)
+                    Worker worker = new Worker();
+                    ExcelWorker excelWorker = new ExcelWorker();
+                    excelWorker.Account = worker.Account = (DateTime.Now.AddSeconds(10).ToFileTime().ToString()).Substring(6);
+                    worker.Password = "123456";
+                    for (int col = 1; col <= colCount; col++)
                     {
-                        case 1: //公司
-                            worker.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
-                            excelWorker.Company = worksheet.Cells[row, col].Value.ToString(); break;
-                        case 2: //部门
-                            worker.DepartmentId = _commonAppService.GetDepId(worksheet.Cells[row, col].Value.ToString(),worker.CompanyId);
-                            excelWorker.Department = worksheet.Cells[row, col].Value.ToString(); break;
-                        case 3: //职位
-                            worker.PositionId = _commonAppService.GetPosition(worksheet.Cells[row, col].Value.ToString(),worker.CompanyId);
-                            excelWorker.Position = worksheet.Cells[row, col].Value.ToString(); break;
-                        case 4:  //姓名
-                            excelWorker.Name=worker.Name = worksheet.Cells[row, col].Value.ToString(); break;
-                        case 5:  //性别
-                            worker.Sex = worksheet.Cells[row, col].Value.ToString() == "男" ? 1 : 0;
-                            excelWorker.Sex = worksheet.Cells[row, col].Value.ToString(); break;
-                        case 6: //电话号码
-                            excelWorker.PhoneNumber= worker.PhoneNumber = worksheet.Cells[row, col].Value.ToString();
-                            break;
-                        case 7:  //地址
-                            excelWorker.Address= worker.Address = worksheet.Cells[row, col].Value.ToString();
-                            break;
-                        case 8: //证件类型
-                            worker.PaperType = _commonAppService.GetPaperType(worksheet.Cells[row, col].Value.ToString());
-                            excelWorker.PaperType = worksheet.Cells[row, col].Value.ToString();
-                            break;
-                        case 9: //证件号码
-                            excelWorker.PaperNumber= worker.PaperNumber = worksheet.Cells[row, col].Value.ToString();
-                            break;
-                        case 10: //状态
-                            worker.StateId = _commonAppService.GetState(worksheet.Cells[row, col].Value.ToString(), worker.CompanyId);
-                            excelWorker.State = worksheet.Cells[row, col].Value.ToString();
-                            break;
-                        case 11: //入职时间
-                            string temp = worksheet.Cells[row, col].Value.ToString();
-                            DateTime time = Convert.ToDateTime(temp);
-                            worker.EntryTime = time.ToFileTime();
-                            excelWorker.EntryTime = worksheet.Cells[row, col].Value.ToString();
-                            break;
-                        default: break;
-                    };
-                }
-                if (worker.CompanyId != 0 && worker.DepartmentId != 0 && worker.PositionId != 0)
-                {
-                    if (!_commonAppService.IsExitWorker(worker.PaperType,worker.PaperNumber, worker.CompanyId))
+                        switch (col)
+                        {
+                            case 1: //公司
+                                worker.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
+                                excelWorker.Company = worksheet.Cells[row, col].Value.ToString(); break;
+                            case 2: //部门
+                                worker.DepartmentId = _commonAppService.GetDepId(worksheet.Cells[row, col].Value.ToString(), worker.CompanyId);
+                                excelWorker.Department = worksheet.Cells[row, col].Value.ToString(); break;
+                            case 3: //职位
+                                worker.PositionId = _commonAppService.GetPosition(worksheet.Cells[row, col].Value.ToString(), worker.CompanyId);
+                                excelWorker.Position = worksheet.Cells[row, col].Value.ToString(); break;
+                            case 4:  //姓名
+                                excelWorker.Name = worker.Name = worksheet.Cells[row, col].Value.ToString(); break;
+                            case 5:  //性别
+                                worker.Sex = worksheet.Cells[row, col].Value.ToString() == "男" ? 1 : 0;
+                                excelWorker.Sex = worksheet.Cells[row, col].Value.ToString(); break;
+                            case 6: //电话号码
+                                excelWorker.PhoneNumber = worker.PhoneNumber = worksheet.Cells[row, col].Value.ToString();
+                                break;
+                            case 7:  //地址
+                                excelWorker.Address = worker.Address = worksheet.Cells[row, col].Value.ToString();
+                                break;
+                            case 8: //证件类型
+                                worker.PaperType = _commonAppService.GetPaperType(worksheet.Cells[row, col].Value.ToString());
+                                excelWorker.PaperType = worksheet.Cells[row, col].Value.ToString();
+                                break;
+                            case 9: //证件号码
+                                excelWorker.PaperNumber = worker.PaperNumber = worksheet.Cells[row, col].Value.ToString();
+                                break;
+                            case 10: //状态
+                                worker.StateId = _commonAppService.GetState(worksheet.Cells[row, col].Value.ToString(), worker.CompanyId);
+                                excelWorker.State = worksheet.Cells[row, col].Value.ToString();
+                                break;
+                            case 11: //入职时间
+                                string temp = worksheet.Cells[row, col].Value.ToString();
+                                DateTime time = Convert.ToDateTime(temp);
+                                worker.EntryTime = time.ToFileTime();
+                                excelWorker.EntryTime = worksheet.Cells[row, col].Value.ToString();
+                                break;
+                            default: break;
+                        };
+                    }
+                    if (worker.CompanyId != 0 && worker.DepartmentId != 0 && worker.PositionId != 0)
                     {
-                        excelWorker.IsSuccess = true;
-                        worker.Age = _userService.GetAgeFromIdCard(worker.PaperNumber);
-                        worker.Brith = _userService.GetBirthdayFromIdCard(worker.PaperNumber);
-                        successWorkers.Add(worker);
-                        successCount++;
+                        if (!_commonAppService.IsExitWorker(worker.PaperType, worker.PaperNumber, worker.CompanyId))
+                        {
+                            excelWorker.IsSuccess = true;
+                            worker.Age = _userService.GetAgeFromIdCard(worker.PaperNumber);
+                            worker.Brith = _userService.GetBirthdayFromIdCard(worker.PaperNumber);
+                            successWorkers.Add(worker);
+                            successCount++;
+                        }
+                        else
+                        {
+                            excelWorker.IsSuccess = false;
+                            badCount++;
+                        }
                     }
                     else
                     {
                         excelWorker.IsSuccess = false;
                         badCount++;
                     }
+                    data.Add(excelWorker);
                 }
-                else
+                if (successCount != 0)
                 {
-                    excelWorker.IsSuccess = false;
-                    badCount++;
+                    _ctx.Worker.AddRange(successWorkers);
+                    _commonAppService.ChangeDepWorkerCount(successWorkers);
+                    Company company = _ctx.Company.Find(successWorkers[0].CompanyId);
+                    company.WokerCount = company.WokerCount + successCount;
+                    _ctx.SaveChanges();
+                }
+                result = new
+                {
+                    successCount,
+                    badCount,
+                    data
+                };
+                return result;
+            }
+            catch (Exception e)
+            {
+                if (successCount != 0)
+                {
+                    _ctx.Worker.AddRange(successWorkers);
+                    _commonAppService.ChangeDepWorkerCount(successWorkers);
+                    Company company = _ctx.Company.Find(successWorkers[0].CompanyId);
+                    company.WokerCount = company.WokerCount + successCount;
+                    _ctx.SaveChanges();
+                }
+                result = new
+                {
+                    successCount,
+                    badCount=rowCount-1-successCount,
+                    data= GetFileData(worksheet,rowCount,colCount,successWorkers)
+                };
+                return result;
+            }
+        }
+
+        private List<ExcelDep> GetFileData(ExcelWorksheet worksheet, int rowCount, int colCount, List<Deparment> successDeps)
+        {
+            List<ExcelDep> data = new List<ExcelDep>();
+            for (int row = 2; row <= rowCount; row++)
+            {
+                ExcelDep excelDep = new ExcelDep();
+                for (int col = 1; col <= colCount; col++)
+                {
+                    switch (col)
+                    {
+                        case 1:
+                            excelDep.Company = Convert.ToString(worksheet.Cells[row, col].Value); break;
+                        case 2:
+                            excelDep.Manager = Convert.ToString(worksheet.Cells[row, col].Value); break;
+                        case 3:
+                            excelDep.Name = Convert.ToString(worksheet.Cells[row, col].Value); break;
+                        case 4:
+                            excelDep.WorkerCount = Convert.ToInt32(worksheet.Cells[row, col].Value); break;
+                        case 5:
+                            excelDep.Code = Convert.ToString(worksheet.Cells[row, col].Value); break;
+                        default: break;
+                    };
+                }
+                foreach (var item in successDeps)
+                {
+                    if (item.Name == excelDep.Name)
+                    {
+                        excelDep.IsSuccess = true;
+                    }
+                    else
+                    {
+                        excelDep.IsSuccess = false;
+                    }
+                }
+                data.Add(excelDep);
+            }
+            return data;
+        }
+
+        /// <summary>
+        /// 员工存储异常时获取返回列表数据
+        /// </summary>
+        /// <param name="worksheet"></param>
+        /// <param name="rowCount"></param>
+        /// <param name="colCount"></param>
+        /// <param name="successWorkers"></param>
+        /// <returns></returns>
+        private List<ExcelWorker> GetFileData(ExcelWorksheet worksheet, int rowCount, int colCount, List<Worker> successWorkers)
+        {
+            List<ExcelWorker> data = new List<ExcelWorker>();
+            for (int row = 2; row <= rowCount; row++)
+            {
+                ExcelWorker excelWorker = new ExcelWorker();
+                excelWorker.Account = (DateTime.Now.AddSeconds(10).ToFileTime().ToString()).Substring(6);
+                for (int col = 1; col <= colCount; col++)
+                {
+                    switch (col)
+                    {
+                        case 1: //公司
+                            excelWorker.Company = Convert.ToString(worksheet.Cells[row, col].Value); break;
+                        case 2: //部门
+                            excelWorker.Department = Convert.ToString(worksheet.Cells[row, col].Value); break;
+                        case 3: //职位
+                            excelWorker.Position = Convert.ToString(worksheet.Cells[row, col].Value); break;
+                        case 4:  //姓名
+                            excelWorker.Name = Convert.ToString(worksheet.Cells[row, col].Value); break;
+                        case 5:  //性别
+                            excelWorker.Sex = Convert.ToString(worksheet.Cells[row, col].Value); break;
+                        case 6: //电话号码
+                            excelWorker.PhoneNumber = Convert.ToString(worksheet.Cells[row, col].Value);
+                            break;
+                        case 7:  //地址
+                            excelWorker.Address = Convert.ToString(worksheet.Cells[row, col].Value);
+                            break;
+                        case 8: //证件类型
+                            excelWorker.PaperType = Convert.ToString(worksheet.Cells[row, col].Value);
+                            break;
+                        case 9: //证件号码
+                            excelWorker.PaperNumber = Convert.ToString(worksheet.Cells[row, col].Value);
+                            break;
+                        case 10: //状态
+                            excelWorker.State = Convert.ToString(worksheet.Cells[row, col].Value);
+                            break;
+                        case 11: //入职时间
+                            excelWorker.EntryTime = Convert.ToString(worksheet.Cells[row, col].Value);
+                            break;
+                        default: break;
+                    };
+                }
+                foreach(var item in successWorkers)
+                {
+                    if (item.PaperNumber == excelWorker.PaperNumber)
+                    {
+                        excelWorker.IsSuccess = true;
+                        excelWorker.Account = item.Account;
+                    }
+                    else
+                    {
+                        excelWorker.IsSuccess = false;
+                    }
                 }
                 data.Add(excelWorker);
             }
-            if (successCount != 0)
-            {
-                _ctx.Worker.AddRange(successWorkers);
-                _commonAppService.ChangeDepWorkerCount(successWorkers);
-                Company company = _ctx.Company.Find(successWorkers[0].CompanyId);
-                company.WokerCount = company.WokerCount + successCount;
-                _ctx.SaveChanges();
-            }
-            result = new
-            {
-                successCount,
-                badCount,
-                data
-            };
-            return result;
+            return data;
         }
     }
 }

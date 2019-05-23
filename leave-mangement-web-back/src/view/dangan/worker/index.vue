@@ -78,7 +78,7 @@
                 depId: 0,
                 query: '',
                 currentPage: 1,
-                pageSize: 9,
+                pageSize: 10,
                 dialogVisible: false,
                 formTitle:'',
                 workerId:'',

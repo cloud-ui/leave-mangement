@@ -138,12 +138,18 @@ export default {
             this.fileList.forEach(file => {
                 files.push(file.raw);
             });
+            this.loading=true
             FileApi.addMulitDeparment({},files).then(res=>{
-                console.log(res.data)
-                this.showResult = true
-                this.successCount = res.data.data.successCount
-                this.badCount = res.data.data.badCount
-                this.result = res.data.data.data
+                this.loading = false
+                if(res.data.hasOwnProperty('fileError')){
+                    this.$message.error(res.data.data)
+                }else{
+                    this.showResult = true
+                    this.successCount = res.data.data.successCount
+                    this.badCount = res.data.data.badCount
+                    this.result = res.data.data.data
+                }
+                
             });
         },
         //关闭弹框

@@ -136,7 +136,11 @@ namespace LeaveMangementAPI.Controllers.Web
                     }
                     catch (Exception ex)
                     {
-                        message = ex.Message;
+                        result = new
+                        {
+                            data = ex.Message,
+                            fileError = true
+                        };
                     }
                 }
             }
