@@ -73,67 +73,83 @@ namespace LeaveMangementAPI.Util
             }
             return bHeaderRow;
         }
-        public object SaveDepToDB(ExcelWorksheet worksheet)
+        public object SaveDepToDB(ExcelWorksheet worksheet,out List<Deparment> successDeparments)
         {
             int rowCount = worksheet.Dimension.Rows;
             int ColCount = worksheet.Dimension.Columns;
             int successCount = 0, badCount = 0;
-            List<Deparment> successDeparments = new List<Deparment>();
+            successDeparments = new List<Deparment>();
             List<ExcelDep> data = new List<ExcelDep>();
             var result = new object();
-            for (int row = 2; row <= rowCount; row++)
+            try
             {
-                Deparment deparment = new Deparment();
-                ExcelDep excelDep = new ExcelDep();
-                for (int col = 1; col <= ColCount; col++)
+                for (int row = 2; row <= rowCount; row++)
                 {
-                    switch (col)
+                    Deparment deparment = new Deparment();
+                    ExcelDep excelDep = new ExcelDep();
+                    for (int col = 1; col <= ColCount; col++)
                     {
-                        case 1:
-                            deparment.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
-                            excelDep.Company = worksheet.Cells[row, col].Value.ToString(); break;
-                        case 2: deparment.ManagerId = _commonAppService.GetUserId(worksheet.Cells[row, col].Value.ToString());
-                            excelDep.Manager = worksheet.Cells[row, col].Value.ToString(); break;
-                        case 3: deparment.Name = worksheet.Cells[row, col].Value.ToString();
-                            excelDep.Name = worksheet.Cells[row, col].Value.ToString(); break;
-                        case 4: deparment.WorkerCount = Convert.ToInt32(worksheet.Cells[row, col].Value);
-                            excelDep.WorkerCount = Convert.ToInt32(worksheet.Cells[row, col].Value); break;
-                        case 5: deparment.Code = worksheet.Cells[row, col].Value.ToString();
-                            excelDep.Code = worksheet.Cells[row, col].Value.ToString(); break;
-                        default: break;
-                    };
-                }
-                if (deparment.CompanyId != 0 && deparment.ManagerId != 0)
-                {
-                    if (!_commonAppService.IsExitDep(deparment.Name, deparment.CompanyId))
+                        switch (col)
+                        {
+                            case 1:
+                                deparment.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
+                                excelDep.Company = worksheet.Cells[row, col].Value.ToString(); break;
+                            case 2:
+                                deparment.ManagerId = _commonAppService.GetUserId(worksheet.Cells[row, col].Value.ToString());
+                                excelDep.Manager = worksheet.Cells[row, col].Value.ToString(); break;
+                            case 3:
+                                deparment.Name = worksheet.Cells[row, col].Value.ToString();
+                                excelDep.Name = worksheet.Cells[row, col].Value.ToString(); break;
+                            case 4:
+                                deparment.WorkerCount = Convert.ToInt32(worksheet.Cells[row, col].Value);
+                                excelDep.WorkerCount = Convert.ToInt32(worksheet.Cells[row, col].Value); break;
+                            case 5:
+                                deparment.Code = worksheet.Cells[row, col].Value.ToString();
+                                excelDep.Code = worksheet.Cells[row, col].Value.ToString(); break;
+                            default: break;
+                        };
+                    }
+                    if (deparment.CompanyId != 0 && deparment.ManagerId != 0)
                     {
-                        excelDep.IsSuccess = true;
-                        successDeparments.Add(deparment);
-                        successCount++;
+                        if (!_commonAppService.IsExitDep(deparment.Name, deparment.CompanyId))
+                        {
+                            excelDep.IsSuccess = true;
+                            successDeparments.Add(deparment);
+                            successCount++;
+                        }
+                        else
+                        {
+                            excelDep.IsSuccess = false;
+                            badCount++;
+                        }
                     }
                     else
                     {
                         excelDep.IsSuccess = false;
                         badCount++;
                     }
+                    data.Add(excelDep);
                 }
-                else
+                _ctx.Deparment.AddRange(successDeparments);
+                Company company = _ctx.Company.Find(successDeparments[0].CompanyId);
+                company.DeparmentCount = company.DeparmentCount + successCount;
+                _ctx.SaveChanges();
+                result = new
                 {
-                    excelDep.IsSuccess = false;
-                    badCount++;
-                }
-                data.Add(excelDep);
-            }
-            _ctx.Deparment.AddRange(successDeparments);
-            Company company= _ctx.Company.Find(successDeparments[0].CompanyId);
-            company.DeparmentCount = company.DeparmentCount + successCount;
-            _ctx.SaveChanges();
-            result = new
+                    successCount,
+                    badCount,
+                    data
+                };
+                
+            }catch(NullReferenceException ex)
             {
-                successCount,
-                badCount,
-                data
-            };
+                result = new
+                {
+                    successCount,
+                    badCount,
+                    data
+                };
+            }
             return result;
         }
         public object SaveWorkerToDB(ExcelWorksheet worksheet,int rowCount,int colCount)
@@ -156,7 +172,7 @@ namespace LeaveMangementAPI.Util
                             worker.CompanyId = _commonAppService.GetCompId(worksheet.Cells[row, col].Value.ToString());
                             excelWorker.Company = worksheet.Cells[row, col].Value.ToString(); break;
                         case 2: //部门
-                            worker.DepartmentId = _commonAppService.GetDepId(worksheet.Cells[row, col].Value.ToString());
+                            worker.DepartmentId = _commonAppService.GetDepId(worksheet.Cells[row, col].Value.ToString(),worker.CompanyId);
                             excelWorker.Department = worksheet.Cells[row, col].Value.ToString(); break;
                         case 3: //职位
                             worker.PositionId = _commonAppService.GetPosition(worksheet.Cells[row, col].Value.ToString(),worker.CompanyId);
@@ -184,7 +200,8 @@ namespace LeaveMangementAPI.Util
                             excelWorker.State = worksheet.Cells[row, col].Value.ToString();
                             break;
                         case 11: //入职时间
-                            DateTime time = Convert.ToDateTime(worksheet.Cells[row, col].Value.ToString());
+                            string temp = worksheet.Cells[row, col].Value.ToString();
+                            DateTime time = Convert.ToDateTime(temp);
                             worker.EntryTime = time.ToFileTime();
                             excelWorker.EntryTime = worksheet.Cells[row, col].Value.ToString();
                             break;

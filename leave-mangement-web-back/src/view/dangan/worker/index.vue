@@ -40,7 +40,7 @@
                              <el-button @click="handleLook(scope.row.id)" type="text" size="small" icon="el-icon-view">查看</el-button>
                             </el-dropdown-item>
                             <el-dropdown-item>
-                             <el-button @click="handleTransfer(scope.row.id)" style="color:#5fb878;" type="text" size="small" icon="el-icon-delete">人事调动</el-button>
+                             <el-button @click="handleTransfer(scope.row.id)" style="color:#5fb878;" type="text" size="small"><i class="iconfont icon-renshitiaodong"></i>人事调动</el-button>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </el-dropdown>
@@ -154,9 +154,11 @@
             },
             //关闭弹窗
             handleClose() {
+                this.loadData()
                 this.dialogVisible = false
             },
             closeForm(dialogVisible) {
+                
                 this.loadData()
                 this.dialogVisible = dialogVisible
             }

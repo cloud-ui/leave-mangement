@@ -3,7 +3,7 @@
         <div class="add-tip">
             <ul>
                 <li>1.批量上传文件，需下载文件模板</li>
-                <li>2.下载模板填写内容</li>
+                <li>2.下载模板填写内容,模板内容全部为必填</li>
                 <li>3.上传文件</li>
                 <li>4.上传失败的数据，请修改后将失败数据重新上传</li>
                 <li>5.可能失败原因：公司不存在、经理不存在、部门已经存在</li>
@@ -139,12 +139,11 @@ export default {
                 files.push(file.raw);
             });
             FileApi.addMulitDeparment({},files).then(res=>{
+                console.log(res.data)
                 this.showResult = true
                 this.successCount = res.data.data.successCount
                 this.badCount = res.data.data.badCount
                 this.result = res.data.data.data
-            }).cath(err=>{
-                    this.$message.error(err)
             });
         },
         //关闭弹框

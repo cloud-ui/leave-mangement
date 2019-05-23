@@ -17,9 +17,9 @@ namespace LeaveMangement_Application.Common
         {
             return _commonManager.GetCompId(componentName);
         }
-        public int GetDepId(string depName)
+        public int GetDepId(string depName,int compId)
         {
-            return _commonManager.GetDepId(depName);
+            return _commonManager.GetDepId(depName,compId);
         }
         public int GetUserDepId(string account)
         {
@@ -72,6 +72,14 @@ namespace LeaveMangement_Application.Common
         public string GetUserAccount(int id)
         {
             return _commonManager.GetUserAccount(id);
+        }
+        public int GetManagerPosition(int compId)
+        {
+            return _commonManager.GetManagerPosition(compId);
+        }
+        public int GetManagerState(int compId)
+        {
+            return _commonManager.GetManagerState(compId);
         }
     }
 }

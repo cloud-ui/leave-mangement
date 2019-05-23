@@ -19,9 +19,9 @@ namespace LeaveMangement_Core.Common
             Company company = _ctx.Company.SingleOrDefault(w => w.Name.Equals(componentName));
             return company != null ? company.Id : 0;
         }
-        public int GetDepId(string depName)
+        public int GetDepId(string depName, int compId)
         {
-            Deparment deparment = _ctx.Deparment.SingleOrDefault(w => w.Name.Equals(depName));
+            Deparment deparment = _ctx.Deparment.SingleOrDefault(w => w.Name.Equals(depName)&& w.CompanyId == compId);
             return deparment != null ? deparment.Id : 0;
         }
         public int GetUserDepId(string account)
@@ -67,7 +67,11 @@ namespace LeaveMangement_Core.Common
                 foreach(Worker worker in item)
                 {
                     if (_ctx.Position.Find(worker.PositionId).Name.Contains("部门经理"))
+                    {
                         deparment.ManagerId = worker.Id;
+                        worker.DepartmentId = deparment.Id;
+                    }
+                        
                 }
                 _ctx.SaveChanges();
             }
@@ -100,7 +104,7 @@ namespace LeaveMangement_Core.Common
             DateTime now = DateTime.Now;
             int nowYear = now.Year;
             int nowMonth = now.Month;
-            var result = _ctx.Apply.Where(a => a.WorkerId == workerId).ToList();
+            var result = _ctx.Apply.Where(a => a.WorkerId == workerId&&a.IsSubmit).ToList();
             foreach (var item in result)
             {
                 if (DateTime.FromFileTime(item.CreateTime).Year == nowYear && DateTime.FromFileTime(item.CreateTime).Month == nowMonth)
@@ -127,6 +131,18 @@ namespace LeaveMangement_Core.Common
         public string GetUserAccount(int id)
         {
             return _ctx.Worker.Find(id).Account;
+        }
+
+        public int GetManagerPosition(int compId)
+        {
+            Position position = _ctx.Position.SingleOrDefault(p => p.CompanyId == compId && p.Name.Contains("部门经理"));
+            return position.Id;
+        }
+
+        public int GetManagerState(int compId)
+        {
+            State state = _ctx.State.Single(s => s.CompanyId == compId && s.Name.Contains("正式"));
+            return state.Id;
         }
 
     }

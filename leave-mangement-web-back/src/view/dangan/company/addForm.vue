@@ -40,8 +40,8 @@ export default {
     watch:{
         formInfo: {
             handler(val, olaval) {
+                this.loadSelectData()
             this.form = val.data;
-            
             },
             deep: true
         }
@@ -113,6 +113,7 @@ export default {
                 name:'最高层'
             }]
             FileApi.getPositionList().then(res => {
+                console.log(res.data)
                     this.SelectData = res.data
                 })
         },

@@ -15,7 +15,7 @@ namespace LeaveMangement_Application.Common
         int GetUserId(string userName);
         bool IsExitDep(string depName, int companyId);
         bool IsExitWorker(int? paperType, string paperNumber, int compId);
-        int GetDepId(string depName);
+        int GetDepId(string depName,int compId);
         int GetPaperType(string paperType);
         int GetState(string name, int compId);
         void ChangeDepWorkerCount(List<Worker> workers);
@@ -23,5 +23,8 @@ namespace LeaveMangement_Application.Common
         int GetLeaveCount(string account, int compid);
 
         bool JudgeAuth(string account, string path);
+
+        int GetManagerPosition(int compId);
+        int GetManagerState(int compId);
     }
 }

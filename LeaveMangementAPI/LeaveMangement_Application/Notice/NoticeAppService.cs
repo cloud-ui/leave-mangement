@@ -23,5 +23,10 @@ namespace LeaveMangement_Application.Notice
         {
             return _noticeManager.NoticeList(queryList, account);
         }
+
+        public object GetNoticeList(string account, int compId)
+        {
+            return _noticeManager.GetNoticeList(account, compId);
+        }
     }
 }

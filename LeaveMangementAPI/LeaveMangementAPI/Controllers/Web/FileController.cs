@@ -123,7 +123,6 @@ namespace LeaveMangementAPI.Controllers.Web
         {
             string[] colName = new string[] { "公司名称", "部门经理", "部门名称", "员工数量", "部门代码" };
             var result = new object();
-            string message = "";
             if (files != null && files.Files.Count > 0)
             {
                 for (int i = 0; i < files.Files.Count; i++)
@@ -141,19 +140,35 @@ namespace LeaveMangementAPI.Controllers.Web
                         using (ExcelPackage package = new ExcelPackage(fileInfo))
                         {
                             ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                            if (_importExcelUtil.JudgeCol(worksheet,colName))
+                            List<Deparment> successDeparments;
+                            if (_importExcelUtil.JudgeCol(worksheet, colName))
                             {
                                 result = new
                                 {
-                                    data = _importExcelUtil.SaveDepToDB(worksheet)
+                                    data = _importExcelUtil.SaveDepToDB(worksheet, out successDeparments)
                                 };
                                 System.IO.File.Delete((string)path);
+
+                                foreach(var item in successDeparments)
+                                {
+                                    TransferWorkerDto transferWorkerDto = new TransferWorkerDto
+                                    {
+                                        WorkerId = (int)item.ManagerId,
+                                        DeparmentId = item.Id,
+                                        StateId=_commonAppService.GetManagerState(item.CompanyId),
+                                        PositionId = _commonAppService.GetManagerPosition(item.CompanyId)
+                                    };
+                                    _dangAnAppService.TransferWorker(transferWorkerDto);
+                                }
                             }
                         }
                     }
                     catch (Exception ex)
                     {
-                        message= ex.Message;
+                        result = new
+                        {
+                            data = ex
+                        };
                     }
                 }
             }

@@ -157,6 +157,13 @@ namespace LeaveMangement_Core.DangAn
         {
             return _ctx.Deparment.Where(d => d.CompanyId == compId);
         }
+
+        /// <summary>
+        /// 单个添加部门
+        /// 
+        /// </summary>
+        /// <param name="deparmentDto"></param>
+        /// <returns></returns>
         public object AddSingleDpearment(AddSingleDeparmentDto deparmentDto)
         {
             var dep = _ctx.Deparment.SingleOrDefault(d => d.Name.Equals(deparmentDto.Name) && d.CompanyId.Equals(deparmentDto.CompId));
@@ -190,23 +197,20 @@ namespace LeaveMangement_Core.DangAn
                 }
 
                 else
-                if (ChangeWorkerPosition(deparmentDto.MangerId, "部门经理"))
                 {
                     _ctx.Deparment.Add(deparment);
                     _ctx.Company.Find(deparmentDto.CompId).DeparmentCount++;
                     _ctx.SaveChanges();
+                    this.TransFerWorker(deparment.CompanyId, deparment.Id, (int)deparment.ManagerId);
                     result = new
                     {
                         isSuccess = true,
                         message = "添加部门成功"
                     };
                 }
-                else
-                    result = new
-                    {
-                        isSuccess = false,
-                        message = "部门添加失败"
-                    };
+               // if (ChangeWorkerPosition(deparmentDto.MangerId, "部门经理"))
+                
+                   
             }
             return result;
         }
@@ -224,24 +228,16 @@ namespace LeaveMangement_Core.DangAn
                     };
                 else
                 {
-                    if (ChangeWorkerPosition(deparment.ManagerId, "员工"))
+                    Company company = _ctx.Company.Find(deparment.CompanyId);
+                    company.DeparmentCount = company.DeparmentCount - 1;
+                    _ctx.Deparment.Remove(deparment);
+                    _ctx.SaveChanges();
+                    result = new
                     {
-                        Company company = _ctx.Company.Find(deparment.CompanyId);
-                        company.DeparmentCount = company.DeparmentCount - 1;
-                        _ctx.Deparment.Remove(deparment);
-                        _ctx.SaveChanges();
-                        result = new
-                        {
-                            isSuccess = true,
-                            message = "部门删除成功！"
-                        };
-                    }
-                    else
-                        result = new
-                        {
-                            isSuccess = false,
-                            message = "部门删除失败！"
-                        };
+                        isSuccess = true,
+                        message = "部门删除成功！"
+                    };
+
                 }
 
             }
@@ -336,7 +332,7 @@ namespace LeaveMangement_Core.DangAn
                            join position in _ctx.Position on worker.PositionId equals position.Id
                            join deparment in _ctx.Deparment on worker.DepartmentId equals deparment.Id
                            join state in _ctx.State on worker.StateId equals state.Id
-                           where worker.CompanyId.Equals(compId) && !position.Name.Equals("部门经理")&&state.Name.Contains("正式员工")
+                           where worker.CompanyId.Equals(compId) && !position.Name.Equals("部门经理")&&state.Name.Contains("正式")
                            select new
                            {
                                id = worker.Id,
@@ -589,6 +585,19 @@ namespace LeaveMangement_Core.DangAn
                 _ctx.SaveChanges();
                 return true;
             }
+        }
+
+        private CommonManager _commonManager = new CommonManager();
+        private void TransFerWorker(int compId,int depId,int workerId)
+        {
+            TransferWorkerDto transferWorkerDto = new TransferWorkerDto
+            {
+                WorkerId = (int)workerId,
+                DeparmentId = depId,
+                StateId = _commonManager.GetManagerState(compId),
+                PositionId = _commonManager.GetManagerPosition(compId)
+            };
+            Result s = this.TransferWorker(transferWorkerDto);
 
         }
         public Result TransferWorker(TransferWorkerDto transferWorkerDto)

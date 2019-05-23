@@ -58,13 +58,38 @@ namespace LeaveMangement_Core.Notices
             }
             return result;
         }
+
+        public object GetNoticeList(string account,int compId)
+        {
+            Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
+            var noticeList = (from notice in _ctx.Notice
+                              join w in _ctx.Worker on notice.CreateHuman equals w.Id 
+                              where notice.IsDelete == false && w.CompanyId==compId&&notice.Type==1 
+                              ||(notice.Type==2&&w.DepartmentId==worker.DepartmentId)
+                              orderby notice.CreateTime descending
+                              select new
+                              {
+                                  id = notice.Id,
+                                  title = notice.Title,
+                                  content = notice.Content,
+                                  createHuman = w.Name,
+                                  typeCode = notice.Type,
+                                  type = TypeProvider._types.SingleOrDefault(t => t.Code == notice.Type).TypeName,
+                                  createTime = _commonServer.ChangeTime(notice.CreateTime)
+                              }).ToList();
+            var result = new
+            {
+                data = noticeList.Skip(0).Take(10),
+            };
+            return result;
+        }
         public object NoticeList(QueryList queryList, string account)
         {
             queryList.Query = string.IsNullOrEmpty(queryList.Query) ? "" : queryList.Query;
             Worker worker = _ctx.Worker.SingleOrDefault(w => w.Account.Equals(account));
             var noticeList = (from notice in _ctx.Notice
                               join w in _ctx.Worker on notice.CreateHuman equals w.Id
-                              where notice.IsDelete == false && notice.Title.Contains(queryList.Query)
+                              where notice.IsDelete == false && notice.Title.Contains(queryList.Query)&&notice.CreateHuman==worker.Id
                               orderby notice.Id
                               select new
                               {

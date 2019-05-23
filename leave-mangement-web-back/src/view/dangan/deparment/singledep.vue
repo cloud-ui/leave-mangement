@@ -52,6 +52,7 @@ export default {
     methods:{
         loadWorkerList(){
             FileApi.getWorkerList().then(res=>{
+                console.log(res.data)
                 this.workerList={
                     ...res.data
                 }

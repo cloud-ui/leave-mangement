@@ -5,7 +5,7 @@ export default{
         userInfo: Auth.getUserInfo() || {},
         isLogin: Auth.getLogin() || false,
         menu:Auth.getMenu() || {},
-        inform:Auth.getInform() || {}
+        inform:Auth.getInform() || []
     },
     mutations:{
         ACCOUNT_SET(state,data={}){

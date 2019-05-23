@@ -5,8 +5,7 @@
     show-checkbox
     node-key="id"
     ref="tree"
-    :default-expanded-keys="defaultCheckKeys"
-    :default-checked-keys="defaultCheckKeys"
+    :default-expand-all="true"
     :props="defaultProps">
 </el-tree>
 <div style="display: flex;
@@ -59,14 +58,17 @@ import {FileApi} from '../api.js'
         })
       },
       getIds(data){
+        let checkKeys=[]
         data.map(item=>{
-          this.defaultCheckKeys.push(item.id);
+          checkKeys.push(item.id);
           if(item.children.length != 0){
             item.children.map(value=>{
-              this.defaultCheckKeys.push(value.id)
+              checkKeys.push(value.id)
             })
           }
         })
+        this.defaultCheckKeys=checkKeys
+        this.$refs.tree.setCheckedKeys(checkKeys)
       },
       submit(){
         const params={
@@ -90,4 +92,11 @@ import {FileApi} from '../api.js'
     }
   };
 </script>
+
+//  <style lang="scss">
+// .el-tree-node__children{
+//   display: flex;
+// }
+// </style>
+
 

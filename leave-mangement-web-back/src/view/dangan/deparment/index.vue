@@ -73,7 +73,7 @@
         </div>
         <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" width="625px">
          <comp-adddep v-if="formInfo.type === 'add'" @closeForm='handleClose' @close='closeForm' ref="compForm"></comp-adddep>
-         <comp-singledep v-if="formInfo.type === 'edit'" :formInfo="formInfo" :close="closeForm" @close='closeForm' ref="editForm"></comp-singledep>
+         <!-- <comp-singledep v-if="formInfo.type === 'edit'" :formInfo="formInfo" :close="closeForm" @close='closeForm' ref="editForm"></comp-singledep> -->
         </el-dialog>
     </div>
 </template>
@@ -181,6 +181,7 @@ export default {
       },
       //关闭弹窗
       handleClose(){
+          this.loadData()
           this.dialogVisible = false
       }, 
       closeForm(val){

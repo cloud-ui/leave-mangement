@@ -86,12 +86,7 @@ export default{
            this.loadCompany()
        },
        loadNoticeData(){
-           const params = {
-               currentPage: 1,
-                currentPageSize: 5,
-                query: '',
-           }
-           ShouyeApi.noticeList(params).then(res=>{
+           ShouyeApi.noticeList().then(res=>{
                this.noticeData = res.data.data
            })
        },

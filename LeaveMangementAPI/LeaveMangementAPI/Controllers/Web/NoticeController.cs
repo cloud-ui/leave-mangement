@@ -33,8 +33,22 @@ namespace LeaveMangementAPI.Controllers.Web
             _noticeAppService = noticeAppService;
             _configuration = configuration;
         }
+
         /// <summary>
-        /// 获取公告列表
+        ///获取公告列表——主页
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Authorize]
+        public async Task<object> GetNoticeList()
+        {
+            var context = HttpContext;
+            string account = await _jwtUtil.GetMessageByToken(context);
+            int companyId = _commonAppService.GetUserCompId(account);
+            return _noticeAppService.GetNoticeList(account, companyId);
+        }
+        /// <summary>
+        /// 获取公告列表——公告管理部分
         /// </summary>
         /// <returns></returns>
         [HttpPost]

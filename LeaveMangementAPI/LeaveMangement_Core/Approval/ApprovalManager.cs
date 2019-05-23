@@ -412,6 +412,12 @@ namespace LeaveMangement_Core.Approval
             }
             return result;
         }
+
+        /// <summary>
+        /// 审核申请，如果同意就更改员工的状态
+        /// </summary>
+        /// <param name="worker"></param>
+        /// <param name="checkDto"></param>
         private void CheckApplication(Worker worker,CheckDto checkDto)
         {
             //找出申请
@@ -424,7 +430,10 @@ namespace LeaveMangement_Core.Approval
             apply.State = checkDto.IsAgree ? 2 : 3;
             _ctx.SaveChanges();
             //更新员工的状态
-            UpdateUserState(apply.CompanyId, apply.WorkerId, "休假");
+            if (checkDto.IsAgree)
+            {
+                UpdateUserState(apply.CompanyId, apply.WorkerId, "休假");
+            }
         }
         private void CheckApply(Worker worker, CheckDto checkDto)
         {

@@ -5,8 +5,8 @@ import {server} from '@/tools/servers'
  */
 export class ShouyeApi {
   //获取列表
-  static noticeList(data={}){
-      return server.connection('POST','api/Notice/NoticeList',data)
+  static noticeList(){
+      return server.connection('GET','api/Notice/GetNoticeList')
   }
   static getAttendanceData(){
     return server.connection('GET','api/Attendance/GetAttendanceData')

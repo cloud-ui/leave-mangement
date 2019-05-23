@@ -11,5 +11,7 @@ namespace LeaveMangement_Application.Notice
         Result AddNotice(AddNotice addNotice,string account);
         Result DeleteNotice(int id);
         object NoticeList(QueryList queryList,string account);
+
+        object GetNoticeList(string account, int compId);
     }
 }

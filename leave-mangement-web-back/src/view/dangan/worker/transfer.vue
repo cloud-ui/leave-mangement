@@ -68,13 +68,20 @@ export default {
             console.log(this.userName)
         },
         submitForm(){
-            console.log(this.data)
             this.loading = true
             FileApi.TransferOfPersonnel(this.data).then(res=>{
                 this.loading = false
                 const type1 = res.data.isSuccess?'success':'error'
                 this.$message({ type: type1,message: res.data.message});
+                this.close()
             })
+        },
+        close(){
+            this.deparmentId=''
+            this.stateId=''
+            this.positionId=''
+            this.workerId=this.id
+            this.$emit("close",false)
         },
         changeDep(id){
             this.data.deparmentId = id
