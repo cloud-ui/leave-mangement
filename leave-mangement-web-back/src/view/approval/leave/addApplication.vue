@@ -5,7 +5,7 @@
         </div>
         <div class="index-body index-body1">
             <div class="index-body-menu">
-                <el-menu default-active="1" class="el-menu-vertical-demo" @select="handleSelect">
+                <el-menu :default-active="form.type1" class="el-menu-vertical-demo" @select="handleSelect">
                     <el-menu-item index="1">
                         <i class="el-icon-tickets"></i>
                         <span slot="title">事前请假</span>
@@ -33,9 +33,9 @@
                     </el-form-item>
                     <el-form-item prop="type2" label="请假类型：">
                         <el-radio-group v-model="form.type2">
-                            <el-radio label=2 >事假</el-radio>
-                            <el-radio label=1>病假</el-radio>
-                            <el-radio label=3>年假</el-radio>
+                            <el-radio label="2" >事假</el-radio>
+                            <el-radio label="1">病假</el-radio>
+                            <el-radio label="3">年假</el-radio>
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item prop="value13" label="起止时间：">
@@ -72,7 +72,6 @@
     export default {
         data(){
             var checkDateLeng=(rule, value, callback)=>{
-                console.log(this.form.value13)
                 if(this.form.value13.length !== 2){
                     return callback(new Error('时间未必填项'));
                 }else if(!this.getDateLeng()){
@@ -84,8 +83,8 @@
                 form:{
                     name:'',
                     deparmentName:'开发部',
-                    type1:1,
-                    type2:0,
+                    type1:'1',
+                    type2:'0',
                     account:'',
                     startTime:'',
                     endTime:'',
@@ -130,22 +129,27 @@
                     })
                 }else{
                     this.isEdit = true
-                    this.form.name = this.userInfo.name
                     ApprovalApi.getDeparment(this.userInfo.departmentId).then(res=>{
                         this.form.deparmentName = res.data.name
                     })
                     ApprovalApi.getApplication(id).then(res=>{
-                        this.form = {...res.data}
-                        this.form.value13[0] = this.formatDate(res.data.startTime)
-                        this.form.value13[1] = this.formatDate(res.data.endTime)
+                        //this.form = {...res.data}
+                        this.form.id=id
+                        this.form.account=res.data.account
+                        this.form.name = this.userInfo.name
+                        this.form.deparmentName = res.data.deparment
+                        this.form.value13.push( this.formatDate(res.data.startTime))
+                        this.form.value13.push( this.formatDate(res.data.endTime))
+                        this.getDateLeng()
+                        this.getApplyType(res.data.type)
                     })
                 }
             },
             handleSelect(key, keyPath) {
                 if(key === "1"){
-                    this.form.type1 = 1
+                    this.form.type1 = '1'
                 }else if(key === "2"){
-                    this.form.type1 = 2
+                    this.form.type1 = '2'
                 }
             },
             loadCount(){
@@ -159,8 +163,7 @@
                     if(valid){
                         isSubmit===true?this.submitLoading=true:this.saveLoading = true
                         const params={
-                            workerId:this.userInfo.id,
-                            type1 : this.form.type1,
+                            type1 : parseInt(this.form.type1),
                             type2 : parseInt(this.form.type2),
                             account : this.form.account,
                             startTime:this.form.startTime,
@@ -168,6 +171,7 @@
                             isSubmit:isSubmit,
                         }
                         if(!this.isEdit){
+                            params.workerId=this.userInfo.id
                             ApprovalApi.addApplication(params).then(res=>{
                             const type1 = res.data.isSuccess?'success':'error'
                             this.$message({
@@ -179,6 +183,7 @@
                             this.$router.push({ path: path})
                         })
                         }else{
+                            params.id=this.form.id
                             ApprovalApi.editApplication(params).then(res=>{
                                 const type1 = res.data.isSuccess?'success':'error'
                                 this.$message({
@@ -199,27 +204,69 @@
                 this.form={
                     name:'',
                     deparmentName:'',
-                    type1:1,
-                    type2:0,
+                    type1:'1',
+                    type2:'0',
                     account:'',
                     startTime:'',
                     endTime:'',
                     isSubmit:'',
                 }
             },
+
+            //获得请假类型：事前，事后,病假等
+            getApplyType(type){
+                let typeArr=type.split('-')
+                if(typeArr[0]==="事前"){
+                    this.form.type1='1'
+                }else{
+                    this.form.type1='2'
+                }
+
+                if(typeArr[1]==="病假"){
+                    this.form.type2='1'
+                }else if(typeArr[1]==="事假"){
+                    this.form.type2='2'
+                }
+                else if(typeArr[1]==="年假"){
+                    this.form.type2='3'
+                }
+            },
             //获取到请假的天数
             getDateLeng(){
-                var dateDiff = this.form.value13[1].getTime() - this.form.value13[0].getTime();//时间差的毫秒数
-                var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
-                if((this.form.type2 === "2" && dayDiff > 7) ||(this.form.type2 === "3" && dayDiff > 15) ){
-                    this.dateLeng = dayDiff
-                    return false
-                }else{
-                    this.dateLeng = dayDiff
-                    this.form.startTime = this.form.value13[0].getTime()
-                    this.form.endTime = this.form.value13[1].getTime()
-                    return true
-                }                    
+                let dayDiff=0;
+                let start = new Date(this.form.value13[0]),end=new Date(this.form.value13[1])
+                while(start<end){
+                    console.log(start.getDay())
+                    if(start.getDay() !== 0 && start.getDay() !== 6){
+                        dayDiff++
+                        start.setDate(start.getDate()+1)
+                    }else{
+                    start.setDate(start.getDate()+1)
+                    }
+                }
+                this.dateLeng = dayDiff
+                this.form.startTime = this.form.value13[0].getTime()
+                this.form.endTime = this.form.value13[1].getTime()
+                return true
+                
+                // var dateDiff = this.form.value13[1].getTime() - this.form.value13[0].getTime();//时间差的毫秒数
+                // var dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
+                // if((this.form.type2 === "2" && dayDiff > 7) ||(this.form.type2 === "3" && dayDiff > 15) ){
+                //     this.dateLeng = dayDiff
+                //     return false
+                // }else{
+                //     let weekDays=0
+                //     for(let i=0;i<dayDiff;i++){
+                //         if(this.form.value13[0].getDay() == 0 || this.form.value13[0].getDay() == 6) {
+                //                 weekDays ++; 
+                //                 this.form.value13[0].setDate(this.form.value13[0].getDate()+1)
+                //         }
+                //     }
+                //     this.dateLeng = dayDiff-weekDays
+                //     this.form.startTime = this.form.value13[0].getTime()
+                //     this.form.endTime = this.form.value13[1].getTime()
+                //     return true
+                // }                    
             },
             //转换时间格式
             formatDate(value) {

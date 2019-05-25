@@ -8,9 +8,11 @@
             </div>
             <div>
                 <ul class="attence-tip">
-                    <li><span style="background:#5fb878"></span> ：正常出勤</li>
-                    <li><span style="background:red"></span> ：缺勤</li>
-                    <li><span style="background:#50bfff"></span> ：今天</li>
+                    <li><span style="background:#5fb878"></span>：出勤</li>
+                    <li><span style="background:#E6A23C"></span>：请假</li>
+                    <li><span style="background:#F56C6C"></span>：缺勤</li>
+                    <li><span style="background:#50bfff"></span>：今天</li>
+                    
                 </ul>
                 <div class="attence-calendar-box">
                     <calendar-comp ref='calendar' class="attence-calendar-item"></calendar-comp>
@@ -97,6 +99,12 @@
                         })
                     })
                     res.data.leaveDays.map(item=>{
+                        this.$refs.calendar.arr.push({
+                            date: item,
+                            className: 'mark3'
+                        })
+                    })
+                    res.data.unworkDays.map(item=>{
                         this.$refs.calendar.arr.push({
                             date: item,
                             className: 'mark2'

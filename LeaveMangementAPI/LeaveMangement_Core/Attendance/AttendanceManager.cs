@@ -199,11 +199,11 @@ namespace LeaveMangement_Core.Attendance
             var result = new object();
             List<string> leaveDays = new List<string>();
             //获取到打卡的日期数组
-            var clockDays = (from clock in _ctx.Clock
+            List<string> clockDays = (from clock in _ctx.Clock
                              let day = clock.ClockDay
                              let month = day.Substring(0, day.LastIndexOf('-'))
                              where month == attendanceDto.Month && clock.WorkId == worker.Id
-                             select clock.ClockDay).ToArray();
+                             select clock.ClockDay).ToList();
             ////获取请假的日期数组
             var applys = (from apply in _ctx.Apply
                               //let date = DateTime.FromFileTime(apply.StartTime).ToString("yyyy-MM-dd")
@@ -223,7 +223,8 @@ namespace LeaveMangement_Core.Attendance
             result = new {
                 attendanceDto.Month,
                 clockDays,
-                leaveDays
+                leaveDays,
+                unworkDays = GetUnworkDays(clockDays, leaveDays, attendanceDto.Month)
             };
             return result;
         }
@@ -233,7 +234,7 @@ namespace LeaveMangement_Core.Attendance
             List<string> result = new List<string>();
             while (start < end && start<=DateTime.Now)
             {
-                //求出非周末日期，插入数据库
+                //求出非周末日期
                 if (start.DayOfWeek != DayOfWeek.Saturday && start.DayOfWeek != DayOfWeek.Sunday)
                 {
                     result.Add(start.ToString("yyyy-MM-dd"));
@@ -244,58 +245,23 @@ namespace LeaveMangement_Core.Attendance
             return result;
         }
 
-        private object GetWorkDay(DateTime start,DateTime end)
+        private List<string> GetUnworkDays(List<string> workDays,List<string>leaveDays,string month)
         {
-            TimeSpan span = end - start;
-            //int totleDay=span.Days;
-            //DateTime spanNu = DateTime.Now.Subtract(span);
-            int AllDays = Convert.ToInt32(span.TotalDays) + 1;//差距的所有天数
-            int totleWeek = AllDays / 7;//差别多少周
-            int yuDay = AllDays % 7; //除了整个星期的天数
-            int lastDay = 0;
-            if (yuDay == 0) //正好整个周
+            DateTime time = DateTime.Parse(month + "-01");
+            int days = DateTime.DaysInMonth(time.Year, time.Month);
+            List<string> data = new List<string>();
+            for(int i = 0; i < days&&time<=DateTime.Now; i++)
             {
-                lastDay = AllDays - (totleWeek * 2);
+                string timeStr = time.ToString("yyyy-MM-dd");
+                if (!workDays.Contains(timeStr) && !leaveDays.Contains(timeStr))
+                {
+                    data.Add(timeStr);
+                }
+                time = time.AddDays(1);
             }
-            else
-            {
-                int weekDay = 0;
-                int endWeekDay = 0; //多余的天数有几天是周六或者周日
-                switch (start.DayOfWeek)
-                {
-                    case DayOfWeek.Monday:
-                        weekDay = 1;
-                        break;
-                    case DayOfWeek.Tuesday:
-                        weekDay = 2;
-                        break;
-                    case DayOfWeek.Wednesday:
-                        weekDay = 3;
-                        break;
-                    case DayOfWeek.Thursday:
-                        weekDay = 4;
-                        break;
-                    case DayOfWeek.Friday:
-                        weekDay = 5;
-                        break;
-                    case DayOfWeek.Saturday:
-                        weekDay = 6;
-                        break;
-                    case DayOfWeek.Sunday:
-                        weekDay = 7;
-                        break;
-                }
-                if ((weekDay == 6 && yuDay >= 2) || (weekDay == 7 && yuDay >= 1) || (weekDay == 5 && yuDay >= 3) || (weekDay == 4 && yuDay >= 4) || (weekDay == 3 && yuDay >= 5) || (weekDay == 2 && yuDay >= 6) || (weekDay == 1 && yuDay >= 7))
-                {
-                    endWeekDay = 2;
-                }
-                if ((weekDay == 6 && yuDay < 1) || (weekDay == 7 && yuDay < 5) || (weekDay == 5 && yuDay < 2) || (weekDay == 4 && yuDay < 3) || (weekDay == 3 && yuDay < 4) || (weekDay == 2 && yuDay < 5) || (weekDay == 1 && yuDay < 6))
-                {
-                    endWeekDay = 1;
-                }
-                lastDay = AllDays - (totleWeek * 2) - endWeekDay;
-            }
-            return true;
+            return data;
         }
+
+        
     }
 }
