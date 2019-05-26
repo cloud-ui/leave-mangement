@@ -79,6 +79,8 @@ namespace LeaveMangement_Core.DangAn
                 comp.Corporation = editCompanyDto.Corporation;
                 comp.Address = editCompanyDto.Address;
                 comp.Name = editCompanyDto.Name;
+                comp.Lat = editCompanyDto.Lat;
+                comp.Lng = editCompanyDto.Lng;
                 _ctx.SaveChanges();
                 result = new
                 {

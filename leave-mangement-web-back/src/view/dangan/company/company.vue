@@ -8,7 +8,15 @@
             <el-input v-model="companyInfo.createTime" :readonly="true" style="width:40%;"></el-input>
         </el-form-item>
         <el-form-item label="公司地址：">
-            <el-input v-model="companyInfo.address" :readonly="readonly"></el-input>
+            <!-- <el-input v-model="companyInfo.address" :readonly="readonly"></el-input> -->
+            <el-dropdown style="width:50%;" :readonly="readonly">
+                    <el-input placeholder="请输入地址" :readonly="readonly"  v-model="companyInfo.address"></el-input>
+                    <el-dropdown-menu slot="dropdown" style="padding:0px;">
+                        <el-dropdown-item style="padding:2px;">
+                            <map-comp :searchKey="companyInfo.address" @select="getSelectAdress"></map-comp>
+                        </el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
         </el-form-item>
         <el-form-item label="公司法人:">
             <el-input v-model="companyInfo.corporation" :readonly="readonly" style="width:40%;"></el-input>
@@ -32,6 +40,7 @@
 </template>
 <script>
 import {FileApi} from '../api.js'
+import mapComp from '@/packages/components/map.vue'
 export default {
     data(){
         return{
@@ -40,6 +49,9 @@ export default {
            readonly:true,
            loading:false,
         }
+    },
+    components:{
+        mapComp
     },
     created(){
         this.getCompanyInfo()
@@ -64,6 +76,11 @@ export default {
                 this.showSave = 'hide',
                 this.getCompanyInfo()
             },
+            getSelectAdress(select){
+                this.companyInfo.address = select.address
+                this.companyInfo.lng=select.lng
+                this.companyInfo.lat = select.lat
+            },
             handleSave(){
                 this.loading = true
                 const params={
@@ -71,7 +88,9 @@ export default {
                     name: this.companyInfo.name,
                     address: this.companyInfo.address,
                     corporation: this.companyInfo.corporation,
-                    cellphoneNumber: this.companyInfo.cellphoneNumber
+                    cellphoneNumber: this.companyInfo.cellphoneNumber,
+                    lng:this.companyInfo.lng,
+                    lat:this.companyInfo.lat
                 }
                 FileApi.editCompany(params).then(res=>{
                     const type1 = res.data.isSuccess?'success':'error'
@@ -95,4 +114,10 @@ export default {
         },
 }
 </script>
+<style lang="less" scoped>
+    .map /deep/ .bm-view {
+        width: 600px;
+        height: 400px;
+    }
+</style>
 

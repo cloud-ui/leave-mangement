@@ -2,7 +2,6 @@ import axios from 'axios'
 import qs from 'qs'
 import { store } from '../store'
 import router from '../router'
-import { Msg } from 'element-ui'
 
 /**
  * 请求类
@@ -32,6 +31,7 @@ export class BaseApi {
     }, function (error) {
       let msg = '';
       if (error.response) {
+        console.log(error.response.status)
         switch (error.response.status) {
           case 403:
             router.replace({
@@ -40,9 +40,12 @@ export class BaseApi {
             })
             break;
           case 401:
-            router.replace({
-              path: '/login'
-            })
+            store.dispatch('accountLogoutSubmit').then(res => {
+                this.$router.push('/login');
+            }).catch(err => {})
+            // router.replace({
+            //   path: '/login'
+            // })
           default:
             router.replace({
               path: '/wangluofanmang'

@@ -11,5 +11,8 @@ namespace LeaveMangement_Entity.Dtos.DangAn
         public string Address { get; set; }
         public string Corporation { get; set; }
         public string CellphoneNumber { get; set; }
+
+        public double Lng { get; set; }
+        public double Lat { get; set; }
     }
 }

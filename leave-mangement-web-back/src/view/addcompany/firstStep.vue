@@ -4,12 +4,6 @@
             <el-form-item label="公司名称:" prop="name">
                 <el-input style="width:50%" v-model="companyMessage.name"></el-input>
             </el-form-item>
-            <!-- <el-form-item label="公司地址:" prop="address"> -->
-            <!-- <el-input style="width:50%" v-model="companyMessage.address"></el-input> -->
-            <!-- <el-col :span="14"><city-select v-model="cityInfo"></city-select></el-col>
-                            <el-col :span="1">--</el-col>
-                            <el-col :span="9"><el-input v-model="smallAddress" placeholder="详细地址"></el-input></el-col> -->
-            <!-- </el-form-item> -->
             <el-form-item label="公司地址:" prop="address">
                 <el-dropdown style="width:50%;">
                     <el-input placeholder="请输入地址" v-model="companyMessage.address"></el-input>
@@ -46,13 +40,8 @@
 </template>
 <script>
     import './add.scss';
-    import {
-        mapState,
-        mapActions
-    } from "vuex"
-    import {
-        AddCompanyApi
-    } from './api.js'
+    import {mapState,mapActions} from "vuex"
+    import {AddCompanyApi} from './api.js'
     import CitySelect from '@/packages/components/addressSelector'
     import mapComp from '@/packages/components/map.vue'
     export default {
