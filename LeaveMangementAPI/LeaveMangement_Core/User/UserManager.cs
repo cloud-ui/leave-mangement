@@ -69,7 +69,8 @@ namespace LeaveMangement_Core.User
                     StateId = singleWorkerDto.State,
                     IsAuth = UserHelper.DEFAULT_IS_AUTH,
                     Age = _userService.GetAgeFromIdCard(singleWorkerDto.PaperNumber),
-                    Brith = _userService.GetBirthdayFromIdCard(singleWorkerDto.PaperNumber)
+                    Brith = _userService.GetBirthdayFromIdCard(singleWorkerDto.PaperNumber),
+                    Email = singleWorkerDto.Email,
                 };
                 _ctx.Worker.Add(newWorker);
                 _ctx.SaveChanges();
@@ -84,6 +85,7 @@ namespace LeaveMangement_Core.User
                     isSuccess = true,
                     message = "添加成功！"
                 };
+                _userService.SendEMailToWorker(singleWorkerDto.Email, newWorker);
             }
             return result;
         }

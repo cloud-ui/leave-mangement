@@ -73,7 +73,7 @@
         </div>
         <el-dialog :visible.sync="dialogVisible" :before-close="handleClose" width="625px">
          <comp-adddep v-if="formInfo.type === 'add'" @closeForm='handleClose' @close='closeForm' ref="compForm"></comp-adddep>
-         <!-- <comp-singledep v-if="formInfo.type === 'edit'" :formInfo="formInfo" :close="closeForm" @close='closeForm' ref="editForm"></comp-singledep> -->
+         <comp-singledep v-if="formInfo.type === 'edit'" :formInfo="formInfo" :close="closeForm" @close='closeForm' ref="editForm"></comp-singledep>
         </el-dialog>
     </div>
 </template>
@@ -90,7 +90,7 @@ export default {
             totalCount:0,
             query:'',
             currentPage:1,
-            pageSize:9,
+            pageSize:10,
             dialogVisible:false,
             headerCellStyle: {
                 backgroundColor: '#f2f2f2',
@@ -177,15 +177,18 @@ export default {
           FileApi.getDeparmentList(params).then(res=>{
               this.totalCount = res.data.totalCount;
               this.tableData = res.data.data;
+              console.log(this.tableData)
           });
       },
       //关闭弹窗
       handleClose(){
           this.loadData()
+          console.log("关闭11")
           this.dialogVisible = false
       }, 
       closeForm(val){
           this.loadData()
+          console.log("关闭")
           this.dialogVisible = val
       }
     }

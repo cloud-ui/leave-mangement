@@ -20,5 +20,8 @@ namespace LeaveMangement_Entity.Dtos.DangAn
         public long? EntryTime { get; set; }
         //入职状态
         public int State { get; set; }
+
+        //电子邮箱
+        public string Email { get; set; }
     }
 }

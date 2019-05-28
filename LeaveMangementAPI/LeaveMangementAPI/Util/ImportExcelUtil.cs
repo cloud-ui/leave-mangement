@@ -220,6 +220,10 @@ namespace LeaveMangementAPI.Util
                                 worker.EntryTime = time.ToFileTime();
                                 excelWorker.EntryTime = worksheet.Cells[row, col].Value.ToString();
                                 break;
+                            case 12: //电子邮箱
+                                string email = worksheet.Cells[row, col].Value.ToString();
+                                worker.Email=excelWorker.Email = email;
+                                break;
                             default: break;
                         };
                     }
@@ -253,6 +257,7 @@ namespace LeaveMangementAPI.Util
                     Company company = _ctx.Company.Find(successWorkers[0].CompanyId);
                     company.WokerCount = company.WokerCount + successCount;
                     _ctx.SaveChanges();
+                    SendEmial(successWorkers);
                 }
                 result = new
                 {
@@ -271,6 +276,7 @@ namespace LeaveMangementAPI.Util
                     Company company = _ctx.Company.Find(successWorkers[0].CompanyId);
                     company.WokerCount = company.WokerCount + successCount;
                     _ctx.SaveChanges();
+                    SendEmial(successWorkers);
                 }
                 result = new
                 {
@@ -279,6 +285,14 @@ namespace LeaveMangementAPI.Util
                     data= GetFileData(worksheet,rowCount,colCount,successWorkers)
                 };
                 return result;
+            }
+        }
+
+        private void SendEmial(List<Worker> workers)
+        {
+            foreach(Worker item in workers)
+            {
+                _userService.SendEMailToWorker(item.Email, item);
             }
         }
 
@@ -367,6 +381,10 @@ namespace LeaveMangementAPI.Util
                             break;
                         case 11: //入职时间
                             excelWorker.EntryTime = Convert.ToString(worksheet.Cells[row, col].Value);
+                            break;
+                        case 12: //电子邮箱
+                            string email = worksheet.Cells[row, col].Value.ToString();
+                            excelWorker.Email = email;
                             break;
                         default: break;
                     };

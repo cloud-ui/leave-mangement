@@ -66,6 +66,35 @@ namespace LeaveMangement_Core.User
             return DateTime.Parse(birthday).ToFileTime();
         }
 
+        public bool SendEMailToWorker(string address,Worker user)
+        {
+            try
+            {
+                MailMessage eMail = new MailMessage();
+                eMail.To.Add(address);
+                eMail.From = new MailAddress("13628471426@163.com", "人事考勤平台", System.Text.Encoding.UTF8);
+                eMail.Subject = "员工录入成功邮件";
+                eMail.SubjectEncoding = System.Text.Encoding.UTF8;
+                eMail.Body = @"尊敬的" + user.Name + "您好！您的公司已将您录入平台!账号：" + user.Account + "默认密码：" + user.Password + 
+                    "</br><a href='http://192.168.199.233:52675/api/User/CheckRegister?account=" + address + "'>点击这里登录</a></br>";
+                eMail.BodyEncoding = System.Text.Encoding.UTF8;
+                eMail.IsBodyHtml = true;
+                eMail.Priority = MailPriority.High;
+                SmtpClient client = new SmtpClient();
+                client.UseDefaultCredentials = true;
+                client.Credentials = new System.Net.NetworkCredential("13628471426@163.com", "jxzxc1230");
+                client.Host = "smtp.163.com";
+                client.Port = 25;
+                client.EnableSsl = true;
+                client.Send(eMail);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public bool SendEMail(string mailAddress, Worker user)
         {
             try

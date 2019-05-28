@@ -22,5 +22,7 @@ namespace LeaveMangement_Entity.Models
         public bool IsAuth { get; set; }
         public int StateId { get; set; }
         public long? EntryTime { get; set; }
+
+        public string Email { get; set; }
     }
 }

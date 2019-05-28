@@ -11,7 +11,7 @@
             <el-input  type="text" v-model="formData.name"  auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="部门人数" prop="workerCount">
-            <el-input :readonly="readonly" type="text" v-model="formData.workerCount" auto-complete="off"></el-input>
+            <el-input readonly="readonly" type="text" v-model="formData.workerCount" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="部门经理" prop="mangerId">
             <el-select style="width:90%" v-model="formData.mangerId" placeholder="请选择">

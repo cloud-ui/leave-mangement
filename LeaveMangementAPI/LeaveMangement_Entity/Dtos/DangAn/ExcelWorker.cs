@@ -19,5 +19,6 @@ namespace LeaveMangement_Entity.Dtos.DangAn
         public string State { get; set; }
         public string EntryTime { get; set; }
         public bool IsSuccess { get; set; }
+        public string  Email { get; set; }
     }
 }

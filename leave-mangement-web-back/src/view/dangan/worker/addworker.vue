@@ -43,6 +43,9 @@
                     <el-form-item label="入职时间：">
                         <el-date-picker type="date" v-model="data.entryTime"></el-date-picker>
                     </el-form-item>
+                    <el-form-item label="电子邮箱：">
+                        <el-input v-model="data.email"></el-input>
+                    </el-form-item>
                     <el-form-item style="display: flex;justify-content: flex-end;padding-right: 10px;">
                         <el-button type="primary" @click="handleSingleSubmit()">提交</el-button>
                     </el-form-item>
@@ -88,7 +91,7 @@
                             </el-table-column>
                             <el-table-column prop="account" label="账号" width="170">
                             </el-table-column>
-                            <el-table-column prop="company" align="center" label="公司名称">
+                            <el-table-column prop="company" align="center" label="公司名称" width="200">
                             </el-table-column>
                             <el-table-column prop="department" align="center" label="部门名称">
                             </el-table-column>
@@ -96,7 +99,7 @@
                             </el-table-column>
                             <el-table-column prop="state" align="center" label="职位状态">
                             </el-table-column>
-                            <el-table-column prop="entryTime" align="center" label="入职时间">
+                            <el-table-column prop="entryTime" align="center" label="入职时间" width="200">
 <template slot-scope="scope">
      {{scope.row.entryTime.substr(0,10)}}
 </template>
@@ -105,11 +108,13 @@
                             </el-table-column>
                             <el-table-column prop="phoneNumber" align="center" label="联系方式" width="170">
                             </el-table-column>
-                            <el-table-column prop="address" align="center" label="地址">
+                            <el-table-column prop="address" align="center" label="地址" width="200">
                             </el-table-column>
                             <el-table-column prop="paperType" align="center" label="证件类型" width="110">
                             </el-table-column>
                             <el-table-column prop="paperNumber" align="center" label="证件号码" width="200">
+                            </el-table-column>
+                            <el-table-column prop="email" align="center" label="电子邮箱" width="200">
                             </el-table-column>
                         </el-table>
                     </div>
@@ -139,7 +144,8 @@
                     paperType: "",
                     paperNumber: "",
                     entryTime: null,
-                    state: ""
+                    state: "",
+                    email:""
                 },
                 paperTypes: [{
                         id: 1,
