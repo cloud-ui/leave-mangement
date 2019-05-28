@@ -2,6 +2,11 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="添加员工" name="first">
             <div>
+                <div class="add-tip" style="margin-bottom: 10px;">
+                    <ul>
+                        <li>1.请确认公司部门、职位、职位状态已完善</li>
+                    </ul>
+                </div>
                 <el-form :inline="true" :model="data" label-width="82px" class="demo-form-inline">
                     <el-form-item label="姓名：">
                         <el-input v-model="data.name"></el-input>

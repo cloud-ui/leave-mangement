@@ -130,7 +130,6 @@ namespace LeaveMangementAPI
 
             // Services
             services.AddScoped<ISignalrHubs, SignalrHubs>();
-
             services.AddSingleton<IServiceProvider, ServiceProvider>();
         }
 

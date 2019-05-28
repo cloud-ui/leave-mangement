@@ -14,7 +14,7 @@
             <el-input :readonly="readonly" type="text" v-model="formData.workerCount" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="部门经理" prop="mangerId">
-            <el-select style="width:90%" v-model="formData.mangerId" filterable placeholder="请选择">
+            <el-select style="width:90%" v-model="formData.mangerId" placeholder="请选择">
                 <el-option  v-for="item in workerList" :key="item.id" :label="item.name" :value="item.id">
                     <span>{{item.name}}</span> 
                     <span style="color: #c0c4cc;font-size: 12px;">({{item.deparment}}-{{item.position}})</span>

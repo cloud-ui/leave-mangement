@@ -56,7 +56,7 @@ namespace LeaveMangementAPI.Util
                 audience: audienceConfig,
                 claims: claims,
                 notBefore: now,
-                expires: now.AddMilliseconds(60000),
+                expires: now.AddMilliseconds(180000),
                 signingCredentials: new SigningCredentials(
                     signingKey,
                     SecurityAlgorithms.HmacSha256)
