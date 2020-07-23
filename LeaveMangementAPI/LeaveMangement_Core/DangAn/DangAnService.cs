@@ -11,10 +11,10 @@ namespace LeaveMangement_Core.DangAn
         //{
         //    string authCode = GetAuthCode();
         //    var res = new object();
-        //    String product = "Dysmsapi";//短信API产品名称
-        //    String domain = "dysmsapi.aliyuncs.com";//短信API产品域名
-        //    String accessKeyId = "LTAI8ycvhTECXXBd";//你的accessKeyId
-        //    String accessKeySecret = "CDsFCymCKQhfHfOgj7vDXbhD5dKwBx";//你的accessKeySecret
+        //    String product = "";//短信API产品名称
+        //    String domain = "";//短信API产品域名
+        //    String accessKeyId = "";//你的accessKeyId
+        //    String accessKeySecret = "";//你的accessKeySecret
         //    IClientProfile profile = DefaultProfile.GetProfile("cn-hangzhou", accessKeyId, accessKeySecret);
         //    DefaultProfile.AddEndpoint("cn-hangzhou", "cn-hangzhou", product, domain);
         //    IAcsClient acsClient = new DefaultAcsClient(profile);
@@ -26,7 +26,7 @@ namespace LeaveMangement_Core.DangAn
         //        //必填:短信签名-可在短信控制台中找到
         //        request.SignName = "张云鹏";
         //        //必填:短信模板-可在短信控制台中找到
-        //        request.TemplateCode = "SMS_133885140";
+        //        request.TemplateCode = "";
         //        //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
         //        request.TemplateParam = "您的注册验证码为：${authCode}";
         //        //可选:outId为提供给业务方扩展字段,最终在短信回执消息中将此值带回给调用者
